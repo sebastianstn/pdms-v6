@@ -1,0 +1,65 @@
+{
+  "realm": "pdms-home-spital",
+  "enabled": true,
+  "registrationAllowed": false,
+  "bruteForceProtected": true,
+  "roles": {
+    "realm": [
+      { "name": "arzt", "description": "Arzt — Vollzugriff auf klinische Daten" },
+      { "name": "pflege", "description": "Pflegefachperson — Pflege-Dokumentation + Vitaldaten" },
+      { "name": "admin", "description": "System-Administrator — Benutzerverwaltung + Audit" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "pdms-web",
+      "name": "PDMS Frontend",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "rootUrl": "http://localhost:3000",
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000"],
+      "protocol": "openid-connect",
+      "defaultClientScopes": ["openid", "profile", "email", "roles"]
+    },
+    {
+      "clientId": "pdms-api",
+      "name": "PDMS Backend",
+      "enabled": true,
+      "publicClient": false,
+      "bearerOnly": true,
+      "protocol": "openid-connect"
+    }
+  ],
+  "users": [
+    {
+      "username": "dr.mueller",
+      "email": "dr.mueller@pdms.local",
+      "firstName": "Thomas",
+      "lastName": "Müller",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "test1234", "temporary": false }],
+      "realmRoles": ["arzt"]
+    },
+    {
+      "username": "pflege.meier",
+      "email": "pflege.meier@pdms.local",
+      "firstName": "Anna",
+      "lastName": "Meier",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "test1234", "temporary": false }],
+      "realmRoles": ["pflege"]
+    },
+    {
+      "username": "admin",
+      "email": "admin@pdms.local",
+      "firstName": "System",
+      "lastName": "Admin",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "admin1234", "temporary": false }],
+      "realmRoles": ["admin"]
+    }
+  ]
+}

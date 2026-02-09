@@ -1,0 +1,5 @@
+# Review-Pflicht für kritische Bereiche
+/apps/api/               @backend-team
+/docker/                 @devops-team
+/docs/compliance/        @compliance-team
+/.github/workflows/      @devops-team

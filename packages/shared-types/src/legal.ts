@@ -1,0 +1,1 @@
+/** Legal types — TODO. */

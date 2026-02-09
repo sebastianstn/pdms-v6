@@ -1,0 +1,53 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs / Cache / Temp
+*.log
+*.tmp
+*.cache
+.cache/
+tmp/
+temp/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+
+# Build
+dist/
+
+# Test / Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Docker
+docker/nginx/ssl/*.pem
+docker/nginx/ssl/*.key
+
+# Turbo
+.turbo/
