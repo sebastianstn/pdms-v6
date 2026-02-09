@@ -1,5 +1,6 @@
 """Application configuration — loaded from environment variables."""
 
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -13,7 +14,7 @@ class Settings(BaseSettings):
     keycloak_url: str = "http://localhost:8080"
     keycloak_realm: str = "pdms-home-spital"
     keycloak_client_id: str = "pdms-api"
-    keycloak_client_secret: str = "dev-secret"
+    keycloak_client_secret: str = Field(default="", validation_alias="KC_API_SECRET")
 
     # Valkey (Redis-compatible)
     valkey_url: str = "redis://localhost:6379/0"

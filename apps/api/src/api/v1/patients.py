@@ -1,6 +1,7 @@
 """Patient API endpoints — CRUD + search."""
 
 import uuid
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,14 +18,17 @@ from src.domain.services.patient_service import (
 
 router = APIRouter()
 
+DbSession = Annotated[AsyncSession, Depends(get_db)]
+CurrentUser = Annotated[dict, Depends(get_current_user)]
+
 
 @router.get("/patients", response_model=PaginatedPatients)
 async def list_patients_endpoint(
+    db: DbSession,
+    user: CurrentUser,
     page: int = Query(1, ge=1),
     per_page: int = Query(20, ge=1, le=100),
     search: str | None = None,
-    db: AsyncSession = Depends(get_db),
-    user: dict = Depends(get_current_user),
 ):
     """Patientenliste mit Suche und Pagination."""
     patients, total = await list_patients(db, page=page, per_page=per_page, search=search)
@@ -39,8 +43,8 @@ async def list_patients_endpoint(
 @router.get("/patients/{patient_id}", response_model=PatientResponse)
 async def get_patient_endpoint(
     patient_id: uuid.UUID,
-    db: AsyncSession = Depends(get_db),
-    user: dict = Depends(get_current_user),
+    db: DbSession,
+    user: CurrentUser,
 ):
     """Einzelnen Patient abrufen."""
     patient = await get_patient(db, patient_id)
@@ -52,8 +56,8 @@ async def get_patient_endpoint(
 @router.post("/patients", response_model=PatientResponse, status_code=201)
 async def create_patient_endpoint(
     data: PatientCreate,
-    db: AsyncSession = Depends(get_db),
-    user: dict = Depends(get_current_user),
+    db: DbSession,
+    user: CurrentUser,
 ):
     """Neuen Patient anlegen."""
     patient = await create_patient(db, data)
@@ -64,8 +68,8 @@ async def create_patient_endpoint(
 async def update_patient_endpoint(
     patient_id: uuid.UUID,
     data: PatientUpdate,
-    db: AsyncSession = Depends(get_db),
-    user: dict = Depends(get_current_user),
+    db: DbSession,
+    user: CurrentUser,
 ):
     """Patient aktualisieren (partial update)."""
     patient = await update_patient(db, patient_id, data)
@@ -77,8 +81,8 @@ async def update_patient_endpoint(
 @router.delete("/patients/{patient_id}", status_code=204)
 async def delete_patient_endpoint(
     patient_id: uuid.UUID,
-    db: AsyncSession = Depends(get_db),
-    user: dict = Depends(get_current_user),
+    db: DbSession,
+    user: CurrentUser,
 ):
     """Patient soft-delete (Daten bleiben für Audit erhalten)."""
     deleted = await soft_delete_patient(db, patient_id)

@@ -1,7 +1,7 @@
 """VitalSign business logic — recording, alarm checking, aggregation."""
 
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -25,7 +25,7 @@ async def get_vitals(
     *,
     hours: int = 24,
 ) -> list[VitalSign]:
-    since = datetime.now(timezone.utc) - timedelta(hours=hours)
+    since = datetime.now(UTC) - timedelta(hours=hours)
     result = await session.execute(
         select(VitalSign)
         .where(VitalSign.patient_id == patient_id, VitalSign.recorded_at >= since)

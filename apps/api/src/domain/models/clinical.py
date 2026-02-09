@@ -1,7 +1,7 @@
 """VitalSign, Medication, MedicationAdmin, Alarm models."""
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
@@ -16,7 +16,7 @@ class VitalSign(Base):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     patient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("patients.id"), index=True)
     encounter_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("encounters.id"))
-    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     recorded_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
     source: Mapped[str] = mapped_column(String(20), default="manual")  # manual, device, hl7
     heart_rate: Mapped[float | None] = mapped_column(Float)
@@ -39,7 +39,7 @@ class Encounter(Base):
     encounter_type: Mapped[str] = mapped_column(String(30))  # hospitalization, home-care, ambulatory
     ward: Mapped[str | None] = mapped_column(String(50))
     bed: Mapped[str | None] = mapped_column(String(20))
-    admitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    admitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     discharged_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     reason: Mapped[str | None] = mapped_column(Text)
     attending_physician_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
@@ -57,6 +57,6 @@ class Alarm(Base):
     threshold_max: Mapped[float | None] = mapped_column(Float)
     severity: Mapped[str] = mapped_column(String(20))  # info, warning, critical
     status: Mapped[str] = mapped_column(String(20), default="active")  # active, acknowledged, resolved
-    triggered_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    triggered_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
     acknowledged_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     acknowledged_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))

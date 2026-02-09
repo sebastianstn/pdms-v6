@@ -1,13 +1,13 @@
 """Middleware: audit logging, CORS, rate limiting."""
 
-import time
 import logging
+import time
 
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from src.infrastructure.database import AsyncSessionLocal
 from src.infrastructure.audit_db import log_action
+from src.infrastructure.database import AsyncSessionLocal
 
 logger = logging.getLogger("pdms.audit")
 

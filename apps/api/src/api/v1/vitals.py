@@ -1,6 +1,7 @@
 """Vitals API endpoints — record + query time series."""
 
 import uuid
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,13 +12,16 @@ from src.domain.services.vital_service import get_vitals, record_vital
 
 router = APIRouter()
 
+DbSession = Annotated[AsyncSession, Depends(get_db)]
+CurrentUser = Annotated[dict, Depends(get_current_user)]
+
 
 @router.get("/patients/{patient_id}/vitals", response_model=list[VitalSignResponse])
 async def get_vitals_endpoint(
     patient_id: uuid.UUID,
+    db: DbSession,
+    user: CurrentUser,
     hours: int = Query(24, ge=1, le=720),
-    db: AsyncSession = Depends(get_db),
-    user: dict = Depends(get_current_user),
 ):
     """Vitaldaten eines Patienten abrufen (Zeitreihe)."""
     vitals = await get_vitals(db, patient_id, hours=hours)
@@ -27,8 +31,8 @@ async def get_vitals_endpoint(
 @router.post("/vitals", response_model=VitalSignResponse, status_code=201)
 async def record_vital_endpoint(
     data: VitalSignCreate,
-    db: AsyncSession = Depends(get_db),
-    user: dict = Depends(get_current_user),
+    db: DbSession,
+    user: CurrentUser,
 ):
     """Neue Vitaldaten erfassen."""
     user_id = uuid.UUID(user.get("sub", "00000000-0000-0000-0000-000000000000"))

@@ -1,6 +1,6 @@
 """Keycloak JWT validation and role extraction."""
 
-from typing import Any
+from typing import Annotated, Any
 
 import httpx
 from fastapi import Depends, HTTPException, status
@@ -10,6 +10,8 @@ from jose import JWTError, jwt
 from src.config import settings
 
 security = HTTPBearer()
+
+Credentials = Annotated[HTTPAuthorizationCredentials, Depends(security)]
 
 _jwks_cache: dict[str, Any] | None = None
 
@@ -26,9 +28,7 @@ async def _get_jwks() -> dict[str, Any]:
     return _jwks_cache
 
 
-async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> dict[str, Any]:
+async def get_current_user(credentials: Credentials) -> dict[str, Any]:
     """Validate JWT and return user payload."""
     token = credentials.credentials
     try:
@@ -45,12 +45,15 @@ async def get_current_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Token ungültig: {e}",
-        )
+        ) from e
+
+
+CurrentUser = Annotated[dict[str, Any], Depends(get_current_user)]
 
 
 def require_role(*roles: str):
     """Dependency: require user to have one of the given roles."""
-    async def _check(user: dict = Depends(get_current_user)):
+    async def _check(user: CurrentUser):
         user_roles = user.get("realm_access", {}).get("roles", [])
         if not any(r in user_roles for r in roles):
             raise HTTPException(

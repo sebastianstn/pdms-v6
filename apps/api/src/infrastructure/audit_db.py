@@ -1,6 +1,6 @@
 """pgAudit config and application-level audit logging."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -28,6 +28,6 @@ async def log_action(
         resource_id=resource_id,
         details=details or {},
         ip_address=ip_address,
-        created_at=datetime.now(timezone.utc),
+        created_at=datetime.now(UTC),
     )
     session.add(entry)

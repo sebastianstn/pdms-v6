@@ -6,8 +6,12 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.config import settings
 from src.api.middleware import AuditMiddleware
+from src.api.v1.audit import router as audit_router
+from src.api.v1.patients import router as patients_router
+from src.api.v1.users import router as users_router
+from src.api.v1.vitals import router as vitals_router
+from src.config import settings
 
 logging.basicConfig(level=getattr(logging, settings.log_level.upper(), logging.INFO))
 logger = logging.getLogger("pdms")
@@ -45,12 +49,6 @@ app.add_middleware(
 async def health():
     return {"status": "ok", "service": "pdms-api", "environment": settings.environment}
 
-
-# Register routers
-from src.api.v1.patients import router as patients_router  # noqa: E402
-from src.api.v1.vitals import router as vitals_router  # noqa: E402
-from src.api.v1.users import router as users_router  # noqa: E402
-from src.api.v1.audit import router as audit_router  # noqa: E402
 
 app.include_router(patients_router, prefix="/api/v1", tags=["patients"])
 app.include_router(vitals_router, prefix="/api/v1", tags=["vitals"])
