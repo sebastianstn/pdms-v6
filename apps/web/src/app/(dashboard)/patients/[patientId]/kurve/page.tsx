@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useVitals } from "@/hooks/use-vitals";
 import { VitalChart } from "@/components/vitals/vital-chart";
-import { Card, CardHeader, CardContent, CardTitle, Spinner, Badge } from "@/components/ui";
+import { Card, CardHeader, CardContent, CardTitle, Spinner } from "@/components/ui";
 import { VITAL_LABELS } from "@/lib/constants";
 import { formatDateTime } from "@/lib/utils";
 
@@ -44,8 +44,8 @@ export default function KurvePage() {
                   key={range.hours}
                   onClick={() => setHours(range.hours)}
                   className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${hours === range.hours
-                      ? "bg-blue-600 text-white"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    ? "bg-blue-600 text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                     }`}
                 >
                   {range.label}
@@ -66,8 +66,8 @@ export default function KurvePage() {
                     key={param}
                     onClick={() => toggleParam(param)}
                     className={`px-2.5 py-1 text-xs rounded-full border transition-colors ${isActive
-                        ? "border-transparent text-white"
-                        : "border-slate-200 text-slate-500 hover:border-slate-300"
+                      ? "border-transparent text-white"
+                      : "border-slate-200 text-slate-500 hover:border-slate-300"
                       }`}
                     style={isActive ? { backgroundColor: meta.color } : undefined}
                   >
@@ -116,14 +116,14 @@ export default function KurvePage() {
                 const meta = VITAL_LABELS[param];
                 const latest = [...vitals]
                   .sort((a, b) => new Date(b.recorded_at).getTime() - new Date(a.recorded_at).getTime())
-                  .find((v) => (v as any)[param] != null);
-                const value = latest ? (latest as any)[param] : null;
+                  .find((v) => (v as unknown as Record<string, unknown>)[param] != null);
+                const value = latest ? (latest as unknown as Record<string, unknown>)[param] : null;
 
                 return (
                   <div key={param} className="text-center p-3 rounded-lg bg-slate-50">
                     <p className="text-xs text-slate-500">{meta.label}</p>
                     <p className="text-2xl font-bold mt-1" style={{ color: meta.color }}>
-                      {value ?? "—"}
+                      {value != null ? String(value) : "—"}
                     </p>
                     <p className="text-xs text-slate-400">{meta.unit}</p>
                     {latest && (

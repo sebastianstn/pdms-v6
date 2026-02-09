@@ -38,12 +38,18 @@ function formatXAxis(value: string) {
   }
 }
 
-function CustomTooltip({ active, payload, label }: any) {
+interface TooltipPayloadEntry {
+  dataKey: string;
+  value: number;
+  color: string;
+}
+
+function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: TooltipPayloadEntry[]; label?: string }) {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-white border border-slate-200 rounded-lg p-3 shadow-lg text-sm">
-      <p className="font-medium text-slate-700 mb-1">{formatDateTime(label)}</p>
-      {payload.map((entry: any) => {
+      <p className="font-medium text-slate-700 mb-1">{formatDateTime(label ?? "")}</p>
+      {payload.map((entry: TooltipPayloadEntry) => {
         const meta = VITAL_LABELS[entry.dataKey];
         return (
           <p key={entry.dataKey} style={{ color: entry.color }}>

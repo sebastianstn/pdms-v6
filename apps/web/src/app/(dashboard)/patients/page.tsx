@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { usePatients } from "@/hooks/use-patients";
+import Link from "next/link";
 import { PatientCard } from "@/components/patients/patient-card";
 
 export default function PatientsPage() {
@@ -18,12 +19,12 @@ export default function PatientsPage() {
                         {data ? `${data.total} Patienten` : "Wird geladen..."}
                     </p>
                 </div>
-                <a
+                <Link
                     href="/patients/new"
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
                 >
                     + Neuer Patient
-                </a>
+                </Link>
             </div>
 
             {/* Suchfeld */}

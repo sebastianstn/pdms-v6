@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { exchangeCode, saveTokens, parseJwt } from "@/lib/auth";
+import { exchangeCode, saveTokens } from "@/lib/auth";
 
 export default function CallbackPage() {
   const router = useRouter();

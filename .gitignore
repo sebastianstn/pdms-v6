@@ -51,3 +51,4 @@ docker/nginx/ssl/*.key
 
 # Turbo
 .turbo/
+apps/web/tsconfig.tsbuildinfo
