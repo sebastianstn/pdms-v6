@@ -20,15 +20,61 @@ export interface Patient {
   updated_at: string;
 }
 
+// ─── Insurance Types ──────────────────────────────────────────
+
+export type InsuranceType = "grundversicherung" | "zusatz" | "unfall" | "iv";
+
 export interface Insurance {
   id: string;
   patient_id: string;
   insurer_name: string;
   policy_number: string;
-  insurance_type: "grundversicherung" | "zusatz" | "unfall" | "iv";
+  insurance_type: InsuranceType;
   valid_from?: string;
   valid_until?: string;
+  franchise?: number;
+  kostengutsprache: boolean;
+  kostengutsprache_bis?: string;
+  garant?: string;
+  bvg_number?: string;
+  notes?: string;
 }
+
+export interface InsuranceCreate {
+  patient_id: string;
+  insurer_name: string;
+  policy_number: string;
+  insurance_type: InsuranceType;
+  valid_from?: string;
+  valid_until?: string;
+  franchise?: number;
+  kostengutsprache?: boolean;
+  kostengutsprache_bis?: string;
+  garant?: string;
+  bvg_number?: string;
+  notes?: string;
+}
+
+export interface InsuranceUpdate {
+  insurer_name?: string;
+  policy_number?: string;
+  insurance_type?: InsuranceType;
+  valid_from?: string;
+  valid_until?: string;
+  franchise?: number;
+  kostengutsprache?: boolean;
+  kostengutsprache_bis?: string;
+  garant?: string;
+  bvg_number?: string;
+  notes?: string;
+}
+
+export interface InsuranceMeta {
+  insurance_types: Record<string, string>;
+  garant_options: Record<string, string>;
+}
+
+// ─── Emergency Contact Types ──────────────────────────────────
 
 export interface EmergencyContact {
   id: string;
@@ -37,4 +83,103 @@ export interface EmergencyContact {
   relationship_type: string;
   phone: string;
   is_primary: boolean;
+  email?: string;
+  address?: string;
+  priority: number;
+  is_legal_representative: boolean;
+  is_key_person: boolean;
+  notes?: string;
 }
+
+export interface ContactCreate {
+  patient_id: string;
+  name: string;
+  relationship_type: string;
+  phone: string;
+  is_primary?: boolean;
+  email?: string;
+  address?: string;
+  priority?: number;
+  is_legal_representative?: boolean;
+  is_key_person?: boolean;
+  notes?: string;
+}
+
+export interface ContactUpdate {
+  name?: string;
+  relationship_type?: string;
+  phone?: string;
+  is_primary?: boolean;
+  email?: string;
+  address?: string;
+  priority?: number;
+  is_legal_representative?: boolean;
+  is_key_person?: boolean;
+  notes?: string;
+}
+
+// ─── Medical Provider Types ───────────────────────────────────
+
+export type ProviderType =
+  | "hausarzt"
+  | "zuweiser"
+  | "apotheke"
+  | "spitex"
+  | "physiotherapie"
+  | "spezialist";
+
+export const PROVIDER_TYPE_LABELS: Record<ProviderType, string> = {
+  hausarzt: "Hausarzt",
+  zuweiser: "Zuweiser",
+  apotheke: "Apotheke",
+  spitex: "Spitex",
+  physiotherapie: "Physiotherapie",
+  spezialist: "Spezialist",
+};
+
+export interface MedicalProvider {
+  id: string;
+  patient_id: string;
+  provider_type: ProviderType;
+  name: string;
+  contact_person?: string;
+  phone?: string;
+  email?: string;
+  hin_email?: string;
+  gln_number?: string;
+  address?: string;
+  speciality?: string;
+  notes?: string;
+}
+
+export interface ProviderCreate {
+  patient_id: string;
+  provider_type: ProviderType;
+  name: string;
+  contact_person?: string;
+  phone?: string;
+  email?: string;
+  hin_email?: string;
+  gln_number?: string;
+  address?: string;
+  speciality?: string;
+  notes?: string;
+}
+
+export interface ProviderUpdate {
+  provider_type?: ProviderType;
+  name?: string;
+  contact_person?: string;
+  phone?: string;
+  email?: string;
+  hin_email?: string;
+  gln_number?: string;
+  address?: string;
+  speciality?: string;
+  notes?: string;
+}
+
+export interface ProviderMeta {
+  provider_types: Record<string, string>;
+}
+

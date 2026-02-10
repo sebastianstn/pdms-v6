@@ -110,7 +110,7 @@ services:
   # ─── BACKEND ─────────────────────────
   api:
     build:
-      context: ../apps/api
+      context: ../backend
       dockerfile: Dockerfile
     container_name: pdms-api
     restart: unless-stopped
@@ -129,11 +129,11 @@ services:
       KEYCLOAK_CLIENT_SECRET: ${KC_API_SECRET:-dev-secret}
       VALKEY_URL: redis://valkey:6379/0
       RABBITMQ_URL: amqp://pdms:${RABBITMQ_PASSWORD:-pdms_rabbit_2026}@rabbitmq:5672/pdms
-      CORS_ORIGINS: '["http://localhost:3000"]'
+      CORS_ORIGINS: '["http://localhost:3000","http://192.168.1.4:3000","http://localhost:8090"]'
       LOG_LEVEL: DEBUG
       ENVIRONMENT: development
     volumes:
-      - ../apps/api/src:/app/src
+      - ../backend/src:/app/src
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health || exit 1"]
       interval: 10s
@@ -155,7 +155,7 @@ services:
   # ─── FRONTEND ────────────────────────
   web:
     build:
-      context: ../apps/web
+      context: ../frontend
       dockerfile: Dockerfile.dev
     container_name: pdms-web
     restart: unless-stopped
@@ -163,14 +163,18 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
-      NEXT_PUBLIC_WS_URL: ws://localhost:8000/ws
+      # Do NOT set NEXT_PUBLIC_API_URL — relative /api/v1 goes through Next.js rewrites
+      # Do NOT set NEXT_PUBLIC_WS_URL — websocket uses same host via rewrites
       NEXT_PUBLIC_KC_URL: http://localhost:8080
       NEXT_PUBLIC_KC_REALM: pdms-home-spital
       NEXT_PUBLIC_KC_CLIENT: pdms-web
+      NEXT_PUBLIC_DEV_AUTH_BYPASS: "true"
     volumes:
-      - ../apps/web/src:/app/src
-      - ../apps/web/public:/app/public
+      - ../frontend/src:/app/src
+      - ../frontend/public:/app/public
+      - ../frontend/tsconfig.json:/app/tsconfig.json
+      - ../frontend/next.config.ts:/app/next.config.ts
+      - ../packages:/app/packages
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:3000 || exit 1"]
       interval: 10s

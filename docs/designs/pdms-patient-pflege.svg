@@ -1,0 +1,594 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <defs>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.08"/>
+    </filter>
+    <filter id="shadowSm" x="-1%" y="-1%" width="102%" height="102%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.06"/>
+    </filter>
+    <linearGradient id="sidebarGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    <linearGradient id="violetGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="photoOverlay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="roseGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="100%" stop-color="#e11d48"/>
+    </linearGradient>
+  </defs>
+
+  <!-- BACKGROUND -->
+  <rect width="1440" height="900" fill="#f1f5f9"/>
+
+  <!-- ═══════════ SIDEBAR ═══════════ -->
+  <rect x="0" y="0" width="72" height="900" fill="url(#sidebarGrad)"/>
+  <rect x="16" y="16" width="40" height="40" rx="12" fill="url(#accentGrad)"/>
+  <path d="M28 26 L36 20 L44 26 L44 36 L28 36 Z" fill="none" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
+  <line x1="36" y1="29" x2="36" y2="33" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="34" y1="31" x2="38" y2="31" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+  <rect x="22" y="92" width="28" height="3" rx="1.5" fill="#64748b"/>
+  <rect x="22" y="98" width="28" height="3" rx="1.5" fill="#64748b"/>
+  <rect x="22" y="104" width="18" height="3" rx="1.5" fill="#64748b"/>
+  <rect x="10" y="135" width="52" height="44" rx="12" fill="#0891b2" opacity="0.2"/>
+  <circle cx="36" cy="155" r="10" fill="none" stroke="#06b6d4" stroke-width="1.5"/>
+  <circle cx="36" cy="152" r="4" fill="none" stroke="#06b6d4" stroke-width="1.5"/>
+  <path d="M28 163 Q36 158 44 163" fill="none" stroke="#06b6d4" stroke-width="1.5"/>
+  <rect x="4" y="145" width="3" height="24" rx="1.5" fill="#06b6d4"/>
+  <path d="M24 210 L30 210 L33 200 L36 218 L39 206 L42 210 L48 210" fill="none" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="28" y="250" width="16" height="22" rx="4" fill="none" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="32" y1="256" x2="40" y2="256" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="32" y1="261" x2="38" y2="261" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="32" y1="266" x2="40" y2="266" stroke="#64748b" stroke-width="1.5"/>
+  <rect x="28" y="300" width="16" height="16" rx="3" fill="none" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="28" y1="306" x2="44" y2="306" stroke="#64748b" stroke-width="1.5"/>
+  <circle cx="34" cy="311" r="1.5" fill="#64748b"/>
+  <circle cx="39" cy="311" r="1.5" fill="#64748b"/>
+  <rect x="28" y="346" width="14" height="10" rx="2" fill="none" stroke="#64748b" stroke-width="1.5"/>
+  <path d="M42 348 L48 344 L48 358 L42 354" fill="none" stroke="#64748b" stroke-width="1.5" stroke-linejoin="round"/>
+  <circle cx="36" cy="860" r="10" fill="none" stroke="#475569" stroke-width="1.5"/>
+  <circle cx="36" cy="860" r="3" fill="none" stroke="#475569" stroke-width="1.5"/>
+
+  <!-- ═══════════ TOP HEADER ═══════════ -->
+  <rect x="72" y="0" width="1368" height="56" fill="url(#headerGrad)" filter="url(#shadowSm)"/>
+  <text x="96" y="24" font-size="11" fill="#94a3b8">PDMS</text>
+  <text x="131" y="24" font-size="11" fill="#cbd5e1">/</text>
+  <text x="140" y="24" font-size="11" fill="#94a3b8">Home-Spital</text>
+  <text x="204" y="24" font-size="11" fill="#cbd5e1">/</text>
+  <text x="213" y="24" font-size="11" fill="#94a3b8">Dossier</text>
+  <text x="257" y="24" font-size="11" fill="#cbd5e1">/</text>
+  <text x="266" y="24" font-size="11" fill="#0f172a" font-weight="600">Pflege</text>
+  <text x="96" y="45" font-size="16" font-weight="700" fill="#0f172a">Patienten-Dossier</text>
+  <rect x="260" y="30" width="80" height="24" rx="8" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="270" y="46" font-size="10" fill="#64748b">← Zurück</text>
+  <rect x="680" y="12" width="280" height="32" rx="16" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <circle cx="698" cy="28" r="7" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="703" y1="33" x2="707" y2="37" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="716" y="32" font-size="11" fill="#94a3b8">Suchen...</text>
+  <g transform="translate(1020, 14)">
+    <rect width="32" height="32" rx="10" fill="#fef2f2"/>
+    <path d="M16 8 Q16 4 16 8 Q10 10 10 16 L10 19 L22 19 L22 16 Q22 10 16 8Z" fill="none" stroke="#ef4444" stroke-width="1.3"/>
+    <line x1="13" y1="19" x2="19" y2="19" stroke="#ef4444" stroke-width="1.3"/>
+    <circle cx="23" cy="8" r="4" fill="#ef4444"/>
+    <text x="21.5" y="11" font-size="7" fill="white" font-weight="700">3</text>
+  </g>
+  <rect x="1064" y="16" width="36" height="26" rx="8" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="1073" y="33" font-size="10" font-weight="600" fill="#64748b">DE</text>
+  <g transform="translate(1116, 10)">
+    <rect width="200" height="36" rx="18" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <circle cx="20" cy="18" r="14" fill="url(#accentGrad)"/>
+    <text x="15" y="22" font-size="11" font-weight="700" fill="white">DR</text>
+    <text x="42" y="15" font-size="11" font-weight="600" fill="#0f172a">Dr. M. Weber</text>
+    <text x="42" y="28" font-size="9" fill="#94a3b8">Oberärztin · Home-Spital</text>
+  </g>
+
+  <!-- ═══════════ PATIENT HEADER BAND ═══════════ -->
+  <rect x="72" y="56" width="1368" height="130" fill="white" filter="url(#shadow)"/>
+  <rect x="108" y="72" width="86" height="100" rx="16" fill="#cbd5e1"/>
+  <circle cx="151" cy="104" r="18" fill="#94a3b8"/>
+  <path d="M126 140 Q151 124 176 140" fill="#94a3b8"/>
+  <rect x="108" y="72" width="86" height="100" rx="16" fill="url(#photoOverlay)"/>
+  <g transform="translate(214, 80)">
+    <circle cx="10" cy="16" r="7" fill="none" stroke="#3b82f6" stroke-width="2"/>
+    <line x1="15" y1="11" x2="21" y2="5" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+    <line x1="17" y1="5" x2="21" y2="5" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+    <line x1="21" y1="5" x2="21" y2="9" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+    <text x="32" y="8" font-size="11" fill="#94a3b8">Patient</text>
+    <text x="32" y="30" font-size="22" font-weight="800" fill="#0f172a" letter-spacing="-0.5">König, Andreas</text>
+  </g>
+  <g transform="translate(214, 120)">
+    <rect width="160" height="36" rx="10" fill="#f8fafc"/>
+    <text x="12" y="14" font-size="9" fill="#94a3b8">Alter</text>
+    <text x="12" y="28" font-size="14" font-weight="700" fill="#0f172a">67 Jahre</text>
+    <text x="80" y="14" font-size="9" fill="#94a3b8">Geburtsdatum</text>
+    <text x="80" y="28" font-size="12" font-weight="600" fill="#0f172a">14.03.1958</text>
+  </g>
+  <line x1="400" y1="80" x2="400" y2="162" stroke="#e2e8f0" stroke-width="1"/>
+  <g transform="translate(420, 80)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">AHV-Nummer</text>
+    <rect x="0" y="20" width="200" height="32" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <rect x="10" y="28" width="16" height="16" rx="2" fill="#dc2626"/>
+    <line x1="14" y1="36" x2="22" y2="36" stroke="white" stroke-width="2"/>
+    <line x1="18" y1="32" x2="18" y2="40" stroke="white" stroke-width="2"/>
+    <text x="32" y="42" font-size="13" font-weight="700" fill="#0f172a" letter-spacing="0.5">756.1234.5678.90</text>
+  </g>
+  <g transform="translate(420, 130)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Versicherung</text>
+    <text x="0" y="28" font-size="12" font-weight="600" fill="#0f172a">CSS · Grundvers. + Zusatz</text>
+  </g>
+  <line x1="648" y1="80" x2="648" y2="162" stroke="#e2e8f0" stroke-width="1"/>
+  <g transform="translate(668, 80)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Home-Spital Aufnahme</text>
+    <rect x="0" y="20" width="170" height="32" rx="8" fill="#ecfeff"/>
+    <text x="12" y="42" font-size="12" font-weight="700" fill="#0891b2">05.02.2026</text>
+    <text x="108" y="42" font-size="10" fill="#64748b">Tag 5</text>
+  </g>
+  <g transform="translate(668, 130)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Adresse</text>
+    <text x="0" y="28" font-size="11" font-weight="500" fill="#0f172a">🏠 Rue de la Gare 12, 1530 Payerne</text>
+  </g>
+  <line x1="880" y1="80" x2="880" y2="162" stroke="#e2e8f0" stroke-width="1"/>
+  <g transform="translate(900, 80)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Behandelnde Ärztin</text>
+    <rect x="0" y="20" width="160" height="36" rx="10" fill="#f8fafc"/>
+    <circle cx="18" cy="38" r="12" fill="url(#accentGrad)"/>
+    <text x="13" y="42" font-size="9" font-weight="700" fill="white">MW</text>
+    <text x="36" y="34" font-size="10" font-weight="600" fill="#0f172a">Dr. M. Weber</text>
+    <text x="36" y="46" font-size="8" fill="#94a3b8">Innere Medizin</text>
+  </g>
+  <g transform="translate(900, 130)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Hausarzt</text>
+    <text x="0" y="28" font-size="11" font-weight="500" fill="#0f172a">Dr. P. Favre · Payerne</text>
+  </g>
+  <line x1="1098" y1="80" x2="1098" y2="162" stroke="#e2e8f0" stroke-width="1"/>
+  <g transform="translate(1118, 76)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">REA-Status</text>
+    <rect x="0" y="20" width="130" height="46" rx="12" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+    <text x="14" y="44" font-size="20" font-weight="900" fill="#059669">REA</text>
+    <text x="70" y="44" font-size="16" font-weight="800" fill="#059669">FULL</text>
+    <text x="14" y="58" font-size="8" fill="#64748b">Vollständige Reanimation</text>
+  </g>
+  <g transform="translate(1260, 76)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Verfügung</text>
+    <rect x="0" y="20" width="130" height="46" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <rect x="12" y="30" width="20" height="26" rx="4" fill="none" stroke="#64748b" stroke-width="1.3"/>
+    <line x1="16" y1="36" x2="28" y2="36" stroke="#64748b" stroke-width="1"/>
+    <line x1="16" y1="40" x2="26" y2="40" stroke="#64748b" stroke-width="1"/>
+    <line x1="16" y1="44" x2="28" y2="44" stroke="#64748b" stroke-width="1"/>
+    <text x="40" y="40" font-size="10" font-weight="600" fill="#0f172a">Vorhanden</text>
+    <text x="40" y="52" font-size="8" fill="#94a3b8">12.01.2026</text>
+  </g>
+  <rect x="108" y="168" width="80" height="18" rx="6" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+  <text x="115" y="180" font-size="8" font-weight="700" fill="#dc2626">⚠ Penicillin</text>
+  <rect x="194" y="168" width="56" height="18" rx="6" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="202" y="180" font-size="8" font-weight="600" fill="#92400e">Latex</text>
+  <text x="260" y="180" font-size="8" fill="#94a3b8">|</text>
+  <rect x="272" y="168" width="100" height="18" rx="6" fill="#fef2f2"/>
+  <text x="282" y="180" font-size="8" font-weight="600" fill="#dc2626">Blutgruppe: A Rh+</text>
+
+  <!-- ═══════════ TAB NAV — "Pflege" ACTIVE ═══════════ -->
+  <rect x="72" y="192" width="1368" height="44" fill="white"/>
+  <line x1="72" y1="235" x2="1440" y2="235" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="120" y="219" font-size="12" font-weight="500" fill="#64748b">🏠 Übersicht</text>
+  <text x="236" y="219" font-size="12" font-weight="500" fill="#64748b">👤 Personalien</text>
+  <text x="370" y="219" font-size="12" font-weight="500" fill="#64748b">📈 Kurve</text>
+  <text x="460" y="219" font-size="12" font-weight="500" fill="#64748b">🩺 Arzt</text>
+  <!-- Pflege ACTIVE -->
+  <rect x="538" y="198" width="108" height="34" rx="8" fill="#ecfeff"/>
+  <text x="558" y="219" font-size="12" font-weight="700" fill="#0891b2">💊 Pflege</text>
+  <rect x="562" y="232" width="56" height="3" rx="1.5" fill="#06b6d4"/>
+  <text x="674" y="219" font-size="12" font-weight="500" fill="#64748b">📅 Termine</text>
+  <text x="770" y="219" font-size="12" font-weight="500" fill="#64748b">⚖️ Rechtliche</text>
+  <!-- Actions -->
+  <rect x="1100" y="200" width="120" height="30" rx="8" fill="url(#greenGrad)"/>
+  <text x="1112" y="219" font-size="10" font-weight="600" fill="white">+ Pflegeeintrag</text>
+  <rect x="1228" y="200" width="100" height="30" rx="8" fill="url(#violetGrad)"/>
+  <text x="1240" y="219" font-size="10" font-weight="600" fill="white">📋 Assessment</text>
+  <rect x="1336" y="200" width="84" height="30" rx="8" fill="url(#accentGrad)"/>
+  <text x="1346" y="219" font-size="10" font-weight="600" fill="white">🔄 Schichtüberg.</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- ██ CONTENT — PFLEGE                                           -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+
+  <!-- ─── Schicht-Banner (full width) ─── -->
+  <rect x="92" y="248" width="1328" height="50" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="108" y="256" width="36" height="36" rx="10" fill="url(#violetGrad)"/>
+  <text x="118" y="278" font-size="14" fill="white">🌅</text>
+  <text x="156" y="270" font-size="12" font-weight="700" fill="#0f172a">Aktuelle Schicht: Frühdienst</text>
+  <text x="370" y="270" font-size="10" fill="#64748b">07:00 – 15:30 · 09.02.2026</text>
+  <!-- Zuständige Pflege -->
+  <text x="580" y="270" font-size="10" fill="#94a3b8">Zuständig:</text>
+  <circle cx="648" cy="266" r="10" fill="url(#violetGrad)"/>
+  <text x="642" y="270" font-size="8" font-weight="700" fill="white">KB</text>
+  <text x="664" y="270" font-size="10" font-weight="600" fill="#0f172a">K. Bühler</text>
+  <text x="730" y="270" font-size="10" fill="#94a3b8">dipl. Pflegefachfrau</text>
+  <!-- Nächster Besuch -->
+  <rect x="1188" y="256" width="220" height="36" rx="10" fill="#ecfeff" stroke="#a5f3fc" stroke-width="1"/>
+  <text x="1202" y="274" font-size="9" fill="#0891b2" font-weight="600">📅 Nächster Hausbesuch: 18:00</text>
+  <text x="1202" y="286" font-size="8" fill="#94a3b8">S. Moret · Ceftriaxon i.v. + Vitals</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- LEFT COL: Pflegeplanung + Pflegediagnosen  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <rect x="92" y="310" width="360" height="574" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="92" y="310" width="360" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="92" y="332" width="360" height="14" fill="#f8fafc"/>
+  <text x="116" y="334" font-size="11" font-weight="700" fill="#0f172a">📋 Pflegeplanung</text>
+  <rect x="360" y="320" width="76" height="20" rx="6" fill="url(#greenGrad)"/>
+  <text x="368" y="334" font-size="8" font-weight="600" fill="white">+ Diagnose</text>
+
+  <!-- Pflegediagnose 1 -->
+  <rect x="108" y="354" width="328" height="88" rx="10" fill="#fef2f2"/>
+  <rect x="114" y="360" width="4" height="76" rx="2" fill="#ef4444"/>
+  <rect x="126" y="358" width="56" height="16" rx="4" fill="#ef4444"/>
+  <text x="132" y="370" font-size="7" font-weight="700" fill="white">Priorität 1</text>
+  <text x="190" y="370" font-size="10" font-weight="700" fill="#0f172a">Infektionsgefahr</text>
+  <text x="126" y="388" font-size="8" font-weight="600" fill="#64748b">Ätiologie:</text>
+  <text x="178" y="388" font-size="8" fill="#334155">i.v. Zugang, Pneumonie, reduzierte Immunabwehr</text>
+  <text x="126" y="402" font-size="8" font-weight="600" fill="#64748b">Ziel:</text>
+  <text x="148" y="402" font-size="8" fill="#334155">Keine lokalen Infektionszeichen am Zugang. CRP fallend.</text>
+  <text x="126" y="416" font-size="8" font-weight="600" fill="#059669">Massnahmen:</text>
+  <text x="196" y="416" font-size="8" fill="#334155">Zugang-Kontrolle 1x/d, Verbandswechsel, Temp-Monitoring</text>
+  <text x="126" y="432" font-size="8" fill="#094a3b8">Evaluation: Täglich · Nächste: 10.02. morgens</text>
+  <rect x="384" y="358" width="44" height="16" rx="4" fill="#f0fdf4"/>
+  <text x="390" y="370" font-size="7" font-weight="600" fill="#059669">Aktiv ✓</text>
+
+  <!-- Pflegediagnose 2 -->
+  <rect x="108" y="450" width="328" height="80" rx="10" fill="#fffbeb"/>
+  <rect x="114" y="456" width="4" height="68" rx="2" fill="#f59e0b"/>
+  <rect x="126" y="454" width="56" height="16" rx="4" fill="#f59e0b"/>
+  <text x="132" y="466" font-size="7" font-weight="700" fill="white">Priorität 2</text>
+  <text x="190" y="466" font-size="10" font-weight="700" fill="#0f172a">Sturzgefahr</text>
+  <text x="126" y="484" font-size="8" font-weight="600" fill="#64748b">Ätiologie:</text>
+  <text x="178" y="484" font-size="8" fill="#334155">Alter 67J, allg. Schwäche, häusl. Umgebung</text>
+  <text x="126" y="498" font-size="8" font-weight="600" fill="#64748b">Ziel:</text>
+  <text x="148" y="498" font-size="8" fill="#334155">Kein Sturzereignis. Sichere Mobilisation im Haus.</text>
+  <text x="126" y="512" font-size="8" font-weight="600" fill="#059669">Massnahmen:</text>
+  <text x="196" y="512" font-size="8" fill="#334155">Morse-Score, Umgebungscheck, Hilfsmittelberatung</text>
+  <text x="126" y="524" font-size="8" fill="#94a3b8">Morse: 45 (mittl. Risiko) · Eval: 2x/Woche</text>
+
+  <!-- Pflegediagnose 3 -->
+  <rect x="108" y="538" width="328" height="72" rx="10" fill="#f8fafc"/>
+  <rect x="114" y="544" width="4" height="60" rx="2" fill="#94a3b8"/>
+  <rect x="126" y="542" width="56" height="16" rx="4" fill="#94a3b8"/>
+  <text x="132" y="554" font-size="7" font-weight="700" fill="white">Priorität 3</text>
+  <text x="190" y="554" font-size="10" font-weight="700" fill="#0f172a">Beeintr. Gasaustausch</text>
+  <text x="126" y="572" font-size="8" font-weight="600" fill="#64748b">Ätiologie:</text>
+  <text x="178" y="572" font-size="8" fill="#334155">Pneumonie re. Unterlappen</text>
+  <text x="126" y="586" font-size="8" font-weight="600" fill="#64748b">Ziel:</text>
+  <text x="148" y="586" font-size="8" fill="#334155">SpO₂ ≥ 94% ohne O₂. Produktiver Husten, Sekretolyse.</text>
+  <text x="126" y="600" font-size="8" font-weight="600" fill="#059669">Massnahmen:</text>
+  <text x="196" y="600" font-size="8" fill="#334155">SpO₂-Monitoring kont., Atemübungen, Lagerung</text>
+
+  <!-- Pflegediagnose 4 -->
+  <rect x="108" y="618" width="328" height="72" rx="10" fill="#f8fafc"/>
+  <rect x="114" y="624" width="4" height="60" rx="2" fill="#94a3b8"/>
+  <rect x="126" y="622" width="56" height="16" rx="4" fill="#94a3b8"/>
+  <text x="132" y="634" font-size="7" font-weight="700" fill="white">Priorität 4</text>
+  <text x="190" y="634" font-size="10" font-weight="700" fill="#0f172a">Selbstpflege-Defizit</text>
+  <text x="126" y="652" font-size="8" font-weight="600" fill="#64748b">Ätiologie:</text>
+  <text x="178" y="652" font-size="8" fill="#334155">Allg. Schwäche, i.v. Therapie</text>
+  <text x="126" y="666" font-size="8" font-weight="600" fill="#64748b">Ziel:</text>
+  <text x="148" y="666" font-size="8" fill="#334155">Grösstmögliche Selbstständigkeit. ADL ohne Hilfe bis Austritt.</text>
+  <text x="126" y="680" font-size="8" font-weight="600" fill="#059669">Massnahmen:</text>
+  <text x="196" y="680" font-size="8" fill="#334155">Unterstützung Körperpflege, Anleitung, Motivation</text>
+
+  <!-- Assessments Mini -->
+  <line x1="108" y1="700" x2="436" y2="700" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="116" y="718" font-size="10" font-weight="700" fill="#0f172a">📊 Assessments (Heute)</text>
+
+  <g transform="translate(108, 728)">
+    <rect width="76" height="46" rx="8" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#64748b">Schmerz NRS</text>
+    <text x="8" y="34" font-size="18" font-weight="800" fill="#059669">2</text>
+    <text x="22" y="34" font-size="9" fill="#94a3b8">/10</text>
+  </g>
+  <g transform="translate(192, 728)">
+    <rect width="76" height="46" rx="8" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#64748b">Braden</text>
+    <text x="8" y="34" font-size="18" font-weight="800" fill="#059669">19</text>
+    <text x="28" y="34" font-size="9" fill="#94a3b8">/23</text>
+  </g>
+  <g transform="translate(276, 728)">
+    <rect width="76" height="46" rx="8" fill="#fffbeb"/>
+    <text x="8" y="14" font-size="7" fill="#64748b">Morse</text>
+    <text x="8" y="34" font-size="18" font-weight="800" fill="#d97706">45</text>
+    <text x="28" y="34" font-size="7" fill="#d97706">mittl.</text>
+  </g>
+  <g transform="translate(360, 728)">
+    <rect width="76" height="46" rx="8" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#64748b">Ernährung</text>
+    <text x="8" y="34" font-size="18" font-weight="800" fill="#059669">1</text>
+    <text x="16" y="34" font-size="9" fill="#94a3b8">/7</text>
+  </g>
+
+  <!-- ADL row -->
+  <text x="116" y="798" font-size="10" font-weight="700" fill="#0f172a">🚶 ADL / Selbstständigkeit</text>
+  <rect x="108" y="808" width="328" height="68" rx="10" fill="#f8fafc"/>
+  <g transform="translate(120, 816)">
+    <text x="0" y="10" font-size="8" fill="#64748b">Körperpflege</text>
+    <rect x="80" y="2" width="60" height="12" rx="3" fill="#e2e8f0"/>
+    <rect x="80" y="2" width="45" height="12" rx="3" fill="url(#greenGrad)"/>
+    <text x="148" y="12" font-size="7" fill="#059669" font-weight="600">Teilw. selbst.</text>
+  </g>
+  <g transform="translate(120, 834)">
+    <text x="0" y="10" font-size="8" fill="#64748b">Mobilisation</text>
+    <rect x="80" y="2" width="60" height="12" rx="3" fill="#e2e8f0"/>
+    <rect x="80" y="2" width="50" height="12" rx="3" fill="url(#greenGrad)"/>
+    <text x="148" y="12" font-size="7" fill="#059669" font-weight="600">Im Haus selbst.</text>
+  </g>
+  <g transform="translate(120, 852)">
+    <text x="0" y="10" font-size="8" fill="#64748b">Ernährung</text>
+    <rect x="80" y="2" width="60" height="12" rx="3" fill="#e2e8f0"/>
+    <rect x="80" y="2" width="55" height="12" rx="3" fill="url(#greenGrad)"/>
+    <text x="148" y="12" font-size="7" fill="#059669" font-weight="600">Selbstständig</text>
+  </g>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- CENTER COL: Pflegebericht / Schichtprotokoll -->
+  <!-- ═══════════════════════════════════════════ -->
+  <rect x="464" y="310" width="520" height="574" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="464" y="310" width="520" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="464" y="332" width="520" height="14" fill="#f8fafc"/>
+  <text x="488" y="334" font-size="11" font-weight="700" fill="#0f172a">📝 Pflegebericht — Schichtprotokoll</text>
+  <rect x="870" y="320" width="98" height="20" rx="6" fill="url(#greenGrad)"/>
+  <text x="878" y="334" font-size="8" font-weight="600" fill="white">+ Neuer Eintrag</text>
+
+  <!-- Schicht-Filter -->
+  <rect x="480" y="354" width="56" height="20" rx="6" fill="url(#violetGrad)"/>
+  <text x="492" y="368" font-size="8" font-weight="600" fill="white">Früh ☀</text>
+  <rect x="540" y="354" width="56" height="20" rx="6" fill="#f1f5f9"/>
+  <text x="552" y="368" font-size="8" fill="#64748b">Spät 🌆</text>
+  <rect x="600" y="354" width="56" height="20" rx="6" fill="#f1f5f9"/>
+  <text x="612" y="368" font-size="8" fill="#64748b">Nacht 🌙</text>
+  <rect x="660" y="354" width="40" height="20" rx="6" fill="#f1f5f9"/>
+  <text x="670" y="368" font-size="8" fill="#64748b">Alle</text>
+
+  <!-- Timeline line -->
+  <line x1="498" y1="390" x2="498" y2="870" stroke="#e2e8f0" stroke-width="2"/>
+
+  <!-- Entry 1: Morgen-Assessment -->
+  <circle cx="498" cy="402" r="6" fill="url(#violetGrad)"/>
+  <text x="498" y="405" font-size="7" font-weight="700" fill="white" text-anchor="middle">1</text>
+  <rect x="514" y="388" width="454" height="76" rx="10" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="530" y="406" font-size="10" font-weight="700" fill="#0f172a">07:00 — Morgen-Assessment</text>
+  <rect x="710" y="394" width="64" height="16" rx="4" fill="#8b5cf6"/>
+  <text x="718" y="406" font-size="7" font-weight="600" fill="white">Assessment</text>
+  <text x="908" y="406" font-size="8" fill="#94a3b8">K. Bühler</text>
+  <text x="530" y="422" font-size="9" fill="#334155">Patient wach, orientiert x4. Nacht ruhig geschlafen (Pat.-Angabe).</text>
+  <text x="530" y="436" font-size="9" fill="#334155">Leichter produktiver Husten. Appetit besser. Kein Schwindel.</text>
+  <text x="530" y="450" font-size="9" fill="#334155">Schmerz NRS 2/10 (Thorax bei Husten). Haut warm, trocken.</text>
+  <text x="530" y="460" font-size="7" fill="#94a3b8">📎 Assessment-Bogen ausgefüllt</text>
+
+  <!-- Entry 2: Vitalzeichen + i.v. -->
+  <circle cx="498" cy="482" r="6" fill="url(#greenGrad)"/>
+  <text x="498" y="485" font-size="7" font-weight="700" fill="white" text-anchor="middle">2</text>
+  <rect x="514" y="470" width="454" height="66" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="530" y="488" font-size="10" font-weight="700" fill="#0f172a">07:15 — Vitalzeichen &amp; i.v. Therapie</text>
+  <rect x="750" y="476" width="80" height="16" rx="4" fill="#10b981"/>
+  <text x="758" y="488" font-size="7" font-weight="600" fill="white">Intervention</text>
+  <text x="908" y="488" font-size="8" fill="#94a3b8">K. Bühler</text>
+  <text x="530" y="504" font-size="9" fill="#334155">SpO₂ 96%, HR 78, BD 126/80, Temp 37.8°C, AF 16/min.</text>
+  <text x="530" y="518" font-size="9" fill="#334155">i.v. Zugang li. Unterarm: o.B., kein Erythem, Verband trocken. Ceftriaxon 2g i.v. über 30 Min.</text>
+  <text x="530" y="530" font-size="7" fill="#94a3b8">📎 Foto i.v.-Stelle dokumentiert</text>
+
+  <!-- Entry 3: Selbstmedikation -->
+  <circle cx="498" cy="552" r="6" fill="url(#accentGrad)"/>
+  <text x="498" y="555" font-size="7" font-weight="700" fill="white" text-anchor="middle">3</text>
+  <rect x="514" y="540" width="454" height="52" rx="10" fill="#ecfeff" stroke="#a5f3fc" stroke-width="1"/>
+  <text x="530" y="558" font-size="10" font-weight="700" fill="#0f172a">07:30 — Medikamenten-Überwachung</text>
+  <rect x="760" y="546" width="58" height="16" rx="4" fill="#06b6d4"/>
+  <text x="768" y="558" font-size="7" font-weight="600" fill="white">Medikation</text>
+  <text x="908" y="558" font-size="8" fill="#94a3b8">App-Meld.</text>
+  <text x="530" y="574" font-size="9" fill="#334155">Patient bestätigt via App: Ramipril 5mg, Metformin 850mg, Pantoprazol 40mg eingenommen.</text>
+  <text x="530" y="586" font-size="7" fill="#0891b2">✓ Selbstmedikation bestätigt · Keine Nebenwirkungen gemeldet</text>
+
+  <!-- Entry 4: Enoxaparin -->
+  <circle cx="498" cy="610" r="6" fill="url(#greenGrad)"/>
+  <text x="498" y="613" font-size="7" font-weight="700" fill="white" text-anchor="middle">4</text>
+  <rect x="514" y="598" width="454" height="52" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="530" y="616" font-size="10" font-weight="700" fill="#0f172a">09:00 — Enoxaparin s.c.</text>
+  <rect x="688" y="604" width="80" height="16" rx="4" fill="#10b981"/>
+  <text x="696" y="616" font-size="7" font-weight="600" fill="white">Intervention</text>
+  <text x="908" y="616" font-size="8" fill="#94a3b8">S. Moret</text>
+  <text x="530" y="632" font-size="9" fill="#334155">Enoxaparin 40mg s.c. Bauch links. Injektionsstelle dokumentiert. Keine Hämatome.</text>
+  <text x="530" y="644" font-size="7" fill="#94a3b8">Rotation: Nächste → Bauch rechts (Abend 10.02.)</text>
+
+  <!-- Entry 5: Körperpflege -->
+  <circle cx="498" cy="668" r="6" fill="#94a3b8"/>
+  <text x="498" y="671" font-size="7" font-weight="700" fill="white" text-anchor="middle">5</text>
+  <rect x="514" y="656" width="454" height="44" rx="10" fill="#f8fafc"/>
+  <text x="530" y="674" font-size="10" font-weight="700" fill="#0f172a">09:30 — Körperpflege</text>
+  <rect x="660" y="662" width="68" height="16" rx="4" fill="#94a3b8"/>
+  <text x="668" y="674" font-size="7" font-weight="600" fill="white">Grundpflege</text>
+  <text x="908" y="674" font-size="8" fill="#94a3b8">K. Bühler</text>
+  <text x="530" y="690" font-size="9" fill="#334155">Patient hat sich mit Unterstützung gewaschen. Haut intakt. Mundpflege selbst.</text>
+
+  <!-- Entry 6: Wundkontrolle -->
+  <circle cx="498" cy="718" r="6" fill="url(#amberGrad)"/>
+  <text x="498" y="721" font-size="7" font-weight="700" fill="white" text-anchor="middle">6</text>
+  <rect x="514" y="706" width="454" height="52" rx="10" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="530" y="724" font-size="10" font-weight="700" fill="#0f172a">10:00 — i.v.-Zugangs-Kontrolle</text>
+  <rect x="720" y="712" width="76" height="16" rx="4" fill="#f59e0b"/>
+  <text x="728" y="724" font-size="7" font-weight="600" fill="white">Wundkontrolle</text>
+  <text x="908" y="724" font-size="8" fill="#94a3b8">K. Bühler</text>
+  <text x="530" y="742" font-size="9" fill="#334155">Einstichstelle li. Unterarm: kein Erythem, kein Ödem, Verband trocken. Verband erneuert.</text>
+  <text x="530" y="752" font-size="7" fill="#d97706">⚠ Zugang seit 05.02. — Nächster Wechsel spätestens 08.02. (empfohlen alle 72h)</text>
+
+  <!-- Entry 7: Atemübung -->
+  <circle cx="498" cy="774" r="6" fill="#94a3b8"/>
+  <text x="498" y="777" font-size="7" font-weight="700" fill="white" text-anchor="middle">7</text>
+  <rect x="514" y="762" width="454" height="44" rx="10" fill="#f8fafc"/>
+  <text x="530" y="780" font-size="10" font-weight="700" fill="#0f172a">11:00 — Atemtherapie / Mobilisation</text>
+  <rect x="750" y="768" width="64" height="16" rx="4" fill="#94a3b8"/>
+  <text x="758" y="780" font-size="7" font-weight="600" fill="white">Therapie</text>
+  <text x="908" y="780" font-size="8" fill="#94a3b8">K. Bühler</text>
+  <text x="530" y="796" font-size="9" fill="#334155">10 Min Atemübungen (Lippenbremse, Triflow). Pat. motiviert. Kurzer Spaziergang im Haus.</text>
+
+  <!-- Upcoming -->
+  <circle cx="498" cy="826" r="6" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <rect x="514" y="814" width="454" height="34" rx="10" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="530" y="835" font-size="10" font-weight="500" fill="#94a3b8">18:00 — Ceftriaxon i.v. Abend-Dosis + Vitalzeichen (Spätdienst S. Moret)</text>
+
+  <!-- Summary row -->
+  <rect x="480" y="858" width="488" height="22" rx="6" fill="#f8fafc"/>
+  <text x="496" y="873" font-size="8" fill="#94a3b8">Heute: </text>
+  <text x="532" y="873" font-size="8" font-weight="700" fill="#0f172a">7 Einträge</text>
+  <text x="600" y="873" font-size="8" fill="#94a3b8">· Interventionen: </text>
+  <text x="688" y="873" font-size="8" font-weight="700" fill="#10b981">4</text>
+  <text x="706" y="873" font-size="8" fill="#94a3b8">· Assessments: </text>
+  <text x="784" y="873" font-size="8" font-weight="700" fill="#8b5cf6">1</text>
+  <text x="800" y="873" font-size="8" fill="#94a3b8">· Alle signiert: </text>
+  <text x="876" y="873" font-size="8" font-weight="700" fill="#059669">✓</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- RIGHT COL: Wund/Zugang + Bilanz + Material -->
+  <!-- ═══════════════════════════════════════════ -->
+
+  <!-- CARD: i.v.-Zugang Management -->
+  <rect x="996" y="310" width="424" height="168" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="996" y="310" width="424" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="996" y="332" width="424" height="14" fill="#f8fafc"/>
+  <text x="1020" y="334" font-size="11" font-weight="700" fill="#0f172a">🩹 i.v.-Zugang &amp; Wundmanagement</text>
+
+  <!-- Zugang card -->
+  <rect x="1012" y="354" width="392" height="54" rx="10" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <rect x="1018" y="360" width="4" height="42" rx="2" fill="#f59e0b"/>
+  <text x="1030" y="370" font-size="10" font-weight="700" fill="#0f172a">Peripher-venöser Zugang (PVK)</text>
+  <rect x="1260" y="358" width="58" height="16" rx="4" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="1268" y="370" font-size="7" font-weight="600" fill="#d97706">⚠ Tag 5</text>
+  <rect x="1326" y="358" width="68" height="16" rx="4" fill="url(#amberGrad)"/>
+  <text x="1332" y="370" font-size="7" font-weight="600" fill="white">Wechsel planen</text>
+  <text x="1030" y="386" font-size="9" fill="#334155">Lokalisation: li. Unterarm (Vena cephalica) · 20G · Angelegt: 05.02.</text>
+  <text x="1030" y="400" font-size="9" fill="#64748b">Status: Durchgängig, kein Erythem · Letzter VW: heute 10:00</text>
+
+  <!-- Hautzustand -->
+  <rect x="1012" y="416" width="392" height="48" rx="10" fill="#f0fdf4"/>
+  <rect x="1018" y="422" width="4" height="36" rx="2" fill="#10b981"/>
+  <text x="1030" y="434" font-size="10" font-weight="600" fill="#0f172a">Hautzustand</text>
+  <rect x="1120" y="424" width="40" height="14" rx="4" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="1128" y="434" font-size="7" font-weight="600" fill="#059669">Intakt</text>
+  <text x="1030" y="450" font-size="9" fill="#64748b">Keine Dekubiti, keine Hautläsionen. Braden 19/23 = kein Risiko.</text>
+  <text x="1030" y="460" font-size="7" fill="#94a3b8">Letzte Kontrolle: heute 09:30 · Nächste: morgen</text>
+
+  <!-- CARD: Ernährung & Flüssigkeit -->
+  <rect x="996" y="490" width="424" height="172" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="996" y="490" width="424" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="996" y="512" width="424" height="14" fill="#f8fafc"/>
+  <text x="1020" y="514" font-size="11" font-weight="700" fill="#0f172a">🍽️ Ernährung, Flüssigkeit &amp; Ausscheidung</text>
+
+  <!-- Ernährung -->
+  <g transform="translate(1012, 534)">
+    <rect width="188" height="54" rx="10" fill="#f0fdf4"/>
+    <text x="10" y="16" font-size="8" font-weight="600" fill="#64748b">Ernährung</text>
+    <text x="10" y="32" font-size="12" font-weight="800" fill="#059669">Normalkost</text>
+    <text x="10" y="44" font-size="8" fill="#94a3b8">Diabetiker-Diät (zuckerarm)</text>
+  </g>
+  <g transform="translate(1208, 534)">
+    <rect width="196" height="54" rx="10" fill="#ecfeff"/>
+    <text x="10" y="16" font-size="8" font-weight="600" fill="#64748b">Appetit</text>
+    <text x="10" y="32" font-size="12" font-weight="800" fill="#0891b2">Gut</text>
+    <text x="10" y="44" font-size="8" fill="#94a3b8">Frühstück heute vollst. gegessen</text>
+  </g>
+
+  <!-- I/O Bilanz -->
+  <g transform="translate(1012, 596)">
+    <rect width="120" height="52" rx="10" fill="#ecfeff"/>
+    <text x="10" y="16" font-size="8" fill="#64748b">Einfuhr</text>
+    <text x="10" y="38" font-size="18" font-weight="800" fill="#0891b2">2840</text>
+    <text x="56" y="38" font-size="8" fill="#94a3b8">mL</text>
+  </g>
+  <g transform="translate(1140, 596)">
+    <rect width="120" height="52" rx="10" fill="#faf5ff"/>
+    <text x="10" y="16" font-size="8" fill="#64748b">Ausfuhr</text>
+    <text x="10" y="38" font-size="18" font-weight="800" fill="#7c3aed">2120</text>
+    <text x="56" y="38" font-size="8" fill="#94a3b8">mL</text>
+  </g>
+  <g transform="translate(1268, 596)">
+    <rect width="136" height="52" rx="10" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+    <text x="10" y="16" font-size="8" fill="#64748b">Bilanz</text>
+    <text x="10" y="38" font-size="18" font-weight="800" fill="#d97706">+720</text>
+    <text x="62" y="38" font-size="8" fill="#d97706">mL positiv</text>
+  </g>
+
+  <!-- CARD: Medikamenten-Verabreichung -->
+  <rect x="996" y="674" width="424" height="102" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="996" y="674" width="424" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="996" y="696" width="424" height="14" fill="#f8fafc"/>
+  <text x="1020" y="698" font-size="11" font-weight="700" fill="#0f172a">💉 Heutige Verabreichungen</text>
+
+  <rect x="1012" y="718" width="392" height="22" rx="4" fill="#f0fdf4"/>
+  <text x="1020" y="733" font-size="8" fill="#059669" font-weight="600">✓ 07:15</text>
+  <text x="1070" y="733" font-size="8" fill="#334155">Ceftriaxon 2g i.v. · K. Bühler</text>
+  <text x="1340" y="733" font-size="7" fill="#059669">Signiert ✓</text>
+
+  <rect x="1012" y="744" width="392" height="22" rx="4" fill="#f0fdf4"/>
+  <text x="1020" y="759" font-size="8" fill="#059669" font-weight="600">✓ 09:00</text>
+  <text x="1070" y="759" font-size="8" fill="#334155">Enoxaparin 40mg s.c. · S. Moret</text>
+  <text x="1340" y="759" font-size="7" fill="#059669">Signiert ✓</text>
+
+  <!-- CARD: Verbrauchsmaterial -->
+  <rect x="996" y="788" width="424" height="96" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="996" y="788" width="424" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="996" y="810" width="424" height="14" fill="#f8fafc"/>
+  <text x="1020" y="812" font-size="11" font-weight="700" fill="#0f172a">📦 Verbrauchsmaterial (Lager Zuhause)</text>
+
+  <g transform="translate(1012, 830)">
+    <rect width="96" height="40" rx="8" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#64748b">Infusionsets</text>
+    <text x="8" y="30" font-size="12" font-weight="700" fill="#059669">4</text>
+    <text x="22" y="30" font-size="8" fill="#94a3b8">vorhanden</text>
+  </g>
+  <g transform="translate(1116, 830)">
+    <rect width="96" height="40" rx="8" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#64748b">Handschuhe</text>
+    <text x="8" y="30" font-size="12" font-weight="700" fill="#059669">20</text>
+    <text x="26" y="30" font-size="8" fill="#94a3b8">Paar</text>
+  </g>
+  <g transform="translate(1220, 830)">
+    <rect width="96" height="40" rx="8" fill="#fffbeb"/>
+    <text x="8" y="14" font-size="7" fill="#64748b">Verbände</text>
+    <text x="8" y="30" font-size="12" font-weight="700" fill="#d97706">3</text>
+    <text x="18" y="30" font-size="8" fill="#d97706">⚠ nachbest.</text>
+  </g>
+  <g transform="translate(1324, 830)">
+    <rect width="84" height="40" rx="8" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#64748b">Spritzen</text>
+    <text x="8" y="30" font-size="12" font-weight="700" fill="#059669">8</text>
+    <text x="18" y="30" font-size="8" fill="#94a3b8">Stk.</text>
+  </g>
+
+  <!-- FOOTER -->
+  <rect x="72" y="892" width="1368" height="8" fill="#f8fafc"/>
+  <circle cx="88" cy="896" r="2" fill="#10b981"/>
+  <text x="94" y="898" font-size="7" fill="#94a3b8">System Online · Pflegedokumentation · ePA-konform · Alle Einträge signiert · 🔒 nDSG · LEP Nursing 3.4</text>
+  <text x="1380" y="898" font-size="7" fill="#94a3b8" text-anchor="end">PDMS Home-Spital v0.1.0 · Pflege · 09.02.2026 14:32</text>
+
+</svg>

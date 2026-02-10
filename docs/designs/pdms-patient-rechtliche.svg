@@ -1,0 +1,633 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1260" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <defs>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.08"/>
+    </filter>
+    <filter id="shadowSm" x="-1%" y="-1%" width="102%" height="102%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.06"/>
+    </filter>
+    <linearGradient id="sidebarGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    <linearGradient id="violetGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="photoOverlay" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="slateGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="indigoGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="tealGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#14b8a6"/>
+      <stop offset="100%" stop-color="#0d9488"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1440" height="1260" fill="#f1f5f9"/>
+
+  <!-- ═══════════ SIDEBAR ═══════════ -->
+  <rect x="0" y="0" width="72" height="1260" fill="url(#sidebarGrad)"/>
+  <rect x="16" y="16" width="40" height="40" rx="12" fill="url(#accentGrad)"/>
+  <path d="M28 26 L36 20 L44 26 L44 36 L28 36 Z" fill="none" stroke="white" stroke-width="1.8" stroke-linejoin="round"/>
+  <line x1="36" y1="29" x2="36" y2="33" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="34" y1="31" x2="38" y2="31" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+  <rect x="22" y="92" width="28" height="3" rx="1.5" fill="#64748b"/>
+  <rect x="22" y="98" width="28" height="3" rx="1.5" fill="#64748b"/>
+  <rect x="22" y="104" width="18" height="3" rx="1.5" fill="#64748b"/>
+  <rect x="10" y="135" width="52" height="44" rx="12" fill="#0891b2" opacity="0.2"/>
+  <circle cx="36" cy="155" r="10" fill="none" stroke="#06b6d4" stroke-width="1.5"/>
+  <circle cx="36" cy="152" r="4" fill="none" stroke="#06b6d4" stroke-width="1.5"/>
+  <path d="M28 163 Q36 158 44 163" fill="none" stroke="#06b6d4" stroke-width="1.5"/>
+  <rect x="4" y="145" width="3" height="24" rx="1.5" fill="#06b6d4"/>
+  <path d="M24 210 L30 210 L33 200 L36 218 L39 206 L42 210 L48 210" fill="none" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="28" y="250" width="16" height="22" rx="4" fill="none" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="32" y1="256" x2="40" y2="256" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="32" y1="261" x2="38" y2="261" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="32" y1="266" x2="40" y2="266" stroke="#64748b" stroke-width="1.5"/>
+  <rect x="28" y="300" width="16" height="16" rx="3" fill="none" stroke="#64748b" stroke-width="1.5"/>
+  <line x1="28" y1="306" x2="44" y2="306" stroke="#64748b" stroke-width="1.5"/>
+  <circle cx="34" cy="311" r="1.5" fill="#64748b"/>
+  <circle cx="39" cy="311" r="1.5" fill="#64748b"/>
+  <rect x="28" y="346" width="14" height="10" rx="2" fill="none" stroke="#64748b" stroke-width="1.5"/>
+  <path d="M42 348 L48 344 L48 358 L42 354" fill="none" stroke="#64748b" stroke-width="1.5" stroke-linejoin="round"/>
+  <circle cx="36" cy="1220" r="10" fill="none" stroke="#475569" stroke-width="1.5"/>
+  <circle cx="36" cy="1220" r="3" fill="none" stroke="#475569" stroke-width="1.5"/>
+
+  <!-- ═══════════ TOP HEADER ═══════════ -->
+  <rect x="72" y="0" width="1368" height="56" fill="url(#headerGrad)" filter="url(#shadowSm)"/>
+  <text x="96" y="24" font-size="11" fill="#94a3b8">PDMS</text>
+  <text x="131" y="24" font-size="11" fill="#cbd5e1">/</text>
+  <text x="140" y="24" font-size="11" fill="#94a3b8">Home-Spital</text>
+  <text x="204" y="24" font-size="11" fill="#cbd5e1">/</text>
+  <text x="213" y="24" font-size="11" fill="#94a3b8">Dossier</text>
+  <text x="257" y="24" font-size="11" fill="#cbd5e1">/</text>
+  <text x="266" y="24" font-size="11" fill="#0f172a" font-weight="600">Rechtliche</text>
+  <text x="96" y="45" font-size="16" font-weight="700" fill="#0f172a">Patienten-Dossier</text>
+  <rect x="260" y="30" width="80" height="24" rx="8" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="270" y="46" font-size="10" fill="#64748b">← Zurück</text>
+  <rect x="680" y="12" width="280" height="32" rx="16" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <circle cx="698" cy="28" r="7" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="703" y1="33" x2="707" y2="37" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="716" y="32" font-size="11" fill="#94a3b8">Suchen...</text>
+  <g transform="translate(1020, 14)">
+    <rect width="32" height="32" rx="10" fill="#fef2f2"/>
+    <path d="M16 8 Q16 4 16 8 Q10 10 10 16 L10 19 L22 19 L22 16 Q22 10 16 8Z" fill="none" stroke="#ef4444" stroke-width="1.3"/>
+    <line x1="13" y1="19" x2="19" y2="19" stroke="#ef4444" stroke-width="1.3"/>
+    <circle cx="23" cy="8" r="4" fill="#ef4444"/>
+    <text x="21.5" y="11" font-size="7" fill="white" font-weight="700">3</text>
+  </g>
+  <rect x="1064" y="16" width="36" height="26" rx="8" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="1073" y="33" font-size="10" font-weight="600" fill="#64748b">DE</text>
+  <g transform="translate(1116, 10)">
+    <rect width="200" height="36" rx="18" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <circle cx="20" cy="18" r="14" fill="url(#accentGrad)"/>
+    <text x="15" y="22" font-size="11" font-weight="700" fill="white">DR</text>
+    <text x="42" y="15" font-size="11" font-weight="600" fill="#0f172a">Dr. M. Weber</text>
+    <text x="42" y="28" font-size="9" fill="#94a3b8">Oberärztin · Home-Spital</text>
+  </g>
+
+  <!-- ═══════════ PATIENT HEADER BAND ═══════════ -->
+  <rect x="72" y="56" width="1368" height="130" fill="white" filter="url(#shadow)"/>
+  <rect x="108" y="72" width="86" height="100" rx="16" fill="#cbd5e1"/>
+  <circle cx="151" cy="104" r="18" fill="#94a3b8"/>
+  <path d="M126 140 Q151 124 176 140" fill="#94a3b8"/>
+  <rect x="108" y="72" width="86" height="100" rx="16" fill="url(#photoOverlay)"/>
+  <g transform="translate(214, 80)">
+    <circle cx="10" cy="16" r="7" fill="none" stroke="#3b82f6" stroke-width="2"/>
+    <line x1="15" y1="11" x2="21" y2="5" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+    <line x1="17" y1="5" x2="21" y2="5" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+    <line x1="21" y1="5" x2="21" y2="9" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+    <text x="32" y="8" font-size="11" fill="#94a3b8">Patient</text>
+    <text x="32" y="30" font-size="22" font-weight="800" fill="#0f172a" letter-spacing="-0.5">König, Andreas</text>
+  </g>
+  <g transform="translate(214, 120)">
+    <rect width="160" height="36" rx="10" fill="#f8fafc"/>
+    <text x="12" y="14" font-size="9" fill="#94a3b8">Alter</text>
+    <text x="12" y="28" font-size="14" font-weight="700" fill="#0f172a">67 Jahre</text>
+    <text x="80" y="14" font-size="9" fill="#94a3b8">Geburtsdatum</text>
+    <text x="80" y="28" font-size="12" font-weight="600" fill="#0f172a">14.03.1958</text>
+  </g>
+  <line x1="400" y1="80" x2="400" y2="162" stroke="#e2e8f0" stroke-width="1"/>
+  <g transform="translate(420, 80)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">AHV-Nummer</text>
+    <rect x="0" y="20" width="200" height="32" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <rect x="10" y="28" width="16" height="16" rx="2" fill="#dc2626"/>
+    <line x1="14" y1="36" x2="22" y2="36" stroke="white" stroke-width="2"/>
+    <line x1="18" y1="32" x2="18" y2="40" stroke="white" stroke-width="2"/>
+    <text x="32" y="42" font-size="13" font-weight="700" fill="#0f172a" letter-spacing="0.5">756.1234.5678.90</text>
+  </g>
+  <g transform="translate(420, 130)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Versicherung</text>
+    <text x="0" y="28" font-size="12" font-weight="600" fill="#0f172a">CSS · Grundvers. + Zusatz</text>
+  </g>
+  <line x1="648" y1="80" x2="648" y2="162" stroke="#e2e8f0" stroke-width="1"/>
+  <g transform="translate(668, 80)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Home-Spital Aufnahme</text>
+    <rect x="0" y="20" width="170" height="32" rx="8" fill="#ecfeff"/>
+    <text x="12" y="42" font-size="12" font-weight="700" fill="#0891b2">05.02.2026</text>
+    <text x="108" y="42" font-size="10" fill="#64748b">Tag 5</text>
+  </g>
+  <g transform="translate(668, 130)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Adresse</text>
+    <text x="0" y="28" font-size="11" font-weight="500" fill="#0f172a">🏠 Rue de la Gare 12, 1530 Payerne</text>
+  </g>
+  <line x1="880" y1="80" x2="880" y2="162" stroke="#e2e8f0" stroke-width="1"/>
+  <g transform="translate(900, 80)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Behandelnde Ärztin</text>
+    <rect x="0" y="20" width="160" height="36" rx="10" fill="#f8fafc"/>
+    <circle cx="18" cy="38" r="12" fill="url(#accentGrad)"/>
+    <text x="13" y="42" font-size="9" font-weight="700" fill="white">MW</text>
+    <text x="36" y="34" font-size="10" font-weight="600" fill="#0f172a">Dr. M. Weber</text>
+    <text x="36" y="46" font-size="8" fill="#94a3b8">Innere Medizin</text>
+  </g>
+  <g transform="translate(900, 130)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Hausarzt</text>
+    <text x="0" y="28" font-size="11" font-weight="500" fill="#0f172a">Dr. P. Favre · Payerne</text>
+  </g>
+  <line x1="1098" y1="80" x2="1098" y2="162" stroke="#e2e8f0" stroke-width="1"/>
+  <g transform="translate(1118, 76)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">REA-Status</text>
+    <rect x="0" y="20" width="130" height="46" rx="12" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+    <text x="14" y="44" font-size="20" font-weight="900" fill="#059669">REA</text>
+    <text x="70" y="44" font-size="16" font-weight="800" fill="#059669">FULL</text>
+    <text x="14" y="58" font-size="8" fill="#64748b">Vollständige Reanimation</text>
+  </g>
+  <g transform="translate(1260, 76)">
+    <text x="0" y="12" font-size="9" fill="#94a3b8">Verfügung</text>
+    <rect x="0" y="20" width="130" height="46" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <rect x="12" y="30" width="20" height="26" rx="4" fill="none" stroke="#64748b" stroke-width="1.3"/>
+    <line x1="16" y1="36" x2="28" y2="36" stroke="#64748b" stroke-width="1"/>
+    <line x1="16" y1="40" x2="26" y2="40" stroke="#64748b" stroke-width="1"/>
+    <line x1="16" y1="44" x2="28" y2="44" stroke="#64748b" stroke-width="1"/>
+    <text x="40" y="40" font-size="10" font-weight="600" fill="#0f172a">Vorhanden</text>
+    <text x="40" y="52" font-size="8" fill="#94a3b8">12.01.2026</text>
+  </g>
+  <rect x="108" y="168" width="80" height="18" rx="6" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+  <text x="115" y="180" font-size="8" font-weight="700" fill="#dc2626">⚠ Penicillin</text>
+  <rect x="194" y="168" width="56" height="18" rx="6" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="202" y="180" font-size="8" font-weight="600" fill="#92400e">Latex</text>
+  <text x="260" y="180" font-size="8" fill="#94a3b8">|</text>
+  <rect x="272" y="168" width="100" height="18" rx="6" fill="#fef2f2"/>
+  <text x="282" y="180" font-size="8" font-weight="600" fill="#dc2626">Blutgruppe: A Rh+</text>
+
+  <!-- ═══════════ TAB NAV ═══════════ -->
+  <rect x="72" y="192" width="1368" height="44" fill="white"/>
+  <line x1="72" y1="235" x2="1440" y2="235" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="120" y="219" font-size="12" font-weight="500" fill="#64748b">🏠 Übersicht</text>
+  <text x="236" y="219" font-size="12" font-weight="500" fill="#64748b">👤 Personalien</text>
+  <text x="370" y="219" font-size="12" font-weight="500" fill="#64748b">📈 Kurve</text>
+  <text x="460" y="219" font-size="12" font-weight="500" fill="#64748b">🩺 Arzt</text>
+  <text x="538" y="219" font-size="12" font-weight="500" fill="#64748b">💊 Pflege</text>
+  <text x="628" y="219" font-size="12" font-weight="500" fill="#64748b">📅 Termine</text>
+  <rect x="726" y="198" width="130" height="34" rx="8" fill="#ecfeff"/>
+  <text x="746" y="219" font-size="12" font-weight="700" fill="#0891b2">⚖️ Rechtliche</text>
+  <rect x="760" y="232" width="64" height="3" rx="1.5" fill="#06b6d4"/>
+  <rect x="1188" y="200" width="118" height="30" rx="8" fill="url(#greenGrad)"/>
+  <text x="1198" y="219" font-size="10" font-weight="600" fill="white">+ Dokument hochl.</text>
+  <rect x="1314" y="200" width="106" height="30" rx="8" fill="url(#slateGrad)"/>
+  <text x="1324" y="219" font-size="10" font-weight="600" fill="white">🔒 Audit-Log</text>
+
+  <!-- ═══════════ COMPLIANCE BANNER ═══════════ -->
+  <rect x="92" y="248" width="1328" height="50" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="108" y="256" width="36" height="36" rx="10" fill="url(#slateGrad)"/>
+  <text x="116" y="279" font-size="16" fill="white">⚖️</text>
+  <text x="156" y="268" font-size="12" font-weight="700" fill="#0f172a">Rechtlicher Status</text>
+  <rect x="306" y="256" width="108" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="316" y="271" font-size="7" font-weight="700" fill="#059669">✓ Urteilsfähig</text>
+  <rect x="420" y="256" width="118" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="430" y="271" font-size="7" font-weight="700" fill="#059669">✓ Pat.-Verfügung</text>
+  <rect x="544" y="256" width="102" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="554" y="271" font-size="7" font-weight="700" fill="#059669">✓ Vorsorgeauftrag</text>
+  <rect x="652" y="256" width="96" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="662" y="271" font-size="7" font-weight="700" fill="#059669">✓ Einwilligungen</text>
+  <rect x="754" y="256" width="90" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="764" y="271" font-size="7" font-weight="700" fill="#059669">✓ Mutm. Wille</text>
+  <rect x="850" y="256" width="90" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="860" y="271" font-size="7" font-weight="700" fill="#059669">✓ Pers. Wünsche</text>
+  <rect x="946" y="256" width="90" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="956" y="271" font-size="7" font-weight="700" fill="#059669">✓ Palliat. Plan</text>
+  <rect x="1042" y="256" width="100" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="1052" y="271" font-size="7" font-weight="700" fill="#059669">✓ Todesfall-Info</text>
+  <rect x="1270" y="254" width="138" height="38" rx="10" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="1284" y="272" font-size="11" font-weight="800" fill="#059669">Compliance: 100%</text>
+  <text x="1284" y="286" font-size="7" fill="#64748b">Alle Dokumente vollständig</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- ROW 1: Patientenverfügung | REA-Status | Vorsorgeauftrag       -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+
+  <!-- CARD: Patientenverfügung -->
+  <rect x="92" y="310" width="440" height="218" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="92" y="310" width="440" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="92" y="332" width="440" height="14" fill="#f8fafc"/>
+  <text x="116" y="334" font-size="11" font-weight="700" fill="#0f172a">📜 Patientenverfügung</text>
+  <rect x="404" y="320" width="112" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="414" y="335" font-size="8" font-weight="700" fill="#059669">✓ Gültig &amp; Aktuell</text>
+
+  <rect x="108" y="354" width="408" height="44" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <rect x="118" y="360" width="36" height="32" rx="8" fill="url(#greenGrad)"/>
+  <text x="126" y="376" font-size="8" fill="white" font-weight="700">PDF</text>
+  <text x="126" y="386" font-size="6" fill="white" opacity="0.8">4 S.</text>
+  <text x="164" y="374" font-size="10" font-weight="700" fill="#0f172a">Patientenverfügung_König_2026.pdf</text>
+  <text x="164" y="390" font-size="8" fill="#64748b">12.01.2026 · FMH-Vorlage · Notariell beglaubigt</text>
+  <rect x="450" y="366" width="54" height="18" rx="5" fill="#f1f5f9"/>
+  <text x="460" y="379" font-size="8" fill="#64748b">Öffnen ↗</text>
+
+  <text x="116" y="418" font-size="9" font-weight="700" fill="#0f172a">Wesentliche Festlegungen:</text>
+  <rect x="108" y="426" width="408" height="20" rx="5" fill="#f0fdf4"/>
+  <text x="120" y="440" font-size="8" fill="#334155">✓ Reanimation: </text>
+  <text x="191" y="440" font-size="8" font-weight="700" fill="#059669">JA — Vollständige Reanimation gewünscht</text>
+  <rect x="108" y="450" width="408" height="20" rx="5" fill="#f0fdf4"/>
+  <text x="120" y="464" font-size="8" fill="#334155">✓ Intensivmedizin: </text>
+  <text x="210" y="464" font-size="8" font-weight="600" fill="#334155">JA, zeitlich befristet (max. 14 Tage)</text>
+  <rect x="108" y="474" width="408" height="20" rx="5" fill="#fffbeb"/>
+  <text x="120" y="488" font-size="8" fill="#334155">⚠ Beatmung: </text>
+  <text x="190" y="488" font-size="8" font-weight="600" fill="#d97706">JA, nur kurzfristig (max. 7 Tage)</text>
+  <rect x="108" y="498" width="408" height="20" rx="5" fill="#f0fdf4"/>
+  <text x="120" y="512" font-size="8" fill="#334155">✗ Dialyse: </text>
+  <text x="175" y="512" font-size="8" font-weight="600" fill="#64748b">Nicht gewünscht</text>
+  <text x="116" y="526" font-size="7" fill="#94a3b8">Vertretungsberechtigte: Maria König (Ehefrau) · ZGB Art. 370–373</text>
+
+  <!-- CARD: REA-Status -->
+  <rect x="548" y="310" width="290" height="218" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="548" y="310" width="290" height="36" rx="14" fill="#f0fdf4"/>
+  <rect x="548" y="332" width="290" height="14" fill="#f0fdf4"/>
+  <text x="572" y="334" font-size="11" font-weight="700" fill="#059669">❤️ REA-Status</text>
+
+  <rect x="564" y="354" width="120" height="52" rx="14" fill="#f0fdf4" stroke="#10b981" stroke-width="2.5"/>
+  <text x="578" y="378" font-size="22" font-weight="900" fill="#059669">REA</text>
+  <text x="578" y="400" font-size="14" font-weight="800" fill="#059669">FULL</text>
+
+  <g transform="translate(698, 360)">
+    <text x="0" y="10" font-size="8" fill="#94a3b8">Festgelegt</text>
+    <text x="0" y="24" font-size="10" font-weight="700" fill="#0f172a">05.02.2026</text>
+    <text x="0" y="42" font-size="8" fill="#94a3b8">Besprochen mit</text>
+  </g>
+
+  <rect x="564" y="414" width="258" height="24" rx="6" fill="#f8fafc"/>
+  <text x="576" y="430" font-size="8" fill="#334155">Patient + Ehefrau + Dr. Weber (Aufnahme)</text>
+
+  <text x="576" y="458" font-size="8" font-weight="600" fill="#0f172a">Änderungshistorie:</text>
+  <rect x="564" y="466" width="258" height="20" rx="5" fill="#f8fafc"/>
+  <text x="576" y="480" font-size="7" fill="#64748b">05.02. 14:45 — REA FULL festgelegt · Keine Änd.</text>
+
+  <rect x="564" y="494" width="258" height="24" rx="6" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="576" y="510" font-size="7" fill="#d97706" font-weight="600">⚠ Bei Änderung sofort alle Beteiligten informieren!</text>
+
+  <!-- CARD: Vorsorgeauftrag -->
+  <rect x="854" y="310" width="566" height="218" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="854" y="310" width="566" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="854" y="332" width="566" height="14" fill="#f8fafc"/>
+  <text x="878" y="334" font-size="11" font-weight="700" fill="#0f172a">📋 Vorsorgeauftrag &amp; Vertretung (ZGB Art. 360)</text>
+  <rect x="1286" y="320" width="118" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="1296" y="335" font-size="8" font-weight="700" fill="#059669">✓ Hinterlegt KESB</text>
+
+  <!-- Primary -->
+  <rect x="870" y="354" width="260" height="64" rx="10" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+  <rect x="876" y="360" width="4" height="52" rx="2" fill="#ef4444"/>
+  <circle cx="900" cy="376" r="14" fill="#faf5ff"/>
+  <text x="894" y="380" font-size="9" font-weight="700" fill="#8b5cf6">MK</text>
+  <text x="920" y="372" font-size="10" font-weight="700" fill="#0f172a">Maria König</text>
+  <rect x="1012" y="362" width="44" height="14" rx="4" fill="#fef2f2"/>
+  <text x="1018" y="372" font-size="7" font-weight="700" fill="#dc2626">Primär</text>
+  <text x="920" y="388" font-size="8" fill="#64748b">Ehefrau · 📞 079 234 56 78</text>
+  <text x="920" y="402" font-size="8" fill="#334155">Personen- &amp; Vermögenssorge</text>
+  <text x="920" y="414" font-size="7" font-weight="600" fill="#ef4444">Medizinische Entscheidungsbefugnis</text>
+
+  <!-- Replacement -->
+  <rect x="1140" y="354" width="264" height="64" rx="10" fill="#f8fafc"/>
+  <rect x="1146" y="360" width="4" height="52" rx="2" fill="#94a3b8"/>
+  <circle cx="1170" cy="376" r="14" fill="#ecfeff"/>
+  <text x="1164" y="380" font-size="9" font-weight="700" fill="#0891b2">TK</text>
+  <text x="1190" y="372" font-size="10" font-weight="700" fill="#0f172a">Thomas König</text>
+  <rect x="1298" y="362" width="42" height="14" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="1304" y="372" font-size="7" fill="#64748b">Ersatz</text>
+  <text x="1190" y="388" font-size="8" fill="#64748b">Sohn · 📞 078 345 67 89 · Lausanne</text>
+  <text x="1190" y="402" font-size="8" fill="#334155">Tritt ein, falls Ehefrau verhindert</text>
+
+  <rect x="870" y="428" width="534" height="22" rx="6" fill="#f8fafc"/>
+  <text x="882" y="443" font-size="8" fill="#64748b">Datum: 12.01.2026 · Handschriftlich · KESB Broye-Vully · 📎 Scan im EPD + physisch in Dossier</text>
+
+  <!-- Urteilsfähigkeit -->
+  <rect x="870" y="460" width="534" height="38" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="882" y="478" font-size="9" font-weight="600" fill="#0f172a">Urteilsfähigkeit (ZGB Art. 16):</text>
+  <text x="1060" y="478" font-size="9" fill="#334155">Patient ist aktuell </text>
+  <text x="1154" y="478" font-size="9" font-weight="800" fill="#059669">urteilsfähig</text>
+  <text x="882" y="492" font-size="7" fill="#64748b">Letzte Beurteilung: 09.02.2026 Dr. Weber · Nächste: bei klinischer Veränderung</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- ROW 2: 🧠 Mutmasslicher Wille | 💚 Persönliche Wünsche         -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+
+  <!-- CARD: Mutmasslicher Wille -->
+  <rect x="92" y="542" width="660" height="232" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="92" y="542" width="660" height="36" rx="14" fill="#eef2ff"/>
+  <rect x="92" y="564" width="660" height="14" fill="#eef2ff"/>
+  <rect x="108" y="550" width="36" height="36" rx="10" fill="url(#indigoGrad)"/>
+  <text x="118" y="573" font-size="14" fill="white">🧠</text>
+  <text x="156" y="566" font-size="11" font-weight="700" fill="#0f172a">Mutmasslicher Wille (ZGB Art. 378)</text>
+  <text x="420" y="566" font-size="9" fill="#94a3b8">Für den Fall der Urteilsunfähigkeit</text>
+  <rect x="652" y="552" width="84" height="22" rx="6" fill="url(#greenGrad)"/>
+  <text x="660" y="567" font-size="8" font-weight="600" fill="white">✎ Bearbeiten</text>
+
+  <text x="116" y="596" font-size="9" font-weight="700" fill="#4f46e5">Ermittelt durch Gespräch am 05.02.2026 mit Patient &amp; Ehefrau:</text>
+
+  <rect x="108" y="606" width="628" height="34" rx="8" fill="#eef2ff"/>
+  <rect x="114" y="612" width="4" height="22" rx="2" fill="#6366f1"/>
+  <text x="126" y="624" font-size="9" font-weight="600" fill="#0f172a">Lebensqualität:</text>
+  <text x="224" y="624" font-size="9" fill="#334155">Lebensqualität hat Vorrang vor Lebensverlängerung.</text>
+  <text x="126" y="636" font-size="7" fill="#64748b">«Ich möchte leben, aber nicht um jeden Preis an Maschinen hängen.»</text>
+
+  <rect x="108" y="646" width="628" height="34" rx="8" fill="#eef2ff"/>
+  <rect x="114" y="652" width="4" height="22" rx="2" fill="#6366f1"/>
+  <text x="126" y="664" font-size="9" font-weight="600" fill="#0f172a">Autonomie:</text>
+  <text x="200" y="664" font-size="9" fill="#334155">Grösstmögliche Selbstständigkeit. Möchte zu Hause bleiben.</text>
+  <text x="126" y="676" font-size="7" fill="#64748b">Home-Spital entspricht Wunsch. Spitaleinweisung nur als Ultima Ratio.</text>
+
+  <rect x="108" y="686" width="628" height="34" rx="8" fill="#eef2ff"/>
+  <rect x="114" y="692" width="4" height="22" rx="2" fill="#6366f1"/>
+  <text x="126" y="704" font-size="9" font-weight="600" fill="#0f172a">Schmerzbehandlung:</text>
+  <text x="266" y="704" font-size="9" fill="#334155">Konsequente Schmerztherapie, auch wenn bewusstseinseinschränkend.</text>
+  <text x="126" y="716" font-size="7" fill="#64748b">«Lieber schmerzfrei und schläfrig als wach und leidend.»</text>
+
+  <rect x="108" y="726" width="628" height="26" rx="8" fill="#eef2ff"/>
+  <rect x="114" y="732" width="4" height="14" rx="2" fill="#6366f1"/>
+  <text x="126" y="744" font-size="9" font-weight="600" fill="#0f172a">Entscheidungsträger:</text>
+  <text x="266" y="744" font-size="9" fill="#334155">Ehefrau Maria entscheidet, Sohn Thomas einbeziehen.</text>
+
+  <text x="116" y="768" font-size="7" fill="#94a3b8">Dokumentiert: 05.02.2026 · Dr. M. Weber · Im Beisein von Maria König · Signiert ✓</text>
+
+  <!-- CARD: Persönliche Wünsche -->
+  <rect x="768" y="542" width="652" height="232" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="768" y="542" width="652" height="36" rx="14" fill="#f0fdfa"/>
+  <rect x="768" y="564" width="652" height="14" fill="#f0fdfa"/>
+  <rect x="784" y="550" width="36" height="36" rx="10" fill="url(#tealGrad)"/>
+  <text x="794" y="573" font-size="14" fill="white">💚</text>
+  <text x="832" y="566" font-size="11" font-weight="700" fill="#0f172a">Persönliche Wünsche &amp; Präferenzen</text>
+  <rect x="1320" y="552" width="84" height="22" rx="6" fill="url(#greenGrad)"/>
+  <text x="1328" y="567" font-size="8" font-weight="600" fill="white">✎ Bearbeiten</text>
+
+  <text x="792" y="596" font-size="9" font-weight="700" fill="#0d9488">Dokumentiert bei Aufnahme 05.02.2026:</text>
+
+  <rect x="784" y="606" width="620" height="26" rx="6" fill="#f0fdfa"/>
+  <rect x="790" y="612" width="4" height="14" rx="2" fill="#14b8a6"/>
+  <text x="802" y="624" font-size="9" fill="#334155">🛏️ </text>
+  <text x="818" y="624" font-size="9" font-weight="600" fill="#0f172a">Schlaf:</text>
+  <text x="862" y="624" font-size="9" fill="#334155">Rechte Seite bevorzugt. Fenster nachts gekippt. Keine Schlaftabletten.</text>
+
+  <rect x="784" y="636" width="620" height="26" rx="6" fill="#f0fdfa"/>
+  <rect x="790" y="642" width="4" height="14" rx="2" fill="#14b8a6"/>
+  <text x="802" y="654" font-size="9" fill="#334155">🍽️ </text>
+  <text x="818" y="654" font-size="9" font-weight="600" fill="#0f172a">Ernährung:</text>
+  <text x="886" y="654" font-size="9" fill="#334155">Kaffee morgens (ohne Zucker). Kein Schweinefleisch (Präferenz).</text>
+
+  <rect x="784" y="666" width="620" height="26" rx="6" fill="#f0fdfa"/>
+  <rect x="790" y="672" width="4" height="14" rx="2" fill="#14b8a6"/>
+  <text x="802" y="684" font-size="9" fill="#334155">👨‍👩‍👦 </text>
+  <text x="822" y="684" font-size="9" font-weight="600" fill="#0f172a">Familie:</text>
+  <text x="874" y="684" font-size="9" fill="#334155">Ehefrau tagsüber anwesend. Sohn besucht am Wochenende. Nachbar hilft.</text>
+
+  <rect x="784" y="696" width="620" height="26" rx="6" fill="#f0fdfa"/>
+  <rect x="790" y="702" width="4" height="14" rx="2" fill="#14b8a6"/>
+  <text x="802" y="714" font-size="9" fill="#334155">🐱 </text>
+  <text x="818" y="714" font-size="9" font-weight="600" fill="#0f172a">Haustier:</text>
+  <text x="878" y="714" font-size="9" fill="#334155">Katze «Mimi» im Haushalt. Pflegepersonal informiert.</text>
+
+  <rect x="784" y="726" width="620" height="26" rx="6" fill="#f0fdfa"/>
+  <rect x="790" y="732" width="4" height="14" rx="2" fill="#14b8a6"/>
+  <text x="802" y="744" font-size="9" fill="#334155">⛪ </text>
+  <text x="818" y="744" font-size="9" font-weight="600" fill="#0f172a">Spiritualität:</text>
+  <text x="900" y="744" font-size="9" fill="#334155">Reformiert, nicht praktizierend. Seelsorge bei Bedarf erwünscht.</text>
+
+  <text x="792" y="768" font-size="7" fill="#94a3b8">Erfasst: K. Bühler (Pflegeaufnahme) · Aktualisierung bei Veränderung</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- ROW 3: 🕊️ Palliative Versorgung | 🕯️ Mitteilungen Todesfall   -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+
+  <!-- CARD: Palliative Versorgung -->
+  <rect x="92" y="788" width="660" height="266" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="92" y="788" width="660" height="36" rx="14" fill="#faf5ff"/>
+  <rect x="92" y="810" width="660" height="14" fill="#faf5ff"/>
+  <rect x="108" y="796" width="36" height="36" rx="10" fill="url(#violetGrad)"/>
+  <text x="118" y="819" font-size="14" fill="white">🕊️</text>
+  <text x="156" y="812" font-size="11" font-weight="700" fill="#0f172a">Palliative Versorgung (Palliative Care)</text>
+  <rect x="520" y="798" width="108" height="22" rx="6" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="530" y="813" font-size="8" font-weight="600" fill="#8b5cf6">Nicht aktiviert</text>
+  <rect x="636" y="798" width="100" height="22" rx="6" fill="url(#violetGrad)"/>
+  <text x="644" y="813" font-size="8" font-weight="600" fill="white">✎ Bearbeiten</text>
+
+  <rect x="108" y="832" width="628" height="38" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="124" y="848" font-size="9" font-weight="600" fill="#0f172a">Aktueller Status:</text>
+  <text x="232" y="848" font-size="9" fill="#334155">Kurative Behandlung. Keine palliative Situation aktuell.</text>
+  <text x="124" y="864" font-size="8" fill="#64748b">Aktivierung bei: Therapieresistenz, Patientenwunsch, oder infauster Prognose</text>
+
+  <text x="120" y="892" font-size="9" font-weight="700" fill="#8b5cf6">Vorausplanung (Advance Care Planning):</text>
+
+  <rect x="108" y="900" width="308" height="44" rx="8" fill="#faf5ff"/>
+  <rect x="114" y="906" width="4" height="32" rx="2" fill="#8b5cf6"/>
+  <text x="126" y="918" font-size="9" font-weight="600" fill="#0f172a">Symptomkontrolle</text>
+  <text x="126" y="932" font-size="8" fill="#64748b">Schmerz: Paracetamol → Morphin Reserve</text>
+  <text x="126" y="942" font-size="7" fill="#94a3b8">Dyspnoe: O₂ + Morphin s.c. als Reserve</text>
+
+  <rect x="424" y="900" width="312" height="44" rx="8" fill="#faf5ff"/>
+  <rect x="430" y="906" width="4" height="32" rx="2" fill="#8b5cf6"/>
+  <text x="442" y="918" font-size="9" font-weight="600" fill="#0f172a">Behandlungsbegrenzung</text>
+  <text x="442" y="932" font-size="8" fill="#64748b">Keine Dialyse gewünscht (Pat.-Verfügung)</text>
+  <text x="442" y="942" font-size="7" fill="#94a3b8">Beatmung: max. 7 Tage, danach Abbruch</text>
+
+  <rect x="108" y="952" width="628" height="32" rx="8" fill="#f8fafc"/>
+  <text x="120" y="968" font-size="9" font-weight="600" fill="#0f172a">Palliativdienst:</text>
+  <text x="224" y="968" font-size="9" fill="#334155">Équipe mobile soins palliatifs (EMSP) Broye</text>
+  <text x="120" y="980" font-size="7" fill="#64748b">📞 026 664 90 00 · Dr. C. Martin · 24/7 verfügbar</text>
+
+  <rect x="108" y="990" width="628" height="52" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="120" y="1006" font-size="9" font-weight="600" fill="#d97706">⚠ Notfallreserve Medikamente (im Kühlschrank des Patienten):</text>
+  <text x="120" y="1022" font-size="8" fill="#334155">Morphin 10mg/ml × 3 · Midazolam 5mg/ml × 2 · Haloperidol 5mg/ml × 2 · NaCl 0.9% 100ml × 3</text>
+  <text x="120" y="1036" font-size="7" fill="#94a3b8">Angelegt: 05.02.2026 · Kontrolle: täglich durch Pflege · Verfall: geprüft ✓</text>
+
+  <!-- CARD: Mitteilungen im Todesfall -->
+  <rect x="768" y="788" width="652" height="266" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="768" y="788" width="652" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="768" y="810" width="652" height="14" fill="#f8fafc"/>
+  <rect x="784" y="796" width="36" height="36" rx="10" fill="url(#slateGrad)"/>
+  <text x="794" y="819" font-size="14" fill="white">🕯️</text>
+  <text x="832" y="812" font-size="11" font-weight="700" fill="#0f172a">Mitteilungen im Todesfall</text>
+  <rect x="1080" y="798" width="88" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="1090" y="813" font-size="8" font-weight="700" fill="#059669">✓ Vollständig</text>
+  <rect x="1320" y="798" width="84" height="22" rx="6" fill="url(#greenGrad)"/>
+  <text x="1328" y="813" font-size="8" font-weight="600" fill="white">✎ Bearbeiten</text>
+
+  <text x="796" y="844" font-size="9" font-weight="700" fill="#334155">Sofort zu benachrichtigen (Reihenfolge):</text>
+
+  <!-- Person 1 -->
+  <rect x="784" y="852" width="620" height="42" rx="10" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+  <rect x="790" y="858" width="4" height="30" rx="2" fill="#ef4444"/>
+  <circle cx="810" cy="872" r="10" fill="#fef2f2"/>
+  <text x="804" y="876" font-size="9" font-weight="800" fill="#ef4444">1</text>
+  <text x="828" y="868" font-size="10" font-weight="700" fill="#0f172a">Maria König</text>
+  <text x="924" y="868" font-size="9" fill="#64748b">(Ehefrau)</text>
+  <text x="998" y="868" font-size="9" fill="#0891b2">📞 079 234 56 78</text>
+  <text x="828" y="886" font-size="8" fill="#64748b">Ist wahrscheinlich anwesend · Festnetz: 026 660 12 35</text>
+  <rect x="1312" y="860" width="80" height="18" rx="5" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+  <text x="1322" y="873" font-size="7" font-weight="700" fill="#dc2626">SOFORT</text>
+
+  <!-- Person 2 -->
+  <rect x="784" y="900" width="620" height="34" rx="10" fill="#f8fafc"/>
+  <rect x="790" y="906" width="4" height="22" rx="2" fill="#f59e0b"/>
+  <circle cx="810" cy="916" r="10" fill="#fffbeb"/>
+  <text x="804" y="920" font-size="9" font-weight="800" fill="#d97706">2</text>
+  <text x="828" y="918" font-size="10" font-weight="700" fill="#0f172a">Thomas König</text>
+  <text x="932" y="918" font-size="9" fill="#64748b">(Sohn) · 📞 078 345 67 89 · Lausanne</text>
+  <rect x="1312" y="908" width="80" height="18" rx="5" fill="#fffbeb"/>
+  <text x="1322" y="921" font-size="7" font-weight="600" fill="#d97706">Danach</text>
+
+  <!-- Person 3 -->
+  <rect x="784" y="940" width="620" height="34" rx="10" fill="#f8fafc"/>
+  <rect x="790" y="946" width="4" height="22" rx="2" fill="#94a3b8"/>
+  <circle cx="810" cy="956" r="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="804" y="960" font-size="9" font-weight="800" fill="#64748b">3</text>
+  <text x="828" y="958" font-size="10" font-weight="600" fill="#0f172a">Dr. P. Favre</text>
+  <text x="916" y="958" font-size="9" fill="#64748b">(Hausarzt) · 📞 026 662 34 56</text>
+  <rect x="1312" y="948" width="80" height="18" rx="5" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="1322" y="961" font-size="7" fill="#64748b">Informieren</text>
+
+  <!-- Person 4 -->
+  <rect x="784" y="980" width="620" height="34" rx="10" fill="#f8fafc"/>
+  <rect x="790" y="986" width="4" height="22" rx="2" fill="#94a3b8"/>
+  <circle cx="810" cy="996" r="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="804" y="1000" font-size="9" font-weight="800" fill="#64748b">4</text>
+  <text x="828" y="998" font-size="10" font-weight="600" fill="#0f172a">J. Müller</text>
+  <text x="896" y="998" font-size="9" fill="#64748b">(Nachbar, Schlüssel) · 📞 079 456 78 90</text>
+
+  <!-- Weitere Anweisungen -->
+  <line x1="796" y1="1022" x2="1392" y2="1022" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="796" y="1038" font-size="9" font-weight="700" fill="#334155">Weitere Anweisungen:</text>
+  <rect x="784" y="1044" width="620" height="4" rx="2" fill="transparent"/>
+  <text x="796" y="1054" font-size="8" fill="#334155">⛪ Pfarramt ref. Kirche Payerne benachrichtigen: 026 660 50 10</text>
+  <text x="796" y="1068" font-size="8" fill="#64748b">Bestatter: Noch nicht festgelegt (Familie entscheidet im Todesfall)</text>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- ROW 4: Einwilligungen | Datenschutz | EPD + Audit              -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+
+  <!-- CARD: Einwilligungen -->
+  <rect x="92" y="1068" width="460" height="148" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="92" y="1068" width="460" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="92" y="1090" width="460" height="14" fill="#f8fafc"/>
+  <text x="116" y="1092" font-size="11" font-weight="700" fill="#0f172a">✍️ Einwilligungen (Informed Consent)</text>
+  <rect x="440" y="1078" width="96" height="22" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="450" y="1093" font-size="8" font-weight="700" fill="#059669">6/6 vollständig</text>
+
+  <g transform="translate(108, 1110)">
+    <rect width="428" height="20" rx="4" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#059669" font-weight="600">✓</text>
+    <text x="20" y="14" font-size="8" fill="#334155">Home-Spital Behandlung</text>
+    <text x="200" y="14" font-size="7" fill="#94a3b8">05.02. · Schriftlich · HS-EW-001</text>
+  </g>
+  <g transform="translate(108, 1132)">
+    <rect width="428" height="20" rx="4" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#059669" font-weight="600">✓</text>
+    <text x="20" y="14" font-size="8" fill="#334155">i.v. Antibiotikatherapie (Ceftriaxon)</text>
+    <text x="256" y="14" font-size="7" fill="#94a3b8">05.02. · Aufklärungsbogen</text>
+  </g>
+  <g transform="translate(108, 1154)">
+    <rect width="210" height="20" rx="4" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#059669" font-weight="600">✓</text>
+    <text x="20" y="14" font-size="8" fill="#334155">Telemedizin · TM-001</text>
+  </g>
+  <g transform="translate(326, 1154)">
+    <rect width="210" height="20" rx="4" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#059669" font-weight="600">✓</text>
+    <text x="20" y="14" font-size="8" fill="#334155">Datenbearbeitung nDSG</text>
+  </g>
+  <g transform="translate(108, 1176)">
+    <rect width="210" height="20" rx="4" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#059669" font-weight="600">✓</text>
+    <text x="20" y="14" font-size="8" fill="#334155">EPD Zugriff · EPDG</text>
+  </g>
+  <g transform="translate(326, 1176)">
+    <rect width="210" height="20" rx="4" fill="#f0fdf4"/>
+    <text x="8" y="14" font-size="7" fill="#059669" font-weight="600">✓</text>
+    <text x="20" y="14" font-size="8" fill="#334155">Thromboseprophylaxe</text>
+  </g>
+
+  <!-- CARD: Datenschutz -->
+  <rect x="568" y="1068" width="310" height="148" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="568" y="1068" width="310" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="568" y="1090" width="310" height="14" fill="#f8fafc"/>
+  <text x="592" y="1092" font-size="11" font-weight="700" fill="#0f172a">🔒 Datenschutz (nDSG)</text>
+
+  <rect x="584" y="1112" width="278" height="22" rx="5" fill="#f8fafc"/>
+  <text x="596" y="1127" font-size="8" font-weight="600" fill="#0f172a">Vertraulichkeitsstufe</text>
+  <rect x="730" y="1116" width="66" height="14" rx="4" fill="url(#slateGrad)"/>
+  <text x="740" y="1127" font-size="7" font-weight="600" fill="white">🔒 Normal</text>
+  <text x="802" y="1127" font-size="7" fill="#94a3b8">EPD</text>
+
+  <rect x="584" y="1138" width="278" height="22" rx="5" fill="#f0fdf4"/>
+  <text x="596" y="1153" font-size="8" fill="#334155">✓ Datenschutzerklärung ausgehändigt 05.02.</text>
+
+  <rect x="584" y="1164" width="278" height="22" rx="5" fill="#f8fafc"/>
+  <text x="596" y="1179" font-size="8" fill="#334155">Auskunftsrecht (Art. 25): Keine Anfrage</text>
+
+  <text x="596" y="1206" font-size="7" fill="#94a3b8">Besond. schützenswerte Daten (Art. 5c) · Einw. ✓</text>
+
+  <!-- CARD: EPD + Audit-Log -->
+  <rect x="894" y="1068" width="526" height="148" rx="14" fill="white" filter="url(#shadow)"/>
+  <rect x="894" y="1068" width="526" height="36" rx="14" fill="#f8fafc"/>
+  <rect x="894" y="1090" width="526" height="14" fill="#f8fafc"/>
+  <text x="918" y="1092" font-size="11" font-weight="700" fill="#0f172a">🔍 EPD &amp; Audit-Log</text>
+  <rect x="1330" y="1078" width="76" height="22" rx="6" fill="#f1f5f9"/>
+  <text x="1340" y="1093" font-size="8" fill="#64748b">Vollst. Log</text>
+
+  <rect x="910" y="1112" width="494" height="24" rx="6" fill="#ecfeff" stroke="#a5f3fc" stroke-width="1"/>
+  <text x="922" y="1128" font-size="9" font-weight="600" fill="#0891b2">EPD: CARA</text>
+  <text x="998" y="1128" font-size="9" fill="#64748b">MPI: EPD-MPI-756-1234-5678</text>
+  <rect x="1348" y="1118" width="46" height="14" rx="4" fill="#f0fdf4"/>
+  <text x="1356" y="1128" font-size="7" font-weight="600" fill="#059669">● Aktiv</text>
+
+  <text x="922" y="1154" font-size="8" font-weight="600" fill="#64748b">Zugriffsberechtigte:</text>
+  <text x="1020" y="1154" font-size="8" fill="#334155">Dr. Weber (R/W) · Pflege (R/W) · Dr. Favre (R) · Apotheke (Med.)</text>
+
+  <text x="922" y="1174" font-size="8" font-weight="600" fill="#64748b">Letzte Aktionen:</text>
+  <rect x="910" y="1180" width="494" height="14" rx="3" fill="#f8fafc"/>
+  <text x="918" y="1190" font-size="7" fill="#94a3b8">09.02. 10:18 Verlaufsnotiz · 09.02. 07:15 Pflegebericht · 08.02. 14:30 Arztbrief · 05.02. 15:00 Dossier eröffnet</text>
+
+  <text x="918" y="1210" font-size="7" fill="#94a3b8">Alle Einträge signiert ✓ · Audit vollständig · IEC 62304 konform</text>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <rect x="72" y="1252" width="1368" height="8" fill="#f8fafc"/>
+  <circle cx="88" cy="1256" r="2" fill="#10b981"/>
+  <text x="94" y="1258" font-size="7" fill="#94a3b8">System Online · Rechtliche Dokumentation · nDSG · EPDG · ZGB Art. 360–378 · Palliative Care · IEC 62304 · 🔒 Verschlüsselt</text>
+  <text x="1380" y="1258" font-size="7" fill="#94a3b8" text-anchor="end">PDMS Home-Spital v0.1.0 · Rechtliche · 09.02.2026 14:32</text>
+
+</svg>

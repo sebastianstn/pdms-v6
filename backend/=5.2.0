@@ -1,0 +1,6 @@
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+Collecting redis
+  Using cached redis-7.1.1-py3-none-any.whl.metadata (12 kB)
+Using cached redis-7.1.1-py3-none-any.whl (356 kB)
+Installing collected packages: redis
+Successfully installed redis-7.1.1

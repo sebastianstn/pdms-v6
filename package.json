@@ -11,8 +11,8 @@
     "docker:up": "cd docker && docker compose up -d",
     "docker:down": "cd docker && docker compose down",
     "docker:logs": "cd docker && docker compose logs -f",
-    "db:migrate": "cd apps/api && alembic upgrade head",
-    "db:makemigrations": "cd apps/api && alembic revision --autogenerate -m"
+    "db:migrate": "cd backend && alembic upgrade head",
+    "db:makemigrations": "cd backend && alembic revision --autogenerate -m"
   },
   "devDependencies": {
     "turbo": "^2.3.0"

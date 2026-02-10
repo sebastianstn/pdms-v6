@@ -34,22 +34,21 @@ cp .env.example .env
 cd docker && docker compose up -d && cd ..
 
 # 6. DB-Migration
-cd apps/api && alembic upgrade head && cd ../..
+cd backend && alembic upgrade head && cd ..
 
 # 7. Backend starten
-cd apps/api && uvicorn src.main:app --reload &
+cd backend && uvicorn src.main:app --reload &
 
 # 8. Frontend starten
-cd apps/web && pnpm dev
+cd frontend && pnpm dev
 ```
 
 ## Projekt-Struktur
 
 ```
 pdms-home-spital/
-├── apps/
-│   ├── web/          → Next.js 15 Frontend
-│   └── api/          → FastAPI Backend
+├── backend/          → FastAPI Backend (Python 3.12)
+├── frontend/         → Next.js 15 Frontend (React 19)
 ├── packages/
 │   └── shared-types/ → Gemeinsame TypeScript-Typen
 ├── docker/           → Docker Compose + Configs

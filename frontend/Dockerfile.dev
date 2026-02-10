@@ -1,0 +1,11 @@
+FROM node:22-alpine
+RUN corepack enable
+WORKDIR /app
+COPY package.json pnpm-lock.yaml* ./
+RUN pnpm install --frozen-lockfile || pnpm install
+COPY . .
+# Create symlink for @pdms/shared-types (volume mounted at /app/packages/shared-types)
+RUN mkdir -p /app/node_modules/@pdms && \
+    ln -sf /app/packages/shared-types /app/node_modules/@pdms/shared-types
+EXPOSE 3000
+CMD ["pnpm", "dev"]

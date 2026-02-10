@@ -18,4 +18,4 @@
 - appointments
 - consents, advance_directives
 
-Siehe SQLAlchemy Models in `apps/api/src/domain/models/`.
+Siehe SQLAlchemy Models in `backend/src/domain/models/`.
