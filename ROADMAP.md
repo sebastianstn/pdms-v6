@@ -1,7 +1,7 @@
 # 🗺️ PDMS Home-Spital — Roadmap
 
 > **Stand:** 10. Februar 2026
-> **Aktueller Status:** ~82% implementiert — Phase 1 ✅, Phase 2 (11/11) ✅, Phase 3a (15/15) ✅, Phase 3b (7/7) ✅ komplett
+> **Aktueller Status:** ~85% implementiert — Phase 1 ✅, Phase 2 (11/11) ✅, Phase 3a (15/15) ✅, Phase 3b (7/7) ✅, Phase 3c (4/12) 🔧
 > **Ziel:** Lauffähiges PDMS für Schweizer Home-Hospitalisierung
 > **Design-Referenz:** 8 SVG-Wireframes in `docs/designs/`, 6 Planungsdokumente in `docs/planning/`
 
@@ -123,10 +123,10 @@
 
 | # | Aufgabe | Bereich | Status | Details |
 |---|---------|---------|--------|---------|
-| 3c.1 | Laborwerte (Backend) | Backend | ⬜ | Model `LabResult` (Leuko, CRP, Kreatinin, Laktat, BZ, etc.), LOINC-Codes, Referenzwerte, Trend-Berechnung (↑↓→), Import-Schnittstelle. Design: 4 von 8 Wireframes zeigen Laborwerte prominent |
-| 3c.2 | Laborwerte (Frontend) | Frontend | ⬜ | `useLabResults` Hook, Labor-Mini-Tabelle (Kurve + Arzt + Übersicht), CRP-Trend-Chart (Arzt-Tab), Farbkodierung (rot=pathologisch, amber=grenzwertig). Design: Kurve-Tab + Arzt-Tab + Übersicht |
-| 3c.3 | I/O-Bilanz (Backend) | Backend | ⬜ | Model `FluidBalance` — Einfuhr (Infusion, Oral, Medikation) / Ausfuhr (Urin, Perspiratio), 24h-Bilanz-Berechnung. Klinisch essentiell für i.v.-Patienten. Design: Kurve-Tab + Pflege-Tab |
-| 3c.4 | I/O-Bilanz (Frontend) | Frontend | ⬜ | `useFluidBalance` Hook, Einfuhr/Ausfuhr-Übersicht mit mL-Anzeige, Bilanz +/−. Design: Kurve-Tab + Pflege-Tab |
+| 3c.1 | Laborwerte (Backend) | Backend | ✅ | Model `LabResult` (22 Analyte: Leuko, CRP, Kreatinin, Laktat, BZ, etc.), LOINC-Codes, Referenzwerte, Auto-Interpretation (normal/borderline/pathologisch/kritisch), Trend-Berechnung (↑↓→↑↑↓↓), Batch-Import, Summary (latest per analyte), Trend-Abfrage. Alembic-Migration `b4e2f8a31c07`. 10 Endpoints (meta, list, summary, trend, detail, create, batch, update, delete). Events: `lab.resulted`, `lab.critical` |
+| 3c.2 | Laborwerte (Frontend) | Frontend | ✅ | 10 Hooks (`useLabResults`, `useLabSummary`, `useLabTrend`, `useLabResult`, `useLabMeta`, `useCreateLabResult`, `useCreateLabResultBatch`, `useUpdateLabResult`, `useDeleteLabResult`), `LabMiniTable` (Farbkodierung rot/amber/grün, Trend-Pfeile, Flag-Badges), `LabTrendChart` (Recharts LineChart mit Referenzbereich-Shading, Analyt-Selektor), `LabResultForm` (Einzel + Batch). Kurve-Tab + Arzt-Tab Integration |
+| 3c.3 | I/O-Bilanz (Backend) | Backend | ✅ | Model `FluidEntry` (direction: intake/output, 13 Kategorien: oral/infusion/medication/tube_feed/parenteral/blood_product + urine/stool/vomit/drain/perspiratio/blood_loss/other, volume_ml, route), Alembic-Migration `c7d3a9e51f28`, `fluid_balance_service.py` (CRUD + N-Stunden-Bilanz mit Kategorie-Aufschlüsselung), Router (7 Endpoints: meta, list, summary, detail, create, update, delete), Events: `fluid.recorded`, `fluid.balance_alert` |
+| 3c.4 | I/O-Bilanz (Frontend) | Frontend | ✅ | 7 Hooks (`useFluidEntries`, `useFluidBalanceSummary`, `useFluidEntry`, `useFluidBalanceMeta`, `useCreateFluidEntry`, `useUpdateFluidEntry`, `useDeleteFluidEntry`), `FluidBalanceOverview` (24h-Bilanz-Card, Einfuhr/Ausfuhr-Balken, Kategorie-Aufschlüsselung, Zeitraum-Wahl 12h/24h/48h), `FluidEntryForm` (Quick-Presets, Richtungs-Toggle, Kategorie/Menge/Route/Notizen), Kurve-Tab + Pflege-Tab(I/O-Bilanz Sub-Tab) Integration |
 | 3c.5 | Therapieplan & Behandlungsziel | Full-Stack | ⬜ | Behandlungsziel-Mapping (z.B. "i.v.→oral Switch Tag 5/7"), Fortschrittsbalken, geplantes Entlassungsdatum. Design: Arzt-Tab Banner + Übersicht |
 | 3c.6 | Konsilien & Überweisungen | Full-Stack | ⬜ | Model `Consultation` (Pneumologie, Diabetologie, Radiologie, etc.), Status (angefragt/erledigt/ausstehend), Verknüpfung zu ClinicalNote. Design: Arzt-Tab |
 | 3c.7 | Arztbriefe & HIN-Mail | Full-Stack | ⬜ | Template-basierte Arztbriefe (Zwischenbericht, Austrittsbericht), Status (Entwurf/gesendet), HIN-Mail-Versand an Hausarzt. Design: Arzt-Tab unten |
@@ -239,9 +239,9 @@ Phase 3b — Home-Spital-Features ✅ (7/7)
 ├── ✅ Selbstmedikation (6 Endpoints, 5 Hooks, SelfMedicationTracker)
 └── ✅ Transport & Logistik (TransportCard, 4 Typen)
 
-Phase 3c — Klinische Erweiterungen (0/12)
-├── ⬜ Laborwerte (CRP, Leuko, Krea, Laktat + Trend)
-├── ⬜ I/O-Bilanz (Einfuhr/Ausfuhr/24h-Bilanz)
+Phase 3c — Klinische Erweiterungen (4/12)
+├── ✅ Laborwerte (22 Analyte, LOINC, Trend, Batch-Import, 10 Hooks, 3 Komponenten)
+├── ✅ I/O-Bilanz (13 Kategorien, 24h-Bilanz, 7 Endpoints, 7 Hooks, 2 Komponenten)
 ├── ⬜ Therapieplan & Behandlungsziel
 ├── ⬜ Konsilien & Arztbriefe + HIN-Mail
 ├── ⬜ Pflegediagnosen + Schichtübergabe + Ernährung
@@ -283,9 +283,9 @@ Phase 5 — Interop & Compliance (0/9)
 | `pdms-home-spital-dashboard.svg` | Dashboard, Stat-Cards, Patientenliste, Alarme, VitalChart, Medikamentenplan, Hausbesuche-Timeline, Hausbesuche-Stat | Teleconsult-Stat (Detail-Zähl), Remote-Geräte-Dashboard-Widget, Patientendetails-Sidebar |
 | `pdms-patient-dossier-Übersicht.svg` | — | **Ganzer Tab fehlt** — Zusammenfassung aller Bereiche (3c.12) |
 | `pdms-patient-personalien.svg` | Stammdaten, PatientBand, EncounterBanner, Versicherungen, Kontakte, Zuweiser | Admin-Daten |
-| `pdms-patient-kurve.svg` | VitalChart, Medikationsraster, Assessments | Laborwerte (3c.1), I/O-Bilanz (3c.3), Anamnese, Pflegevorgänge-Timeline |
-| `pdms-patient-arzt.svg` | ClinicalNotes, Medikationen | Therapieplan (3c.5), Konsilien (3c.6), Arztbriefe (3c.7), Labor-Trend |
-| `pdms-patient-pflege.svg` | NursingEntries, Assessments, MedicationAdministrations, RemoteDevicePanel, SelfMedicationTracker | Pflegediagnosen (3c.8), Schichtübergabe (3c.9), Ernährung (3c.10), Material (3c.11) |
+| `pdms-patient-kurve.svg` | VitalChart, Medikationsraster, Assessments, LabMiniTable, FluidBalanceOverview | Anamnese, Pflegevorgänge-Timeline |
+| `pdms-patient-arzt.svg` | ClinicalNotes, Medikationen, LabTrendChart, LabMiniTable, LabResultForm | Therapieplan (3c.5), Konsilien (3c.6), Arztbriefe (3c.7) |
+| `pdms-patient-pflege.svg` | NursingEntries, Assessments, MedicationAdministrations, RemoteDevicePanel, SelfMedicationTracker, FluidBalanceOverview, FluidEntryForm | Pflegediagnosen (3c.8), Schichtübergabe (3c.9), Ernährung (3c.10), Material (3c.11) |
 | `pdms-patient-termine.svg` | WeekCalendar, AppointmentList, DischargeTracker, HomeVisitTimeline, TeleconsultPanel | — |
 | `pdms-patient-rechtliche.svg` | ConsentOverview, DirectiveList, WishesForm, PalliativeCard, DeathNotificationList, ComplianceBanner | Audit-Trail UI (4.14) |
 
@@ -297,10 +297,10 @@ Phase 5 — Interop & Compliance (0/9)
 |-------|-------------------|--------------------------|------------------|
 | Monorepo-Pfade | `apps/api` + `apps/web` | `backend/` + `frontend/` | Doku anpassen (kosmetisch) |
 | VitalSign-Schema | Einzelwert (`typ` + `wert`) | Multi-Spalten (`heart_rate`, `systolic_bp`, ...) | Bewusste Designentscheidung — ok |
-| DB-Tabellen | 14 geplant | 26 implementiert | 8 neue in Phase 3a + 4 neue in Phase 3b: home_visits, teleconsults, remote_devices, self_medication_logs |
-| API-Endpoints | ~60 geplant | ~133 implementiert | Übererfüllt ✅ (33 neue Endpoints in Phase 3b) |
-| Frontend-Hooks | 11 geplant | ~105+ implementiert | Übererfüllt ✅ (25 neue Hooks in Phase 3b) |
+| DB-Tabellen | 14 geplant | 28 implementiert | 8 neue in Phase 3a + 4 neue in Phase 3b + 2 neue in Phase 3c: lab_results, fluid_entries |
+| API-Endpoints | ~60 geplant | ~150 implementiert | Übererfüllt ✅ (10 Lab + 7 FluidBalance Endpoints in Phase 3c) |
+| Frontend-Hooks | 11 geplant | ~122+ implementiert | Übererfüllt ✅ (10 Lab + 7 FluidBalance Hooks in Phase 3c) |
 
 ---
 
-*Nächster Schritt: Phase 3c starten — Laborwerte (3c.1) + I/O-Bilanz (3c.3) + Therapieplan (3c.5).*
+*Nächster Schritt: Phase 3c fortsetzen — Therapieplan (3c.5) + Konsilien (3c.6) + Arztbriefe (3c.7).*

@@ -22,6 +22,7 @@ from src.domain.models.system import AppUser, AuditLog  # noqa: F401
 from src.domain.models.planning import Appointment, DischargeCriteria  # noqa: F401
 from src.domain.models.legal import Consent, AdvanceDirective, PatientWishes, PalliativeCare, DeathNotification  # noqa: F401
 from src.domain.models.home_spital import HomeVisit, Teleconsult, RemoteDevice, SelfMedicationLog  # noqa: F401
+from src.domain.models.lab import LabResult  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.database_url)

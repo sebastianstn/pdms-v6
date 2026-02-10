@@ -8,6 +8,9 @@ import { AdministrationDialog } from "@/components/medications/administration-di
 import { ClinicalNoteList } from "@/components/clinical-notes/clinical-note-list";
 import { ClinicalNoteForm } from "@/components/clinical-notes/clinical-note-form";
 import { ClinicalNoteDetail } from "@/components/clinical-notes/clinical-note-detail";
+import { LabTrendChartCard } from "@/components/lab/lab-trend-chart";
+import { LabMiniTableCard } from "@/components/lab/lab-mini-table";
+import { LabResultForm } from "@/components/lab/lab-result-form";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui";
 import type { Medication } from "@/hooks/use-medications";
 import type { ClinicalNote } from "@/hooks/use-clinical-notes";
@@ -23,8 +26,36 @@ export default function ArztPage() {
   const [editNote, setEditNote] = useState<ClinicalNote | null>(null);
   const [viewNote, setViewNote] = useState<ClinicalNote | null>(null);
 
+  // Lab state
+  const [showLabForm, setShowLabForm] = useState(false);
+
   return (
     <div className="space-y-6">
+      {/* Laborwerte — Trend-Chart (CRP Default) */}
+      <LabTrendChartCard patientId={patientId} />
+
+      {/* Laborwerte — Aktuelle Übersicht + Erfassung */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <LabMiniTableCard patientId={patientId} />
+        <div>
+          <div className="flex items-center justify-end mb-3">
+            <button
+              onClick={() => setShowLabForm((v) => !v)}
+              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+            >
+              {showLabForm ? "Abbrechen" : "🔬 Laborwerte erfassen"}
+            </button>
+          </div>
+          {showLabForm && (
+            <LabResultForm
+              patientId={patientId}
+              onSuccess={() => setShowLabForm(false)}
+              onCancel={() => setShowLabForm(false)}
+            />
+          )}
+        </div>
+      </div>
+
       {/* Klinische Notizen / Verlauf */}
       <Card>
         <CardHeader>

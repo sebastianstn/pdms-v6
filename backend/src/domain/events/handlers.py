@@ -200,3 +200,61 @@ async def handle_nursing_assessment_created(payload: dict) -> None:
         payload.get("total_score"),
         payload.get("risk_level"),
     )
+
+
+# ─── Lab Results ───────────────────────────────────────────────
+
+@on_event("lab.resulted")
+async def handle_lab_resulted(payload: dict) -> None:
+    flag = payload.get("flag")
+    interpretation = payload.get("interpretation")
+    logger.info(
+        "🔬 Lab result: patient=%s analyte=%s value=%s flag=%s interpretation=%s",
+        payload.get("patient_id"),
+        payload.get("analyte"),
+        payload.get("value"),
+        flag,
+        interpretation,
+    )
+    # Invalidate lab caches (if applicable)
+    try:
+        from src.infrastructure.valkey import invalidate
+        pid = payload.get("patient_id")
+        if pid:
+            await invalidate(f"lab:summary:{pid}")
+            await invalidate(f"lab:list:{pid}")
+    except Exception:
+        pass
+
+
+@on_event("lab.critical")
+async def handle_lab_critical(payload: dict) -> None:
+    logger.warning(
+        "🚨 CRITICAL lab result: patient=%s analyte=%s value=%s flag=%s",
+        payload.get("patient_id"),
+        payload.get("analyte"),
+        payload.get("value"),
+        payload.get("flag"),
+    )
+
+
+# ─── Fluid Balance ─────────────────────────────────────────────
+
+@on_event("fluid.recorded")
+async def handle_fluid_recorded(payload: dict) -> None:
+    logger.info(
+        "💧 Fluid entry: patient=%s direction=%s category=%s volume=%.0f mL",
+        payload.get("patient_id"),
+        payload.get("direction"),
+        payload.get("category"),
+        payload.get("volume_ml", 0),
+    )
+
+
+@on_event("fluid.balance_alert")
+async def handle_fluid_balance_alert(payload: dict) -> None:
+    logger.warning(
+        "⚠️ Fluid balance alert: patient=%s balance=%.0f mL",
+        payload.get("patient_id"),
+        payload.get("balance_ml", 0),
+    )

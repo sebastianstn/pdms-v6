@@ -56,3 +56,10 @@ class RoutingKeys:
 
     # ─── Self-Medication (Phase 3b) ────────────────────────
     SELF_MED_MISSED = "self_medication.missed"
+    # ─── Lab Results (Phase 3c) ────────────────────────────────
+    LAB_RESULTED = "lab.resulted"
+    LAB_CRITICAL = "lab.critical"
+
+    # ─── Fluid Balance (Phase 3c) ──────────────────────────────
+    FLUID_RECORDED = "fluid.recorded"
+    FLUID_BALANCE_ALERT = "fluid.balance_alert"

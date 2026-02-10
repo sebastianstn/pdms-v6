@@ -26,6 +26,8 @@ from src.api.v1.home_visits import router as home_visits_router
 from src.api.v1.teleconsults import router as teleconsults_router
 from src.api.v1.remote_devices import router as remote_devices_router
 from src.api.v1.self_medication import router as self_medication_router
+from src.api.v1.lab_results import router as lab_results_router
+from src.api.v1.fluid_balance import router as fluid_balance_router
 from src.api.websocket.alarms_ws import router as alarms_ws_router
 from src.api.websocket.vitals_ws import router as vitals_ws_router
 from src.config import settings
@@ -57,7 +59,7 @@ async def lifespan(app: FastAPI):
         import src.domain.events.handlers  # noqa: F401
         await start_consumer(
             queue_name="pdms.notifications",
-            binding_keys=["alarm.#", "medication.#", "encounter.#", "note.#", "nursing.#", "vital.#", "appointment.#", "consent.#", "home_visit.#", "teleconsult.#", "device.#", "self_medication.#"],
+            binding_keys=["alarm.#", "medication.#", "encounter.#", "note.#", "nursing.#", "vital.#", "appointment.#", "consent.#", "home_visit.#", "teleconsult.#", "device.#", "self_medication.#", "lab.#", "fluid.#"],
         )
         logger.info("🐇 RabbitMQ consumer started")
     except Exception as exc:
@@ -122,6 +124,8 @@ app.include_router(home_visits_router, prefix="/api/v1", tags=["home-visits"])
 app.include_router(teleconsults_router, prefix="/api/v1", tags=["teleconsults"])
 app.include_router(remote_devices_router, prefix="/api/v1", tags=["remote-devices"])
 app.include_router(self_medication_router, prefix="/api/v1", tags=["self-medication"])
+app.include_router(lab_results_router, prefix="/api/v1", tags=["lab-results"])
+app.include_router(fluid_balance_router, prefix="/api/v1", tags=["fluid-balance"])
 
 # WebSocket routes
 app.include_router(alarms_ws_router, tags=["websocket"])

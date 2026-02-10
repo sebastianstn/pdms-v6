@@ -9,22 +9,26 @@ import { NursingEntryForm } from "@/components/nursing/nursing-entry-form";
 import { AssessmentOverview } from "@/components/nursing/assessment-overview";
 import { AssessmentForm } from "@/components/nursing/assessment-form";
 import { RemoteDevicePanel, SelfMedicationTracker } from "@/components/home-spital";
+import { FluidBalanceOverview } from "@/components/fluid-balance/fluid-balance-overview";
+import { FluidEntryForm } from "@/components/fluid-balance/fluid-entry-form";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui";
 import type { Medication } from "@/hooks/use-medications";
 import type { AssessmentType } from "@/hooks/use-nursing";
 
-type Tab = "entries" | "medications" | "assessments" | "home_spital";
+type Tab = "entries" | "io_bilanz" | "medications" | "assessments" | "home_spital";
 
 export default function PflegePage() {
   const { patientId } = useParams<{ patientId: string }>();
   const [activeTab, setActiveTab] = useState<Tab>("entries");
   const [showEntryForm, setShowEntryForm] = useState(false);
+  const [showFluidForm, setShowFluidForm] = useState(false);
   const [adminMed, setAdminMed] = useState<Medication | null>(null);
   const [assessmentType, setAssessmentType] = useState<AssessmentType | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined);
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "entries", label: "Pflegeeinträge" },
+    { key: "io_bilanz", label: "I/O-Bilanz" },
     { key: "assessments", label: "Assessments" },
     { key: "medications", label: "Medikamente" },
     { key: "home_spital", label: "Home-Spital" },
@@ -108,6 +112,41 @@ export default function PflegePage() {
             </CardContent>
           </Card>
         </>
+      )}
+
+      {/* ─── I/O-Bilanz Tab ────────────────────────────── */}
+      {activeTab === "io_bilanz" && (
+        <div className="space-y-6">
+          <FluidBalanceOverview patientId={patientId} />
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Flüssigkeit erfassen</CardTitle>
+                  <p className="text-sm text-slate-500 mt-1">
+                    Einfuhr und Ausfuhr dokumentieren.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowFluidForm((v) => !v)}
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                >
+                  {showFluidForm ? "Schliessen" : "+ Neuer Eintrag"}
+                </button>
+              </div>
+            </CardHeader>
+            {showFluidForm && (
+              <CardContent>
+                <FluidEntryForm
+                  patientId={patientId}
+                  onSuccess={() => setShowFluidForm(false)}
+                  onCancel={() => setShowFluidForm(false)}
+                />
+              </CardContent>
+            )}
+          </Card>
+        </div>
       )}
 
       {/* ─── Assessments Tab ─────────────────────────────── */}

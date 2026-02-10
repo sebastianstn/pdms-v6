@@ -5,6 +5,8 @@ import { useParams } from "next/navigation";
 import { useVitals } from "@/hooks/use-vitals";
 import { VitalChart } from "@/components/vitals/vital-chart";
 import { AlarmList } from "@/components/vitals/alarm-list";
+import { LabMiniTableCard } from "@/components/lab/lab-mini-table";
+import { FluidBalanceOverview } from "@/components/fluid-balance/fluid-balance-overview";
 import { Card, CardHeader, CardContent, CardTitle, Spinner } from "@/components/ui";
 import { VITAL_LABELS } from "@/lib/constants";
 import { formatDateTime } from "@/lib/utils";
@@ -149,6 +151,11 @@ export default function KurvePage() {
           </CardContent>
         </Card>
       )}
+      {/* I/O-Bilanz — Flüssigkeitsbilanz */}
+      <FluidBalanceOverview patientId={patientId} />
+
+      {/* Laborwerte — aktuelle Zusammenfassung */}
+      <LabMiniTableCard patientId={patientId} />
     </div>
   );
 }

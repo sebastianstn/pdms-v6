@@ -6,3 +6,5 @@ export type * from "./documentation";
 export * from "./planning";
 export * from "./legal";
 export * from "./home-spital";
+export * from "./lab";
+export * from "./fluid-balance";
