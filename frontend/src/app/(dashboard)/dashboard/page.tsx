@@ -70,9 +70,10 @@ export default function DashboardPage() {
       sub: `${pendingVisits} noch ausstehend`,
       subColor: "text-emerald-600",
     },
+    // TODO: Teleconsult-Stat benötigt /teleconsults/today Backend-Endpoint
     {
       label: "Teleconsults heute",
-      value: 5,
+      value: "—",
       icon: (
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
           <rect x="3" y="7" width="13" height="10" rx="2" />
@@ -81,7 +82,7 @@ export default function DashboardPage() {
       ),
       iconBg: "bg-violet-50",
       iconColor: "text-violet-600",
-      sub: "Nächste in 45 Min",
+      sub: "Endpoint noch ausstehend",
       subColor: "text-violet-600",
     },
   ];
@@ -164,7 +165,7 @@ export default function DashboardPage() {
           {/* Two-column: Patient Details + Home Visits */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             <PatientDetailPanel patientId={selectedPatientId} />
-            <HomeVisitPanel visits={homeVisits ?? []} />
+            <HomeVisitPanel visits={homeVisits ?? []} patients={patients?.items} />
           </div>
 
           {/* Remote Devices */}

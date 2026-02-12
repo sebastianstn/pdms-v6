@@ -2,6 +2,7 @@
 
 import logging
 import time
+from uuid import UUID
 
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -10,6 +11,16 @@ from src.infrastructure.audit_db import log_action
 from src.infrastructure.database import AsyncSessionLocal
 
 logger = logging.getLogger("pdms.audit")
+
+
+def _safe_uuid(value: str | None) -> UUID | None:
+    """Parse a UUID string safely; return None on failure."""
+    if not value:
+        return None
+    try:
+        return UUID(value)
+    except (ValueError, AttributeError):
+        return None
 
 
 class AuditMiddleware(BaseHTTPMiddleware):
@@ -24,21 +35,25 @@ class AuditMiddleware(BaseHTTPMiddleware):
         if request.url.path.startswith("/api/") and request.method in ("POST", "PATCH", "PUT", "DELETE"):
             try:
                 # Extract user info from request state (set by get_current_user dependency)
-                user_id = getattr(request.state, "user_id", "anonymous")
+                raw_user_id = getattr(request.state, "user_id", None)
+                user_id = _safe_uuid(raw_user_id)
                 user_role = getattr(request.state, "user_role", "anonymous")
 
-                async with AsyncSessionLocal() as session:
-                    await log_action(
-                        session,
-                        user_id=user_id,
-                        user_role=user_role,
-                        action=request.method,
-                        resource_type=request.url.path,
-                        resource_id=None,
-                        details={"status": response.status_code, "duration_ms": duration_ms},
-                        ip_address=request.client.host if request.client else None,
-                    )
-                    await session.commit()
+                if user_id is None:
+                    logger.debug("Audit: skipping log for unauthenticated request %s %s", request.method, request.url.path)
+                else:
+                    async with AsyncSessionLocal() as session:
+                        await log_action(
+                            session,
+                            user_id=user_id,
+                            user_role=user_role,
+                            action=request.method,
+                            resource_type=request.url.path,
+                            resource_id=None,
+                            details={"status": response.status_code, "duration_ms": duration_ms},
+                            ip_address=request.client.host if request.client else None,
+                        )
+                        await session.commit()
             except Exception as e:
                 logger.warning(f"Audit log failed: {e}")
 

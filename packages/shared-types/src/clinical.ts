@@ -173,7 +173,7 @@ export interface PaginatedMedications {
   items: Medication[];
   total: number;
   page: number;
-  size: number;
+  per_page: number;
 }
 
 // ─── Nursing Types ────────────────────────────────────────────

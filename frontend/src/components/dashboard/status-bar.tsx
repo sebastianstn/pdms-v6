@@ -8,8 +8,15 @@ export function StatusBar() {
     useEffect(() => {
         function update() {
             const now = new Date();
-            const d = now.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" });
-            const t = now.toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+            const d = now.toLocaleDateString("de-CH", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+            });
+            const t = now.toLocaleTimeString("de-CH", {
+                hour: "2-digit",
+                minute: "2-digit",
+            });
             setDateTimeStr(`${d} ${t}`);
         }
         update();
@@ -23,16 +30,17 @@ export function StatusBar() {
             <div className="flex items-center gap-2 text-[8px] text-slate-400 flex-wrap">
                 <span>System Online</span>
                 <span>·</span>
-                <span>Remote-Monitoring: 22/24 verbunden</span>
-                <span>·</span>
                 <span>DB: PostgreSQL 16 + TimescaleDB</span>
                 <span>·</span>
-                <span>FHIR R4 + CH Core</span>
+                <span>Cache: Valkey</span>
+                <span>·</span>
+                <span>Auth: Keycloak OIDC</span>
                 <span>·</span>
                 <span>🔒 Daten in CH (nDSG-konform)</span>
             </div>
             <span className="ml-auto text-[8px] text-slate-400 shrink-0">
-                PDMS Home-Spital v0.1.0{dateTimeStr ? ` · ${dateTimeStr}` : ""}
+                PDMS Home-Spital v0.1.0
+                {dateTimeStr ? ` · ${dateTimeStr}` : ""}
             </span>
         </div>
     );

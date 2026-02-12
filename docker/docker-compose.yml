@@ -2,8 +2,6 @@
 # PDMS Home-Spital — Development Stack
 # Start: cd docker && docker compose up -d
 
-version: "3.9"
-
 services:
   # ─── DATENBANK ────────────────────────
   postgres:
@@ -194,7 +192,6 @@ services:
     restart: unless-stopped
     ports:
       - "8090:80"
-      - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro

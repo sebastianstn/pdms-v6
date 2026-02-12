@@ -3,16 +3,7 @@
  */
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
-
-interface Patient {
-  id: string;
-  first_name: string;
-  last_name: string;
-  date_of_birth: string;
-  gender: string;
-  status: string;
-  ahv_number?: string;
-}
+import type { Patient } from "@pdms/shared-types";
 
 interface PaginatedPatients {
   items: Patient[];

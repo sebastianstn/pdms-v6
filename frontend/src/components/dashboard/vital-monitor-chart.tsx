@@ -1,123 +1,99 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
+import { useVitals } from "@/hooks/use-vitals";
 import { cn } from "@/lib/utils";
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    Tooltip,
+    ResponsiveContainer,
+    CartesianGrid,
+} from "recharts";
 
 interface VitalMonitorChartProps {
     patientId: string | null;
 }
 
-type TimeRange = "1h" | "6h" | "24h" | "7d" | "all";
-
-// Deterministic seeded PRNG to avoid hydration mismatch
-function seededRandom(seed: number) {
-    let s = Math.abs(seed % 2147483647) || 1;
-    return () => {
-        s = (s * 16807) % 2147483647;
-        return (s - 1) / 2147483646;
-    };
-}
-
-// Demo-Daten für die Darstellung (deterministisch)
-function generateDemoData(hours: number) {
-    const random = seededRandom(hours * 42 + 7);
-    const points = [];
-    const count = Math.min(hours * 4, 96);
-    for (let i = count; i >= 0; i--) {
-        const h = (24 - Math.floor((i * hours) / count)) % 24;
-        const m = Math.floor(((i * hours * 60) / count) % 60);
-        points.push({
-            time: `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
-            spo2: 93 + random() * 5,
-            hr: 70 + random() * 25,
-            systolic: 120 + random() * 20,
-            diastolic: 75 + random() * 15,
-            temp: 36.8 + random() * 1.2,
-        });
-    }
-    return points;
-}
+type TimeRange = "1h" | "6h" | "24h" | "7d";
 
 const TIME_RANGES: { key: TimeRange; label: string; hours: number }[] = [
     { key: "1h", label: "1h", hours: 1 },
     { key: "6h", label: "6h", hours: 6 },
     { key: "24h", label: "24h", hours: 24 },
     { key: "7d", label: "7d", hours: 168 },
-    { key: "all", label: "All", hours: 720 },
 ];
 
-const VITALS = [
-    { key: "spo2", label: "SpO₂", color: "#06b6d4", value: "96%", unit: "%" },
-    { key: "hr", label: "HR", color: "#ef4444", value: "82 bpm", unit: "bpm" },
-    { key: "bp", label: "BP", color: "#8b5cf6", value: "128/82", unit: "mmHg" },
-    { key: "temp", label: "Temp", color: "#f59e0b", value: "37.4°C", unit: "°C" },
+const CHART_VITALS = [
+    { key: "spo2", label: "SpO₂", unit: "%", color: "#06b6d4" },
+    { key: "heart_rate", label: "HR", unit: "bpm", color: "#ef4444" },
+    { key: "systolic_bp", label: "Sys", unit: "mmHg", color: "#8b5cf6" },
+    { key: "temperature", label: "Temp", unit: "°C", color: "#f59e0b" },
 ];
 
 export function VitalMonitorChart({ patientId }: VitalMonitorChartProps) {
     const [timeRange, setTimeRange] = useState<TimeRange>("24h");
-    const selectedRange = TIME_RANGES.find((r) => r.key === timeRange)!;
-    const data = useMemo(() => generateDemoData(selectedRange.hours), [selectedRange.hours]);
+    const hours = TIME_RANGES.find((r) => r.key === timeRange)!.hours;
+    const { data: vitals, isLoading } = useVitals(patientId ?? "", hours);
 
-    // SVG Chart berechnen
-    const chartWidth = 480;
-    const chartHeight = 160;
-    const padding = { top: 10, right: 10, bottom: 20, left: 0 };
-    const innerW = chartWidth - padding.left - padding.right;
-    const innerH = chartHeight - padding.top - padding.bottom;
+    const chartData = (vitals ?? []).map((v) => ({
+        time: new Date(v.recorded_at).toLocaleTimeString("de-CH", {
+            hour: "2-digit",
+            minute: "2-digit",
+        }),
+        spo2: v.spo2,
+        heart_rate: v.heart_rate,
+        systolic_bp: v.systolic_bp,
+        temperature: v.temperature,
+    }));
 
-    function toPath(values: number[], min: number, max: number) {
-        const range = max - min || 1;
-        return values
-            .map((v, i) => {
-                const x = padding.left + (i / (values.length - 1)) * innerW;
-                const y = padding.top + (1 - (v - min) / range) * innerH;
-                return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`;
-            })
-            .join(" ");
-    }
-
-    function toAreaPath(values: number[], min: number, max: number) {
-        const line = toPath(values, min, max);
-        const lastX = padding.left + innerW;
-        const firstX = padding.left;
-        const bottom = padding.top + innerH;
-        return `${line} L${lastX},${bottom} L${firstX},${bottom} Z`;
-    }
-
-    const spo2Values = data.map((d) => d.spo2);
-    const hrValues = data.map((d) => d.hr);
-
-    const spo2Path = toPath(spo2Values, 60, 100);
-    const spo2Area = toAreaPath(spo2Values, 60, 100);
-    const hrPath = toPath(hrValues, 60, 100);
-
-    // X-Achsen-Labels
-    const xLabels = [
-        data[0]?.time || "",
-        data[Math.floor(data.length * 0.25)]?.time || "",
-        data[Math.floor(data.length * 0.5)]?.time || "",
-        data[Math.floor(data.length * 0.75)]?.time || "",
-        "Jetzt",
+    const latest = vitals && vitals.length > 0 ? vitals[vitals.length - 1] : null;
+    const statValues = [
+        {
+            key: "spo2",
+            label: "SpO₂",
+            value: latest?.spo2 != null ? `${latest.spo2}%` : "—",
+            color: "#06b6d4",
+        },
+        {
+            key: "heart_rate",
+            label: "HR",
+            value: latest?.heart_rate != null ? `${latest.heart_rate} bpm` : "—",
+            color: "#ef4444",
+        },
+        {
+            key: "systolic_bp",
+            label: "BP",
+            value:
+                latest?.systolic_bp != null && latest?.diastolic_bp != null
+                    ? `${latest.systolic_bp}/${latest.diastolic_bp}`
+                    : "—",
+            color: "#8b5cf6",
+        },
+        {
+            key: "temperature",
+            label: "Temp",
+            value: latest?.temperature != null ? `${latest.temperature}°C` : "—",
+            color: "#f59e0b",
+        },
     ];
 
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
-            {/* Header */}
             <div className="flex items-center justify-between mb-3">
                 <div>
                     <h3 className="text-[13px] font-bold text-slate-900">
-                        Fernüberwachung{patientId ? "" : " — Kein Patient ausgewählt"}
+                        Fernüberwachung
+                        {!patientId && " — Kein Patient ausgewählt"}
                     </h3>
                     {patientId && (
-                        <div className="flex items-center gap-2 mt-1">
-                            <span className="text-[9px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
-                                ● Online
-                            </span>
-                        </div>
+                        <span className="text-[9px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md mt-1 inline-block">
+                            ● Online
+                        </span>
                     )}
                 </div>
-
-                {/* Time Range Pills */}
                 <div className="flex gap-1">
                     {TIME_RANGES.map((range) => (
                         <button
@@ -136,79 +112,77 @@ export function VitalMonitorChart({ patientId }: VitalMonitorChartProps) {
                 </div>
             </div>
 
-            {/* Vital Labels Row */}
+            {/* Vital stat badges */}
             <div className="flex gap-5 mb-3">
-                {VITALS.map((vital) => (
-                    <div key={vital.key} className="flex items-center gap-1.5">
-                        <div className="w-2 h-2 rounded-sm" style={{ backgroundColor: vital.color }} />
-                        <span className="text-[10px] font-semibold" style={{ color: vital.color }}>
-                            {vital.label}
+                {statValues.map((stat) => (
+                    <div key={stat.key} className="flex items-center gap-1.5">
+                        <div
+                            className="w-2 h-2 rounded-sm"
+                            style={{ backgroundColor: stat.color }}
+                        />
+                        <span
+                            className="text-[10px] font-semibold"
+                            style={{ color: stat.color }}
+                        >
+                            {stat.label}
                         </span>
-                        <span className="text-[10px] font-bold text-slate-900">{vital.value}</span>
+                        <span className="text-[10px] font-bold text-slate-900">
+                            {stat.value}
+                        </span>
                     </div>
                 ))}
             </div>
 
-            {/* SVG Chart */}
-            <div className="relative">
-                <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto" preserveAspectRatio="xMidYMid meet">
-                    <defs>
-                        <linearGradient id="spo2Grad" x1="0" y1="0" x2="1" y2="0">
-                            <stop offset="0%" stopColor="#06b6d4" />
-                            <stop offset="100%" stopColor="#0891b2" />
-                        </linearGradient>
-                        <linearGradient id="spo2AreaGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.2" />
-                            <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.02" />
-                        </linearGradient>
-                        <linearGradient id="hrGrad" x1="0" y1="0" x2="1" y2="0">
-                            <stop offset="0%" stopColor="#ef4444" />
-                            <stop offset="100%" stopColor="#f87171" />
-                        </linearGradient>
-                    </defs>
-
-                    {/* Grid Lines */}
-                    {[0, 0.25, 0.5, 0.75, 1].map((pct, i) => {
-                        const y = padding.top + pct * innerH;
-                        return (
-                            <line key={i} x1={padding.left} y1={y} x2={chartWidth - padding.right} y2={y}
-                                stroke="#f1f5f9" strokeWidth="1" />
-                        );
-                    })}
-
-                    {/* Y-Axis Labels */}
-                    {[100, 90, 80, 70, 60].map((val, i) => (
-                        <text key={i} x={chartWidth - padding.right + 4} y={padding.top + i * (innerH / 4) + 3}
-                            fontSize="7" fill="#cbd5e1" textAnchor="start">
-                            {val}
-                        </text>
-                    ))}
-
-                    {/* SpO2 Area */}
-                    <path d={spo2Area} fill="url(#spo2AreaGrad)" />
-
-                    {/* SpO2 Line */}
-                    <path d={spo2Path} fill="none" stroke="url(#spo2Grad)" strokeWidth="2.5"
-                        strokeLinecap="round" strokeLinejoin="round" />
-
-                    {/* HR Line (dashed) */}
-                    <path d={hrPath} fill="none" stroke="url(#hrGrad)" strokeWidth="2"
-                        strokeLinecap="round" strokeLinejoin="round" strokeDasharray="6 3" />
-
-                    {/* Current Dots */}
-                    <circle cx={chartWidth - padding.right} cy={padding.top + (1 - (spo2Values[spo2Values.length - 1] - 60) / 40) * innerH}
-                        r="4" fill="white" stroke="#06b6d4" strokeWidth="2.5" />
-                    <circle cx={chartWidth - padding.right} cy={padding.top + (1 - (hrValues[hrValues.length - 1] - 60) / 40) * innerH}
-                        r="3.5" fill="white" stroke="#ef4444" strokeWidth="2" />
-
-                    {/* X-Axis Labels */}
-                    {xLabels.map((label, i) => (
-                        <text key={i} x={padding.left + i * (innerW / 4)} y={chartHeight - 2}
-                            fontSize="7" fill="#cbd5e1">
-                            {label}
-                        </text>
-                    ))}
-                </svg>
+            {/* Chart area */}
+            <div className="h-[160px]">
+                {!patientId ? (
+                    <div className="flex items-center justify-center h-full">
+                        <p className="text-[11px] text-slate-400">Patient auswählen</p>
+                    </div>
+                ) : isLoading ? (
+                    <div className="flex items-center justify-center h-full">
+                        <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                    </div>
+                ) : chartData.length === 0 ? (
+                    <div className="flex items-center justify-center h-full">
+                        <p className="text-[11px] text-slate-400">
+                            Keine Vitaldaten im gewählten Zeitraum
+                        </p>
+                    </div>
+                ) : (
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                            data={chartData}
+                            margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                            <XAxis
+                                dataKey="time"
+                                tick={{ fontSize: 8, fill: "#94a3b8" }}
+                                interval="preserveStartEnd"
+                            />
+                            <YAxis tick={{ fontSize: 8, fill: "#94a3b8" }} />
+                            <Tooltip
+                                contentStyle={{
+                                    fontSize: 10,
+                                    borderRadius: 8,
+                                    border: "1px solid #e2e8f0",
+                                }}
+                            />
+                            {CHART_VITALS.map((v) => (
+                                <Line
+                                    key={v.key}
+                                    type="monotone"
+                                    dataKey={v.key}
+                                    stroke={v.color}
+                                    strokeWidth={2}
+                                    dot={false}
+                                    connectNulls
+                                />
+                            ))}
+                        </LineChart>
+                    </ResponsiveContainer>
+                )}
             </div>
         </div>
     );

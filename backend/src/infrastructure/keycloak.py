@@ -59,7 +59,7 @@ async def get_current_user(
     # Dev bypass: no token in development → return mock user
     if credentials is None:
         if settings.environment == "development":
-            logger.debug("Auth bypass: returning dev user (no token)")
+            logger.warning("⚠️  Auth bypass active: returning dev user (NEVER use in production!)")
             request.state.user_id = _DEV_USER["sub"]
             request.state.user_role = "admin"
             return _DEV_USER

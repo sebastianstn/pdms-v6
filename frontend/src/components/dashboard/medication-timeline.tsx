@@ -1,174 +1,118 @@
 "use client";
 
+import { useMedications } from "@/hooks/use-medications";
+
 interface MedicationTimelineProps {
     patientId: string | null;
 }
 
-interface MedEntry {
-    name: string;
-    dose: string;
-    route: string;
-    admin: string;
-    colorDot: string;
-    slots: { time: string; status: "done" | "due" | "planned"; by?: string }[];
-}
+const ROUTE_COLORS: Record<string, string> = {
+    iv: "bg-red-100",
+    oral: "bg-cyan-100",
+    sc: "bg-amber-100",
+    im: "bg-violet-100",
+    topisch: "bg-emerald-100",
+    inhalativ: "bg-blue-100",
+    rektal: "bg-slate-100",
+    sublingual: "bg-pink-100",
+};
 
-// Demo-Daten
-const DEMO_MEDS: MedEntry[] = [
-    {
-        name: "Ceftriaxon i.v.",
-        dose: "2g · i.v.",
-        route: "Pflegefachperson",
-        admin: "pflege",
-        colorDot: "bg-red-100",
-        slots: [
-            { time: "07:00", status: "done", by: "Pflege 07:15" },
-            { time: "18:00", status: "due" },
-        ],
-    },
-    {
-        name: "Ramipril",
-        dose: "5mg · oral",
-        route: "Selbstmedikation",
-        admin: "selbst",
-        colorDot: "bg-cyan-100",
-        slots: [
-            { time: "07:00", status: "done", by: "Patient 07:30" },
-        ],
-    },
-    {
-        name: "Metformin",
-        dose: "850mg · oral · 2x tägl.",
-        route: "Selbst",
-        admin: "selbst",
-        colorDot: "bg-emerald-100",
-        slots: [
-            { time: "07:00", status: "done" },
-            { time: "18:00", status: "planned" },
-        ],
-    },
-    {
-        name: "Pantoprazol",
-        dose: "40mg · oral · morgens",
-        route: "Selbst",
-        admin: "selbst",
-        colorDot: "bg-violet-100",
-        slots: [
-            { time: "07:00", status: "done" },
-        ],
-    },
-    {
-        name: "Enoxaparin s.c.",
-        dose: "40mg · s.c.",
-        route: "Pflegefachperson",
-        admin: "pflege",
-        colorDot: "bg-amber-100",
-        slots: [
-            { time: "09:00", status: "done", by: "Pflege 09:00" },
-        ],
-    },
-];
+const ROUTE_LABELS: Record<string, string> = {
+    iv: "i.v.",
+    oral: "oral",
+    sc: "s.c.",
+    im: "i.m.",
+    topisch: "topisch",
+    inhalativ: "inhal.",
+    rektal: "rektal",
+    sublingual: "sublingual",
+};
 
-const TIME_COLUMNS = ["07:00", "09:00", "12:00", "18:00", "22:00"];
-
-function StatusDot({ status, by }: { status: string; by?: string }) {
-    if (status === "done") {
-        return (
-            <div className="flex items-center gap-1">
-                <div className="w-3.5 h-3.5 rounded-full bg-emerald-500 flex items-center justify-center">
-                    <span className="text-white text-[7px] font-bold">✓</span>
-                </div>
-                {by && <span className="text-[8px] text-slate-400">{by}</span>}
-            </div>
-        );
-    }
-    if (status === "due") {
-        return (
-            <div className="flex items-center gap-1">
-                <div className="w-3.5 h-3.5 rounded-full bg-white border-[1.5px] border-amber-400 flex items-center justify-center">
-                    <span className="text-amber-500 text-[7px] font-bold">!</span>
-                </div>
-                <span className="text-[8px] text-amber-600 font-medium">Fällig</span>
-            </div>
-        );
-    }
-    // planned
-    return (
-        <div className="w-3.5 h-3.5 rounded-full bg-white border-[1.5px] border-slate-200" />
-    );
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function MedicationTimeline({ patientId }: MedicationTimelineProps) {
+    const { data, isLoading } = useMedications(patientId ?? "", "active");
+    const medications = data?.items ?? [];
+
+    if (!patientId) {
+        return (
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex-1">
+                <h3 className="text-[13px] font-bold text-slate-900 mb-3">
+                    Medikamentenplan (Zuhause)
+                </h3>
+                <p className="text-[11px] text-slate-400 text-center py-6">
+                    Patient auswählen
+                </p>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex-1">
-            {/* Header */}
             <div className="flex items-center justify-between mb-4">
-                <h3 className="text-[13px] font-bold text-slate-900">Medikamentenplan (Zuhause)</h3>
-                <button className="text-[10px] font-semibold text-white bg-gradient-to-r from-emerald-500 to-emerald-600 px-3 py-1.5 rounded-lg hover:shadow-md transition-shadow">
-                    + Verordnung
-                </button>
+                <h3 className="text-[13px] font-bold text-slate-900">
+                    Medikamentenplan (Zuhause)
+                </h3>
+                <span className="text-[10px] font-semibold text-slate-400">
+                    {isLoading ? "…" : `${medications.length} aktiv`}
+                </span>
             </div>
 
-            {/* Timeline Table */}
-            <div className="overflow-x-auto">
-                {/* Header Row */}
-                <div className="flex items-center bg-slate-50 rounded-lg px-3 py-2 mb-1 min-w-[500px]">
-                    <div className="w-[180px] shrink-0">
-                        <span className="text-[9px] font-semibold text-slate-500">Medikament</span>
-                    </div>
-                    {TIME_COLUMNS.map((time) => (
-                        <div key={time} className="flex-1 text-center">
-                            <span className="text-[9px] font-semibold text-slate-500">{time}</span>
+            {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                    <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                </div>
+            ) : medications.length === 0 ? (
+                <p className="text-[11px] text-slate-400 text-center py-6">
+                    Keine aktiven Medikamente
+                </p>
+            ) : (
+                <div className="space-y-1">
+                    {medications.slice(0, 8).map((med) => (
+                        <div
+                            key={med.id}
+                            className="flex items-center px-3 py-2.5 border-b border-slate-50 last:border-0"
+                        >
+                            <div className="flex items-start gap-2 flex-1 min-w-0">
+                                <div
+                                    className={`w-2.5 h-2.5 rounded mt-0.5 shrink-0 ${
+                                        ROUTE_COLORS[med.route] ?? "bg-slate-100"
+                                    }`}
+                                />
+                                <div className="min-w-0">
+                                    <p className="text-[11px] font-semibold text-slate-900 leading-tight truncate">
+                                        {med.name}
+                                    </p>
+                                    <p className="text-[9px] text-slate-400">
+                                        {med.dose} {med.dose_unit} ·{" "}
+                                        {ROUTE_LABELS[med.route] ?? med.route} · {med.frequency}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="shrink-0 ml-2">
+                                {med.is_prn ? (
+                                    <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded bg-amber-50 text-amber-600 border border-amber-200">
+                                        Reserve
+                                    </span>
+                                ) : (
+                                    <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 border border-emerald-200">
+                                        Aktiv
+                                    </span>
+                                )}
+                            </div>
                         </div>
                     ))}
                 </div>
-
-                {/* Medication Rows */}
-                {DEMO_MEDS.map((med, idx) => (
-                    <div
-                        key={idx}
-                        className="flex items-center px-3 py-2.5 border-b border-slate-50 last:border-0 min-w-[500px]"
-                    >
-                        {/* Med Info */}
-                        <div className="w-[180px] shrink-0 flex items-start gap-2">
-                            <div className={`w-2.5 h-2.5 rounded mt-0.5 shrink-0 ${med.colorDot}`} />
-                            <div>
-                                <p className="text-[11px] font-semibold text-slate-900 leading-tight">{med.name}</p>
-                                <p className="text-[9px] text-slate-400">{med.dose} · {med.route}</p>
-                            </div>
-                        </div>
-
-                        {/* Time Slots */}
-                        {TIME_COLUMNS.map((time) => {
-                            const slot = med.slots.find((s) => s.time === time);
-                            return (
-                                <div key={time} className="flex-1 flex justify-center">
-                                    {slot ? <StatusDot status={slot.status} by={slot.by} /> : null}
-                                </div>
-                            );
-                        })}
-                    </div>
-                ))}
-            </div>
+            )}
 
             {/* Legend */}
             <div className="flex items-center gap-4 mt-3 pt-3 border-t border-slate-50">
-                <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded bg-emerald-500" />
-                    <span className="text-[8px] text-slate-500">Verabreicht</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded bg-amber-400" />
-                    <span className="text-[8px] text-slate-500">Fällig</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded bg-slate-200" />
-                    <span className="text-[8px] text-slate-500">Geplant</span>
-                </div>
-                <span className="text-[8px] text-slate-300">|</span>
-                <span className="text-[8px] text-cyan-600 font-medium">🏠 Selbst</span>
-                <span className="text-[8px] text-violet-600 font-medium">👩‍⚕️ Pflege</span>
+                {(["iv", "oral", "sc", "im"] as const).map((route) => (
+                    <div key={route} className="flex items-center gap-1">
+                        <div className={`w-2 h-2 rounded ${ROUTE_COLORS[route]}`} />
+                        <span className="text-[8px] text-slate-500">
+                            {ROUTE_LABELS[route]}
+                        </span>
+                    </div>
+                ))}
             </div>
         </div>
     );

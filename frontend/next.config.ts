@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const API_BACKEND = process.env.API_BACKEND_URL || "http://pdms-api:8000";
+const API_BACKEND = process.env.API_BACKEND_URL || "http://api:8000";
 
 const nextConfig: NextConfig = {
   // Turbopack enabled via CLI flag --turbopack

@@ -1,7 +1,8 @@
 # 🗺️ PDMS Home-Spital — Roadmap
 
-> **Stand:** 10. Februar 2026
-> **Aktueller Status:** ~85% implementiert — Phase 1 ✅, Phase 2 (11/11) ✅, Phase 3a (15/15) ✅, Phase 3b (7/7) ✅, Phase 3c (4/12) 🔧
+> **Stand:** 12. Februar 2026
+> **Aktueller Status:** ~75% funktional — Phase 1 ✅, Phase 2 (11/11) ✅, Phase 3a (15/15) ✅, Phase 3b (7/7) ✅, Phase 3c (4/12) 🔧
+> **Bekannte Einschränkung:** Dashboard-Komponenten zeigen Demo-Daten statt echte API-Daten (7/8 nicht verdrahtet)
 > **Ziel:** Lauffähiges PDMS für Schweizer Home-Hospitalisierung
 > **Design-Referenz:** 8 SVG-Wireframes in `docs/designs/`, 6 Planungsdokumente in `docs/planning/`
 
@@ -27,7 +28,7 @@
 |---|---------|---------|--------|---------|
 | 1.1 | Keycloak Auth-Flow (PKCE) | Frontend | ✅ | `callback/page.tsx` Token-Exchange, Token-Refresh im AuthProvider, echtes Login/Logout |
 | 1.2 | Patient-Routen reparieren | Frontend | ✅ | 6 Tab-Dateien in `page.tsx`-Ordner umstrukturiert, `/patients/page.tsx` erstellt |
-| 1.3 | Dashboard verdrahten | Frontend | ✅ | Stat-Cards mit `usePatients`/`useAlarms`, Patientenliste + Alarm-Panel live |
+| 1.3 | Dashboard verdrahten | Frontend | ✅ | Stat-Cards mit `usePatients`/`useAlarms`, Patientenliste live. ⚠️ 7/8 Dashboard-Panels (Vital-Chart, Medikamente, Hausbesuche, Remote-Geräte, Alarme, Patient-Detail, Status-Bar) nutzen noch hardcodierte DEMO_DATA statt echte Hooks |
 | 1.4 | PatientBand laden | Frontend | ✅ | `usePatient(id)` Hook in `patient-band.tsx` mit Loading/Error-States |
 | 1.5 | VitalChart mit Recharts | Frontend | ✅ | Recharts `LineChart` mit Multi-Parameter, Zeitraum-Wahl, Tooltip |
 | 1.6 | Hooks in Pages verdrahten | Frontend | ✅ | Personalien-Seite + Kurve-Seite mit Patient-/Vitals-Hooks verdrahtet |
@@ -102,13 +103,13 @@
 
 | # | Aufgabe | Bereich | Status | Details |
 |---|---------|---------|--------|---------|
-| 3b.1 | Hausbesuche (Backend) | Backend | ⬜ | Model `HomeVisit` (geplant/unterwegs/durchgeführt), Verknüpfung zu Appointments, zugewiesene Pflegeperson, Dauer, Dokumentation. Dashboard zeigt "Hausbesuche heute: 8 (3 ausstehend)" |
-| 3b.2 | Hausbesuche (Frontend) | Frontend | ⬜ | `useHomeVisits` Hook, Hausbesuch-Timeline auf Dashboard + Übersicht-Tab, Status-Tracking (geplant → unterwegs → ✓). Design: Dashboard rechts + Termine-Tab |
-| 3b.3 | Teleconsult-Management | Full-Stack | ⬜ | Teleconsult-Link/Terminierung, Dauer-Tracking, SOAP-Template für Teleconsult-Notizen, "Nächste in 45 Min"-Anzeige auf Dashboard. Design: Dashboard Stat-Card + Arzt-Tab |
-| 3b.4 | Remote-Geräte / Monitoring | Full-Stack | ⬜ | Model `RemoteDevice` (5 Typen: Pulsoximeter, Blutdruckmessgerät, Waage, Thermometer, Glukometer), Online-Status, Letzter Wert, "Vor X Tagen"-Warnung. Design: Dashboard + Übersicht-Tab |
-| 3b.5 | WebSocket Vitals-Stream | Backend | ⬜ | `ws://vitals/:pid` Endpoint für Live-Vitalwerte-Streaming vom Remote-Monitoring. Geplant im API-Katalog aber nicht implementiert |
-| 3b.6 | Selbstmedikation (Patient-App-Konzept) | Konzept | ⬜ | Medikamenten-Bestätigungs-Flow für Selbstmedikation (Patient bestätigt via App). Design zeigt "⚠ Medikament nicht bestätigt" Alarm. Design: Dashboard + Kurve Medikationsraster |
-| 3b.7 | Transport & Logistik | Full-Stack | ⬜ | Ambulante Termine: Transportart, Anmeldung-Status, Überweisung-Status. Design: Termine-Tab unten |
+| 3b.1 | Hausbesuche (Backend) | Backend | ✅ | Model `HomeVisit` (geplant/unterwegs/durchgeführt), Verknüpfung zu Appointments, zugewiesene Pflegeperson, Dauer, Dokumentation. Dashboard zeigt "Hausbesuche heute: 8 (3 ausstehend)" |
+| 3b.2 | Hausbesuche (Frontend) | Frontend | ✅ | `useHomeVisits` Hook (8 Hooks), Hausbesuch-Timeline auf Dashboard + Übersicht-Tab, Status-Tracking (geplant → unterwegs → ✓). ⚠️ Dashboard-Panel nutzt noch DEMO_DATA |
+| 3b.3 | Teleconsult-Management | Full-Stack | ✅ | Teleconsult-Link/Terminierung, Dauer-Tracking, SOAP-Template für Teleconsult-Notizen, Start/End-Session. 6 Hooks implementiert |
+| 3b.4 | Remote-Geräte / Monitoring | Full-Stack | ✅ | Model `RemoteDevice` (5 Typen: Pulsoximeter, Blutdruckmessgerät, Waage, Thermometer, Glukometer), Online-Status, Threshold-Alarme, Battery. 6 Hooks. ⚠️ Dashboard-Panel nutzt noch DEMO_DATA |
+| 3b.5 | WebSocket Vitals-Stream | Backend | ✅ | `ws://vitals/:pid` Endpoint für Live-Vitalwerte-Streaming, per-patient re-broadcast |
+| 3b.6 | Selbstmedikation (Patient-App-Konzept) | Konzept | ✅ | Medikamenten-Bestätigungs-Flow (confirm/miss/skip), 5 Hooks, SelfMedicationTracker-Komponente |
+| 3b.7 | Transport & Logistik | Full-Stack | ✅ | TransportCard, 4 Transporttypen |
 
 **Ergebnis Phase 3b:** ✅ Vollständiges Home-Spital-Erlebnis — Hausbesuche (6-Status-Flow mit Timeline + Dashboard-Stat), Teleconsults (SOAP-Template, Meeting-Links, Start/End-Session), Remote-Monitoring (5 Gerätetypen, Threshold-Alarme, Battery/Online-Status), Selbstmedikation (Patient-App-Konzept, Confirm/Miss/Skip), Transport (4 Typen), WebSocket Vitals-Stream. 4 neue DB-Tabellen, 33 neue API-Endpoints, 25 Frontend-Hooks, 5 neue Komponenten. Alembic-Migration `792a43a9750b`.
 
