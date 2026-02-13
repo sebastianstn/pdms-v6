@@ -1,0 +1,11 @@
+# SSL-Zertifikate — NIE einchecken!
+*.key
+*.crt
+*.pem
+*.csr
+*.cnf
+
+# Nur Skript und README versioniert
+!generate-certs.sh
+!README.md
+!.gitignore

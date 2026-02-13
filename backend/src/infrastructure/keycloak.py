@@ -23,11 +23,13 @@ JWKS_CACHE_TTL = 3600  # Re-fetch JWKS every hour
 
 # Dev user returned when no token is provided in development mode
 _DEV_USER: dict[str, Any] = {
-    "sub": "dev-user-0000-0000-000000000000",
+    "sub": "00000000-0000-4000-a000-000000000001",
     "preferred_username": "dev-admin",
     "email": "dev@pdms.local",
     "name": "Dev Admin",
     "realm_access": {"roles": ["admin", "arzt", "pflege"]},
+    "gln": "7601000000001",
+    "department": "Entwicklung",
 }
 
 
@@ -85,6 +87,8 @@ async def get_current_user(
             if payload.get("realm_access", {}).get("roles")
             else "user"
         )
+        request.state.user_gln = payload.get("gln")
+        request.state.user_department = payload.get("department")
         return payload
     except JWTError as e:
         raise HTTPException(

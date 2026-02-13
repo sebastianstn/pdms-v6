@@ -177,7 +177,7 @@ function NoteCard({ note, patientId, onEdit, onView, onDelete }: NoteCardProps) 
                             {NOTE_TYPE_LABELS[note.note_type]}
                         </span>
                         {note.is_confidential && (
-                            <Badge variant="danger">🔒 Vertraulich</Badge>
+                            <Badge variant="danger">Vertraulich</Badge>
                         )}
                         {note.co_signed_by && (
                             <Badge variant="success">Co-signiert</Badge>

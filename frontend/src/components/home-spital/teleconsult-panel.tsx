@@ -120,7 +120,7 @@ function TeleconsultCard({ teleconsult: tc, onStart, onEnd, isStarting, isEnding
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline"
                 >
-                    🔗 Meeting beitreten
+                    Meeting beitreten
                 </a>
             )}
 
@@ -147,7 +147,7 @@ function TeleconsultCard({ teleconsult: tc, onStart, onEnd, isStarting, isEnding
             {/* Follow-up indicator */}
             {tc.followup_required && (
                 <div className="text-xs text-amber-600 flex items-center gap-1">
-                    ⚠️ Follow-up erforderlich
+                    Follow-up erforderlich
                 </div>
             )}
 

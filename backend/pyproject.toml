@@ -21,6 +21,7 @@ dependencies = [
     "aio-pika>=9.5.0",
     "fhir.resources>=7.1.0",
     "python-multipart>=0.0.17",
+    "psutil>=6.0.0",
 ]
 
 [project.optional-dependencies]

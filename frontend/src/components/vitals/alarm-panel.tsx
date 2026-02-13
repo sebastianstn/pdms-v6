@@ -36,13 +36,13 @@ export function AlarmPanel({ patientId, limit = 10 }: AlarmPanelProps) {
                     </CardTitle>
                     <div className="flex gap-2">
                         {counts && counts.critical > 0 && (
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-medium animate-pulse">
-                                🔴 {counts.critical} kritisch
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-medium animate-pulse inline-flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-red-500" /> {counts.critical} kritisch
                             </span>
                         )}
                         {counts && counts.warning > 0 && (
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">
-                                🟡 {counts.warning} Warnungen
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium inline-flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-amber-500" /> {counts.warning} Warnungen
                             </span>
                         )}
                     </div>

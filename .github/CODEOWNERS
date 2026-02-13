@@ -1,5 +1,35 @@
-# Review-Pflicht für kritische Bereiche
-/apps/api/               @backend-team
-/docker/                 @devops-team
-/docs/compliance/        @compliance-team
-/.github/workflows/      @devops-team
+# PDMS Home-Spital — Code Owners
+# Automatische Review-Zuweisungen
+
+# Gesamtprojekt
+*                       @pdms-team
+
+# Backend
+/backend/               @backend-team
+/backend/src/api/       @backend-team
+/backend/src/domain/    @backend-team @medical-team
+/backend/tests/         @backend-team
+
+# Frontend
+/frontend/              @frontend-team
+/frontend/src/app/      @frontend-team
+/frontend/src/components/ @frontend-team
+
+# Infrastruktur
+/docker/                @devops-team
+/.github/               @devops-team
+
+# Sicherheits-kritisch — erfordert Review
+/backend/src/infrastructure/keycloak.py  @security-team
+/backend/src/api/middleware.py           @security-team
+/docker/nginx/                           @security-team @devops-team
+
+# Medizinische Logik — erfordert ärztliche Prüfung
+/backend/src/domain/services/            @medical-team @backend-team
+/backend/src/domain/models/              @medical-team @backend-team
+
+# Compliance-Dokumente
+/docs/compliance/        @compliance-team @security-team
+
+# AI Orchestrator
+/ai-orchestrator/       @ai-team

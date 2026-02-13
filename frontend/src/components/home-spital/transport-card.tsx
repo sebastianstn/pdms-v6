@@ -5,10 +5,10 @@ import { TRANSPORT_TYPE_LABELS } from "@pdms/shared-types";
 import type { TransportType } from "@pdms/shared-types";
 
 const TRANSPORT_ICON: Record<string, string> = {
-    ambulance: "🚑",
-    patient_transport: "🚐",
-    taxi: "🚕",
-    self: "🚶",
+    ambulance: "AMB",
+    patient_transport: "KTW",
+    taxi: "Taxi",
+    self: "Selbst",
 };
 
 interface TransportCardProps {
@@ -19,7 +19,7 @@ interface TransportCardProps {
 }
 
 export function TransportCard({ transportType, notes, scheduledTime, pickupAddress }: TransportCardProps) {
-    const icon = TRANSPORT_ICON[transportType] ?? "🚗";
+    const icon = TRANSPORT_ICON[transportType] ?? "KTW";
     const label = TRANSPORT_TYPE_LABELS[transportType] ?? transportType;
 
     return (
@@ -41,7 +41,7 @@ export function TransportCard({ transportType, notes, scheduledTime, pickupAddre
                             </p>
                         )}
                         {pickupAddress && (
-                            <p className="text-xs text-slate-500">📍 {pickupAddress}</p>
+                            <p className="text-xs text-slate-500">{pickupAddress}</p>
                         )}
                         {notes && (
                             <p className="text-xs text-slate-400 mt-1">{notes}</p>

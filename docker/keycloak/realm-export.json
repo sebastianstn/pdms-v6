@@ -3,13 +3,92 @@
   "enabled": true,
   "registrationAllowed": false,
   "bruteForceProtected": true,
+  "permanentLockout": false,
+  "maxFailureWaitSeconds": 900,
+  "waitIncrementSeconds": 60,
+  "failureFactor": 5,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "accessTokenLifespan": 300,
+  "accessTokenLifespanForImplicitFlow": 900,
+  "offlineSessionIdleTimeout": 2592000,
   "roles": {
     "realm": [
-      { "name": "arzt", "description": "Arzt — Vollzugriff auf klinische Daten" },
-      { "name": "pflege", "description": "Pflegefachperson — Pflege-Dokumentation + Vitaldaten" },
-      { "name": "admin", "description": "System-Administrator — Benutzerverwaltung + Audit" }
+      {
+        "name": "arzt",
+        "description": "Arzt — Vollzugriff auf klinische Daten"
+      },
+      {
+        "name": "pflege",
+        "description": "Pflegefachperson — Pflege-Dokumentation + Vitaldaten"
+      },
+      {
+        "name": "admin",
+        "description": "System-Administrator — Benutzerverwaltung + Audit"
+      }
     ]
   },
+  "clientScopes": [
+    {
+      "name": "pdms-claims",
+      "description": "PDMS-spezifische Token-Claims (GLN, Abteilung, AHV)",
+      "protocol": "openid-connect",
+      "protocolMappers": [
+        {
+          "name": "gln-number",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "gln",
+            "claim.name": "gln",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "department",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "department",
+            "claim.name": "department",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "ahv-number",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "ahv_nummer",
+            "claim.name": "ahv_nummer",
+            "jsonType.label": "String",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "false"
+          }
+        },
+        {
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "realm_access.roles",
+            "multivalued": "true",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
   "clients": [
     {
       "clientId": "pdms-web",
@@ -19,10 +98,25 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "rootUrl": "http://localhost:3000",
-      "redirectUris": ["http://localhost:3000/*"],
-      "webOrigins": ["http://localhost:3000"],
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "https://localhost:8443/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000",
+        "https://localhost:8443"
+      ],
       "protocol": "openid-connect",
-      "defaultClientScopes": ["openid", "profile", "email", "roles"]
+      "defaultClientScopes": [
+        "openid",
+        "profile",
+        "email",
+        "roles",
+        "pdms-claims"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      }
     },
     {
       "clientId": "pdms-api",
@@ -33,6 +127,20 @@
       "protocol": "openid-connect"
     }
   ],
+  "requiredActions": [
+    {
+      "alias": "CONFIGURE_TOTP",
+      "name": "Configure OTP",
+      "providerId": "CONFIGURE_TOTP",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 10
+    }
+  ],
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyPeriod": 30,
   "users": [
     {
       "username": "dr.mueller",
@@ -40,8 +148,24 @@
       "firstName": "Thomas",
       "lastName": "Müller",
       "enabled": true,
-      "credentials": [{ "type": "password", "value": "test1234", "temporary": false }],
-      "realmRoles": ["arzt"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test1234",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "arzt"
+      ],
+      "attributes": {
+        "gln": [
+          "7601000000001"
+        ],
+        "department": [
+          "Innere Medizin"
+        ]
+      }
     },
     {
       "username": "pflege.meier",
@@ -49,8 +173,21 @@
       "firstName": "Anna",
       "lastName": "Meier",
       "enabled": true,
-      "credentials": [{ "type": "password", "value": "test1234", "temporary": false }],
-      "realmRoles": ["pflege"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test1234",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "pflege"
+      ],
+      "attributes": {
+        "department": [
+          "Home-Spital Team A"
+        ]
+      }
     },
     {
       "username": "admin",
@@ -58,8 +195,21 @@
       "firstName": "System",
       "lastName": "Admin",
       "enabled": true,
-      "credentials": [{ "type": "password", "value": "admin1234", "temporary": false }],
-      "realmRoles": ["admin"]
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin1234",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "admin"
+      ],
+      "attributes": {
+        "department": [
+          "IT / Administration"
+        ]
+      }
     }
   ]
 }

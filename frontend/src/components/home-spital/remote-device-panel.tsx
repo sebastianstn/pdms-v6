@@ -6,11 +6,11 @@ import { DEVICE_TYPE_LABELS } from "@pdms/shared-types";
 import type { RemoteDevice, DeviceType } from "@pdms/shared-types";
 
 const DEVICE_ICON: Record<string, string> = {
-    pulsoximeter: "💓",
-    blood_pressure: "🩸",
-    scale: "⚖️",
-    thermometer: "🌡️",
-    glucometer: "🍬",
+    pulsoximeter: "❤",
+    blood_pressure: "↕",
+    scale: "⚖",
+    thermometer: "°",
+    glucometer: "◎",
 };
 
 function timeAgo(iso: string): string {
@@ -120,7 +120,7 @@ function DeviceCard({ device }: { device: RemoteDevice }) {
                         {device.last_reading_value}
                     </span>
                     <span className="text-xs text-slate-500">{device.last_reading_unit ?? ""}</span>
-                    {(hasAlert || hasLowAlert) && <span className="text-xs text-red-600 ml-1">⚠️ Alarm</span>}
+                    {(hasAlert || hasLowAlert) && <span className="text-xs text-red-600 ml-1">Alarm</span>}
                 </div>
             ) : (
                 <p className="text-sm text-slate-400">Kein Messwert</p>
@@ -130,7 +130,7 @@ function DeviceCard({ device }: { device: RemoteDevice }) {
             <div className="flex items-center justify-between text-xs text-slate-500">
                 {device.battery_level != null && (
                     <span className={batteryColor(device.battery_level)}>
-                        🔋 {device.battery_level}%
+                        Bat. {device.battery_level}%
                     </span>
                 )}
                 {device.last_reading_at && (

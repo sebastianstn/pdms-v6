@@ -100,7 +100,7 @@ export function DeathNotificationList({ patientId }: DeathNotificationListProps)
                         .map((n) => (
                             <div key={n.id} className="flex items-center gap-4 p-3 bg-white rounded-lg border border-slate-200">
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${n.priority === 1 ? "bg-red-100 text-red-700" :
-                                        n.priority === 2 ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"
+                                    n.priority === 2 ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"
                                     }`}>
                                     {n.priority}
                                 </div>
@@ -110,7 +110,7 @@ export function DeathNotificationList({ patientId }: DeathNotificationListProps)
                                         {n.contact_role && <span className="text-xs text-slate-400">({n.contact_role})</span>}
                                     </div>
                                     <div className="flex items-center gap-3 text-xs text-slate-500">
-                                        {n.contact_phone && <span>📞 {n.contact_phone}</span>}
+                                        {n.contact_phone && <span>Tel. {n.contact_phone}</span>}
                                         {n.contact_email && <span>✉ {n.contact_email}</span>}
                                         {n.instructions && <span className="italic">{n.instructions}</span>}
                                     </div>

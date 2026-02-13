@@ -74,7 +74,7 @@ export function FluidBalanceOverview({ patientId }: Props) {
         <Card>
             <CardHeader>
                 <div className="flex items-center justify-between">
-                    <CardTitle>💧 I/O-Bilanz</CardTitle>
+                    <CardTitle>I/O-Bilanz</CardTitle>
                     <div className="flex items-center gap-1">
                         {HOURS_OPTIONS.map((opt) => (
                             <button

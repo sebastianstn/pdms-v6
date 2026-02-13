@@ -11,6 +11,9 @@ import { ClinicalNoteDetail } from "@/components/clinical-notes/clinical-note-de
 import { LabTrendChartCard } from "@/components/lab/lab-trend-chart";
 import { LabMiniTableCard } from "@/components/lab/lab-mini-table";
 import { LabResultForm } from "@/components/lab/lab-result-form";
+import { TreatmentPlanList, TreatmentPlanForm } from "@/components/treatment-plans";
+import { ConsultationList, ConsultationForm } from "@/components/consultations";
+import { MedicalLetterList, MedicalLetterForm } from "@/components/medical-letters";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui";
 import type { Medication } from "@/hooks/use-medications";
 import type { ClinicalNote } from "@/hooks/use-clinical-notes";
@@ -29,6 +32,11 @@ export default function ArztPage() {
   // Lab state
   const [showLabForm, setShowLabForm] = useState(false);
 
+  // Phase 3c state
+  const [showPlanForm, setShowPlanForm] = useState(false);
+  const [showConsilForm, setShowConsilForm] = useState(false);
+  const [showLetterForm, setShowLetterForm] = useState(false);
+
   return (
     <div className="space-y-6">
       {/* Laborwerte — Trend-Chart (CRP Default) */}
@@ -43,7 +51,7 @@ export default function ArztPage() {
               onClick={() => setShowLabForm((v) => !v)}
               className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
             >
-              {showLabForm ? "Abbrechen" : "🔬 Laborwerte erfassen"}
+              {showLabForm ? "Abbrechen" : "Laborwerte erfassen"}
             </button>
           </div>
           {showLabForm && (
@@ -177,6 +185,102 @@ export default function ArztPage() {
           </div>
         </div>
       )}
+
+      {/* ─── Therapiepläne ──────────────────────────────── */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Therapiepläne</CardTitle>
+              <p className="text-sm text-slate-500 mt-1">
+                Behandlungspläne mit Zielen und Massnahmen.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowPlanForm((v) => !v)}
+              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+            >
+              {showPlanForm ? "Abbrechen" : "+ Neuer Plan"}
+            </button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {showPlanForm && (
+            <div className="mb-6">
+              <TreatmentPlanForm
+                patientId={patientId}
+                onSuccess={() => setShowPlanForm(false)}
+                onCancel={() => setShowPlanForm(false)}
+              />
+            </div>
+          )}
+          <TreatmentPlanList patientId={patientId} />
+        </CardContent>
+      </Card>
+
+      {/* ─── Konsilien ──────────────────────────────────── */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Konsilien</CardTitle>
+              <p className="text-sm text-slate-500 mt-1">
+                Anfragen und Berichte von Fachspezialisten.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowConsilForm((v) => !v)}
+              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+            >
+              {showConsilForm ? "Abbrechen" : "+ Neues Konsil"}
+            </button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {showConsilForm && (
+            <div className="mb-6">
+              <ConsultationForm
+                patientId={patientId}
+                onSuccess={() => setShowConsilForm(false)}
+                onCancel={() => setShowConsilForm(false)}
+              />
+            </div>
+          )}
+          <ConsultationList patientId={patientId} />
+        </CardContent>
+      </Card>
+
+      {/* ─── Arztbriefe ──────────────────────────────────── */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Arztbriefe</CardTitle>
+              <p className="text-sm text-slate-500 mt-1">
+                Entlass-, Überweisungs- und Verlaufsberichte.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowLetterForm((v) => !v)}
+              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+            >
+              {showLetterForm ? "Abbrechen" : "+ Neuer Brief"}
+            </button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {showLetterForm && (
+            <div className="mb-6">
+              <MedicalLetterForm
+                patientId={patientId}
+                onSuccess={() => setShowLetterForm(false)}
+                onCancel={() => setShowLetterForm(false)}
+              />
+            </div>
+          )}
+          <MedicalLetterList patientId={patientId} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 """WebSocket: live vitals stream per patient — for remote monitoring devices.
 
-Endpoint: ws://host/ws/vitals/{patient_id}
+Endpoint: ws://host/ws/vitals/{patient_id}?token=<JWT>
 Clients connect and receive vitals data as JSON messages.
 Nurses / dashboards can monitor multiple patients simultaneously.
 """
@@ -9,7 +9,9 @@ import json
 import logging
 from typing import Any
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect
+
+from src.api.websocket.ws_auth import authenticate_websocket
 
 logger = logging.getLogger("pdms.ws.vitals")
 
@@ -20,19 +22,21 @@ _vitals_connections: dict[str, list[WebSocket]] = {}
 
 
 @router.websocket("/ws/vitals/{patient_id}")
-async def vitals_stream(websocket: WebSocket, patient_id: str):
+async def vitals_stream(websocket: WebSocket, patient_id: str, token: str | None = Query(None)):
     """WebSocket-Endpoint: Live-Vitalwerte-Stream per Patient.
 
-    Remote-Monitoring-Geräte oder das Backend senden neue Messwerte,
-    die an alle verbundenen Clients für diesen Patienten gestreamt werden.
+    Authentifizierung via Query-Parameter: ws://host/ws/vitals/{id}?token=<JWT>
+    In Development ohne Token: Dev-User wird verwendet.
     """
-    await websocket.accept()
+    user = await authenticate_websocket(websocket, token)
+    if user is None:
+        return  # Connection was rejected
 
     if patient_id not in _vitals_connections:
         _vitals_connections[patient_id] = []
     _vitals_connections[patient_id].append(websocket)
     client = websocket.client
-    logger.info("🔌 Vitals-WS verbunden: patient=%s client=%s", patient_id, client)
+    logger.info("🔌 Vitals-WS verbunden: patient=%s client=%s user=%s", patient_id, client, user.get("preferred_username"))
 
     try:
         while True:

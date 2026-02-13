@@ -5,6 +5,7 @@ import { usePatient } from "@/hooks/use-patients";
 import { calculateAge, formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui";
 import { Spinner } from "@/components/ui";
+import { User } from "lucide-react";
 
 export function PatientBand() {
   const { patientId } = useParams<{ patientId: string }>();
@@ -37,8 +38,8 @@ export function PatientBand() {
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-6">
-      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-xl shrink-0">
-        {patient.gender === "female" ? "👩" : "👨"}
+      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+        <User className={`w-6 h-6 ${patient.gender === "female" ? "text-pink-500" : "text-blue-500"}`} />
       </div>
       <div className="flex-1 min-w-0">
         <h2 className="text-lg font-bold text-slate-900 truncate">

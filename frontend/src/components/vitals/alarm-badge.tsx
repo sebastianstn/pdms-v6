@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { AlertCircle, AlertTriangle, Info } from "lucide-react";
 
 interface AlarmBadgeProps {
   severity: "info" | "warning" | "critical";
@@ -15,7 +16,7 @@ export function AlarmBadge({ severity, label }: AlarmBadgeProps) {
       severity === "warning" && "bg-amber-100 text-amber-700",
       severity === "info" && "bg-blue-100 text-blue-700",
     )}>
-      {severity === "critical" ? "🔴" : severity === "warning" ? "🟡" : "🔵"}
+      {severity === "critical" ? <AlertCircle className="w-3 h-3" /> : severity === "warning" ? <AlertTriangle className="w-3 h-3" /> : <Info className="w-3 h-3" />}
       {label}
     </span>
   );

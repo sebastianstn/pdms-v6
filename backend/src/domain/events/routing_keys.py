@@ -63,3 +63,24 @@ class RoutingKeys:
     # ─── Fluid Balance (Phase 3c) ──────────────────────────────
     FLUID_RECORDED = "fluid.recorded"
     FLUID_BALANCE_ALERT = "fluid.balance_alert"
+
+    # ─── Treatment Plans (Phase 3c) ────────────────────────────
+    TREATMENT_PLAN_CREATED = "treatment_plan.created"
+    TREATMENT_PLAN_UPDATED = "treatment_plan.updated"
+
+    # ─── Consultations (Phase 3c) ──────────────────────────────
+    CONSULTATION_REQUESTED = "consultation.requested"
+    CONSULTATION_COMPLETED = "consultation.completed"
+
+    # ─── Medical Letters (Phase 3c) ────────────────────────────
+    LETTER_CREATED = "letter.created"
+    LETTER_SENT = "letter.sent"
+
+    # ─── Nursing Diagnoses (Phase 3c) ──────────────────────────
+    NURSING_DIAGNOSIS_CREATED = "nursing.diagnosis_created"
+
+    # ─── Shift Handover (Phase 3c) ─────────────────────────────
+    SHIFT_HANDOVER_CREATED = "shift_handover.created"
+
+    # ─── Nutrition (Phase 3c) ──────────────────────────────────
+    NUTRITION_ORDER_CREATED = "nutrition.order_created"

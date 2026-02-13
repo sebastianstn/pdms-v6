@@ -11,11 +11,15 @@ import { AssessmentForm } from "@/components/nursing/assessment-form";
 import { RemoteDevicePanel, SelfMedicationTracker } from "@/components/home-spital";
 import { FluidBalanceOverview } from "@/components/fluid-balance/fluid-balance-overview";
 import { FluidEntryForm } from "@/components/fluid-balance/fluid-entry-form";
+import { NursingDiagnosisList, NursingDiagnosisForm } from "@/components/nursing-diagnoses";
+import { ShiftHandoverList, ShiftHandoverForm } from "@/components/shift-handovers";
+import { NutritionPanel } from "@/components/nutrition";
+import { SupplyPanel } from "@/components/supplies";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui";
 import type { Medication } from "@/hooks/use-medications";
 import type { AssessmentType } from "@/hooks/use-nursing";
 
-type Tab = "entries" | "io_bilanz" | "medications" | "assessments" | "home_spital";
+type Tab = "entries" | "io_bilanz" | "medications" | "assessments" | "home_spital" | "diagnosen" | "uebergabe" | "ernaehrung" | "material";
 
 export default function PflegePage() {
   const { patientId } = useParams<{ patientId: string }>();
@@ -25,11 +29,17 @@ export default function PflegePage() {
   const [adminMed, setAdminMed] = useState<Medication | null>(null);
   const [assessmentType, setAssessmentType] = useState<AssessmentType | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined);
+  const [showDiagForm, setShowDiagForm] = useState(false);
+  const [showHandoverForm, setShowHandoverForm] = useState(false);
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "entries", label: "Pflegeeinträge" },
     { key: "io_bilanz", label: "I/O-Bilanz" },
     { key: "assessments", label: "Assessments" },
+    { key: "diagnosen", label: "Diagnosen" },
+    { key: "uebergabe", label: "Übergabe" },
+    { key: "ernaehrung", label: "Ernährung" },
+    { key: "material", label: "Material" },
     { key: "medications", label: "Medikamente" },
     { key: "home_spital", label: "Home-Spital" },
   ];
@@ -200,6 +210,84 @@ export default function PflegePage() {
           <RemoteDevicePanel patientId={patientId} />
           <SelfMedicationTracker patientId={patientId} />
         </div>
+      )}
+
+      {/* ─── Pflegediagnosen Tab ─────────────────────────── */}
+      {activeTab === "diagnosen" && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Pflegediagnosen (NANDA)</CardTitle>
+                <p className="text-sm text-slate-500 mt-1">
+                  Diagnosen nach NANDA-I mit Zielen und Interventionen.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowDiagForm((v) => !v)}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                {showDiagForm ? "Abbrechen" : "+ Neue Diagnose"}
+              </button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {showDiagForm && (
+              <div className="mb-6">
+                <NursingDiagnosisForm
+                  patientId={patientId}
+                  onSuccess={() => setShowDiagForm(false)}
+                  onCancel={() => setShowDiagForm(false)}
+                />
+              </div>
+            )}
+            <NursingDiagnosisList patientId={patientId} />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* ─── Schichtübergabe Tab ────────────────────────── */}
+      {activeTab === "uebergabe" && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Schichtübergabe (SBAR)</CardTitle>
+                <p className="text-sm text-slate-500 mt-1">
+                  Strukturierte Patientenübergabe zwischen Schichten.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowHandoverForm((v) => !v)}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                {showHandoverForm ? "Abbrechen" : "+ Neue Übergabe"}
+              </button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {showHandoverForm && (
+              <div className="mb-6">
+                <ShiftHandoverForm
+                  patientId={patientId}
+                  onSuccess={() => setShowHandoverForm(false)}
+                  onCancel={() => setShowHandoverForm(false)}
+                />
+              </div>
+            )}
+            <ShiftHandoverList patientId={patientId} />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* ─── Ernährung Tab ──────────────────────────────── */}
+      {activeTab === "ernaehrung" && (
+        <NutritionPanel patientId={patientId} />
+      )}
+
+      {/* ─── Material Tab ───────────────────────────────── */}
+      {activeTab === "material" && (
+        <SupplyPanel patientId={patientId} />
       )}
 
       {/* Verabreichungs-Dialog */}

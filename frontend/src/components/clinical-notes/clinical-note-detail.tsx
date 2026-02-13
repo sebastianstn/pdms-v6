@@ -59,7 +59,7 @@ export function ClinicalNoteDetail({ note, onEdit, onClose }: ClinicalNoteDetail
                                 {NOTE_TYPE_LABELS[note.note_type]}
                             </span>
                             {note.is_confidential && (
-                                <Badge variant="danger">🔒 Vertraulich</Badge>
+                                <Badge variant="danger">Vertraulich</Badge>
                             )}
                         </div>
                         <h3 className="text-lg font-semibold text-slate-800">{note.title}</h3>

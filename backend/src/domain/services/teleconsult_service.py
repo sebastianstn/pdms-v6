@@ -2,7 +2,7 @@
 
 import logging
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,6 +13,31 @@ from src.domain.schemas.home_spital import TeleconsultCreate, TeleconsultUpdate
 from src.infrastructure.rabbitmq import emit_event
 
 logger = logging.getLogger("pdms.teleconsults")
+
+
+# ─── Today ─────────────────────────────────────────────────────
+
+
+async def list_today_teleconsults(db: AsyncSession) -> tuple[list[Teleconsult], int]:
+    """Alle Teleconsults für heute (für Dashboard-Stat)."""
+    today = date.today()
+    today_start = datetime.combine(today, datetime.min.time())
+    today_end = datetime.combine(today, datetime.max.time())
+
+    base = select(Teleconsult).where(
+        Teleconsult.scheduled_start >= today_start,
+        Teleconsult.scheduled_start <= today_end,
+    )
+    count_q = select(func.count()).select_from(Teleconsult).where(
+        Teleconsult.scheduled_start >= today_start,
+        Teleconsult.scheduled_start <= today_end,
+    )
+
+    total = (await db.execute(count_q)).scalar() or 0
+    rows = (await db.execute(
+        base.order_by(Teleconsult.scheduled_start.asc())
+    )).scalars().all()
+    return rows, total
 
 
 # ─── CRUD ──────────────────────────────────────────────────────

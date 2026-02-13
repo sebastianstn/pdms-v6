@@ -36,7 +36,7 @@ export function ComplianceBanner({ patientId }: ComplianceBannerProps) {
     return (
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 space-y-1">
             <div className="flex items-center gap-2">
-                <span className="text-amber-600 text-sm">⚠️</span>
+                <span className="text-amber-600 text-sm font-bold">!</span>
                 <span className="text-sm font-medium text-amber-800">
                     Compliance-Hinweis
                 </span>

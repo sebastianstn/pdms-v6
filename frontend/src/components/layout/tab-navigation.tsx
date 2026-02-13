@@ -3,14 +3,25 @@
 import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import {
+  LayoutGrid,
+  UserCircle,
+  Activity,
+  Stethoscope,
+  HeartPulse,
+  CalendarDays,
+  ShieldCheck,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-const TABS = [
-  { key: "personalien", label: "Personalien", icon: "📋" },
-  { key: "kurve", label: "Kurve", icon: "📈" },
-  { key: "arzt", label: "Arzt", icon: "🩺" },
-  { key: "pflege", label: "Pflege", icon: "💉" },
-  { key: "termine", label: "Termine", icon: "📅" },
-  { key: "rechtliche", label: "Rechtliche", icon: "⚖️" },
+const TABS: { key: string; label: string; icon: LucideIcon }[] = [
+  { key: "uebersicht", label: "Übersicht", icon: LayoutGrid },
+  { key: "personalien", label: "Personalien", icon: UserCircle },
+  { key: "kurve", label: "Kurve", icon: Activity },
+  { key: "arzt", label: "Arzt", icon: Stethoscope },
+  { key: "pflege", label: "Pflege", icon: HeartPulse },
+  { key: "termine", label: "Termine", icon: CalendarDays },
+  { key: "rechtliche", label: "Rechtliche", icon: ShieldCheck },
 ];
 
 export function TabNavigation() {
@@ -33,7 +44,7 @@ export function TabNavigation() {
                 : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
             )}
           >
-            <span>{tab.icon}</span>
+            <tab.icon className="w-4 h-4" />
             <span>{tab.label}</span>
           </Link>
         );

@@ -27,7 +27,7 @@ export default function TerminePage() {
                   : "text-slate-500 hover:text-slate-700"
                   }`}
               >
-                📅 Woche
+                Woche
               </button>
               <button
                 onClick={() => setView("list")}
@@ -36,7 +36,7 @@ export default function TerminePage() {
                   : "text-slate-500 hover:text-slate-700"
                   }`}
               >
-                📋 Liste
+                Liste
               </button>
             </div>
           </div>

@@ -2,6 +2,7 @@
 
 import { usePatient } from "@/hooks/use-patients";
 import { useContacts } from "@/hooks/use-contacts";
+import { Home, Phone, Droplets } from "lucide-react";
 
 interface PatientDetailPanelProps {
     patientId: string | null;
@@ -74,13 +75,13 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
                             {language ? ` · ${language}` : ""}
                         </p>
                         {addressCity && (
-                            <p className="text-[9px] text-slate-400">
-                                🏠 {addressStreet ? `${addressStreet}, ` : ""}
+                            <p className="text-[9px] text-slate-400 inline-flex items-center gap-0.5">
+                                <Home className="w-2.5 h-2.5" /> {addressStreet ? `${addressStreet}, ` : ""}
                                 {addressZip ? `${addressZip} ` : ""}
                                 {addressCity}
                             </p>
                         )}
-                        {phone && <p className="text-[9px] text-slate-400">📞 {phone}</p>}
+                        {phone && <p className="text-[9px] text-slate-400 inline-flex items-center gap-0.5"><Phone className="w-2.5 h-2.5" /> {phone}</p>}
                     </div>
                 </div>
             </div>
@@ -88,8 +89,8 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
             {/* Blood type + AHV */}
             <div className="flex gap-1.5 flex-wrap mb-3">
                 {bloodType && (
-                    <span className="text-[9px] font-semibold px-2 py-1 rounded-md bg-red-50 text-red-700 border border-red-200">
-                        🩸 {bloodType}
+                    <span className="text-[9px] font-semibold px-2 py-1 rounded-md bg-red-50 text-red-700 border border-red-200 inline-flex items-center gap-0.5">
+                        <Droplets className="w-3 h-3" /> {bloodType}
                     </span>
                 )}
                 {patient.ahv_number && (
@@ -109,7 +110,7 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
                             {(primaryContact as Record<string, unknown>).name as string}
                         </p>
                         <p className="text-[9px] text-slate-400">
-                            📞 {(primaryContact as Record<string, unknown>).phone as string}
+                            ☎ {(primaryContact as Record<string, unknown>).phone as string}
                             {(primaryContact as Record<string, unknown>).is_legal_representative
                                 ? " · Vertretungsberechtigt"
                                 : ""}

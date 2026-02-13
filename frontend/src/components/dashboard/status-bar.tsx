@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Shield } from "lucide-react";
 
 export function StatusBar() {
     const [dateTimeStr, setDateTimeStr] = useState("");
@@ -36,7 +37,7 @@ export function StatusBar() {
                 <span>·</span>
                 <span>Auth: Keycloak OIDC</span>
                 <span>·</span>
-                <span>🔒 Daten in CH (nDSG-konform)</span>
+                <span className="inline-flex items-center gap-1"><Shield className="w-2.5 h-2.5" /> Daten in CH (nDSG-konform)</span>
             </div>
             <span className="ml-auto text-[8px] text-slate-400 shrink-0">
                 PDMS Home-Spital v0.1.0

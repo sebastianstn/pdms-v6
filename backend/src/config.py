@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     rabbitmq_url: str = "amqp://pdms:pdms_rabbit_2026@localhost:5672/pdms"
 
     # CORS
-    cors_origins: list[str] = ["http://localhost:3000", "http://192.168.1.4:3000", "http://localhost:8090"]
+    cors_origins: list[str] = ["http://localhost:3000", "http://192.168.1.4:3000", "http://localhost:8090", "https://localhost:8443", "https://pdms.local:8443"]
 
     # App
     log_level: str = "DEBUG"

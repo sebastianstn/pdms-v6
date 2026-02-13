@@ -66,7 +66,7 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
         return (
             <div className="flex items-center justify-between p-3 bg-amber-50 rounded-lg border border-amber-200">
                 <div className="flex items-center gap-2">
-                    <span className="text-amber-600">⚠️</span>
+                    <span className="text-amber-600 font-bold">!</span>
                     <span className="text-sm text-amber-700">Kein aktiver Aufenthalt</span>
                 </div>
                 {onAdmit && (
@@ -114,13 +114,13 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
                     onClick={() => setShowTransfer((v) => !v)}
                     className="px-3 py-1.5 text-xs rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
                 >
-                    🔄 Verlegen
+                    Verlegen
                 </button>
                 <button
                     onClick={() => setShowDischarge((v) => !v)}
                     className="px-3 py-1.5 text-xs rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors"
                 >
-                    📋 Entlassen
+                    Entlassen
                 </button>
                 <button
                     onClick={() => {

@@ -193,10 +193,10 @@ function AppointmentRow({
                 </div>
                 <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
                     <span>{APPOINTMENT_TYPE_LABELS[a.appointment_type]}</span>
-                    {a.location && <span>📍 {a.location}</span>}
-                    {a.assigned_name && <span>👤 {a.assigned_name}</span>}
-                    {a.transport_required && <span>🚑 Transport</span>}
-                    {a.is_recurring && <span>🔄 Wiederkehrend</span>}
+                    {a.location && <span>{a.location}</span>}
+                    {a.assigned_name && <span>{a.assigned_name}</span>}
+                    {a.transport_required && <span>Transport</span>}
+                    {a.is_recurring && <span>Wiederkehrend</span>}
                 </div>
                 {a.notes && (
                     <p className="text-xs text-slate-400 mt-1 truncate">{a.notes}</p>

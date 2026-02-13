@@ -97,9 +97,9 @@ export function ContactCard({ patientId }: ContactCardProps) {
                             {c.is_key_person && <Badge variant="success">Bezugsperson</Badge>}
                         </div>
                         <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
-                            <span>📞 {c.phone}</span>
-                            {c.email && <span>✉ {c.email}</span>}
-                            {c.address && <span>📍 {c.address}</span>}
+                            <span>{c.phone}</span>
+                            {c.email && <span>{c.email}</span>}
+                            {c.address && <span>{c.address}</span>}
                         </div>
                         {c.notes && <p className="text-xs text-slate-400 mt-1">{c.notes}</p>}
                     </div>

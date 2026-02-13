@@ -41,7 +41,7 @@ export function AlarmList({ patientId, limit, compact = false }: AlarmListProps)
     if (!items?.length) {
         return (
             <p className="text-sm text-slate-400 py-8 text-center">
-                Keine aktiven Alarme 🎉
+                Keine aktiven Alarme ✔
             </p>
         );
     }

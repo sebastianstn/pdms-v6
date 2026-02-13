@@ -1,0 +1,296 @@
+# ─────────────────────────────────────────────────────────────────
+# PDMS Home-Spital — Production Docker Compose
+# Start: cd docker && docker compose -f docker-compose.prod.yml up -d
+#
+# Unterschiede zu docker-compose.yml (Development):
+#   - Keine Volume-Mounts für Source-Code (kein Hot-Reload)
+#   - Keine Debug-Ports exponiert (nur 80/443)
+#   - Ressourcen-Limits für Raspberry Pi 5 (~1.5 GB RAM)
+#   - Non-Root User in allen Services
+#   - Restart: always (nicht unless-stopped)
+#   - Keine Dev-Tools (Adminer, RabbitMQ Management)
+#   - Secrets über .env Datei
+# ─────────────────────────────────────────────────────────────────
+
+services:
+  # ─── DATENBANK ────────────────────────
+  postgres:
+    image: timescale/timescaledb:latest-pg16
+    container_name: pdms-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: pdms
+      POSTGRES_USER: pdms_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Setze POSTGRES_PASSWORD in .env}
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pdms_user -d pdms"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+          cpus: "1.0"
+        reservations:
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - pdms-net
+    # Keine Ports exponiert — nur intern erreichbar
+
+  # ─── AUTH ─────────────────────────────
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: pdms-keycloak
+    restart: always
+    command: start --import-realm --optimized
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: pdms_user
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:?Setze POSTGRES_PASSWORD in .env}
+      KC_HOSTNAME: ${PDMS_DOMAIN:-pdms.local}
+      KC_HOSTNAME_PATH: /auth
+      KC_PROXY_HEADERS: xforwarded
+      KC_HTTP_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: ${KC_ADMIN_USER:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD:?Setze KC_ADMIN_PASSWORD in .env}
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/pdms-realm.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+          cpus: "1.0"
+        reservations:
+          memory: 256M
+    depends_on:
+      postgres:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - pdms-net
+
+  # ─── CACHE ──────────────────────────
+  valkey:
+    image: valkey/valkey:9-alpine
+    container_name: pdms-valkey
+    restart: always
+    command: >
+      valkey-server
+        --save 60 1
+        --loglevel warning
+        --maxmemory 64mb
+        --maxmemory-policy allkeys-lru
+        --requirepass ${VALKEY_PASSWORD:-pdms_valkey_prod}
+    volumes:
+      - valkeydata:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "-a", "${VALKEY_PASSWORD:-pdms_valkey_prod}", "ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 96M
+          cpus: "0.25"
+        reservations:
+          memory: 64M
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+    networks:
+      - pdms-net
+
+  # ─── MESSAGING ──────────────────────
+  rabbitmq:
+    image: rabbitmq:3.13-alpine
+    container_name: pdms-rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: pdms
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?Setze RABBITMQ_PASSWORD in .env}
+      RABBITMQ_DEFAULT_VHOST: pdms
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.5"
+        reservations:
+          memory: 96M
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+    networks:
+      - pdms-net
+
+  # ─── BACKEND ────────────────────────
+  api:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: pdms-api
+    restart: always
+    environment:
+      DATABASE_URL: postgresql+asyncpg://pdms_user:${POSTGRES_PASSWORD}@postgres:5432/pdms
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_REALM: pdms-home-spital
+      KEYCLOAK_CLIENT_ID: pdms-api
+      KEYCLOAK_CLIENT_SECRET: ${KC_API_SECRET:?Setze KC_API_SECRET in .env}
+      VALKEY_URL: redis://:${VALKEY_PASSWORD:-pdms_valkey_prod}@valkey:6379/0
+      RABBITMQ_URL: amqp://pdms:${RABBITMQ_PASSWORD}@rabbitmq:5672/pdms
+      CORS_ORIGINS: '["https://${PDMS_DOMAIN:-pdms.local}"]'
+      LOG_LEVEL: WARNING
+      ENVIRONMENT: production
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "1.0"
+        reservations:
+          memory: 128M
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - pdms-net
+
+  # ─── FRONTEND ──────────────────────
+  web:
+    build:
+      context: ..
+      dockerfile: frontend/Dockerfile
+      target: production
+    container_name: pdms-web
+    restart: always
+    environment:
+      NEXT_PUBLIC_KC_URL: https://${PDMS_DOMAIN:-pdms.local}/auth
+      NEXT_PUBLIC_KC_REALM: pdms-home-spital
+      NEXT_PUBLIC_KC_CLIENT: pdms-web
+      NODE_ENV: production
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+          cpus: "0.5"
+        reservations:
+          memory: 128M
+    depends_on:
+      api:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+    networks:
+      - pdms-net
+
+  # ─── REVERSE PROXY ─────────────────
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: pdms-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - certbot-webroot:/var/www/certbot:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost/health || exit 1"]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 32M
+          cpus: "0.25"
+        reservations:
+          memory: 16M
+    depends_on:
+      - web
+      - api
+      - keycloak
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - pdms-net
+
+# ─── VOLUMES ──────────────────────────
+volumes:
+  pgdata:
+    driver: local
+  valkeydata:
+    driver: local
+  rabbitmqdata:
+    driver: local
+  certbot-webroot:
+    driver: local
+
+# ─── NETWORKS ─────────────────────────
+networks:
+  pdms-net:
+    driver: bridge

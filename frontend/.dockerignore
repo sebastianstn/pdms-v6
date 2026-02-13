@@ -1,5 +1,30 @@
-node_modules
-.next
-.turbo
-dist
+# ── Node Modules ───────────────────────
+node_modules/
+.pnpm-store/
+
+# ── Build Output ──────────────────────
+.next/
+.turbo/
+out/
+dist/
+
+# ── Logs ───────────────────────────────
 *.log
+
+# ── Tests ──────────────────────────────
+coverage/
+
+# ── IDE / Editor ───────────────────────
+.vscode/
+.idea/
+
+# ── Git ────────────────────────────────
+.git/
+.gitignore
+
+# ── Docker ─────────────────────────────
+Dockerfile
+Dockerfile.dev
+
+# ── Env ────────────────────────────────
+.env*

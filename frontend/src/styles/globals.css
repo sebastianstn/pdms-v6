@@ -13,15 +13,61 @@
   --color-pdms-900: #0c4a6e;
 }
 
+/* ─── Light Mode (Standard) ─────────────────────────────────── */
 :root {
   --background: #ffffff;
   --foreground: #0c0c0c;
   --sidebar-bg: #0f172a;
   --sidebar-text: #94a3b8;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #0ea5e9;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --border: #e2e8f0;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --ring: #0ea5e9;
+}
+
+/* ─── Dark Mode ──────────────────────────────────────────────── */
+.dark {
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --sidebar-bg: #020617;
+  --sidebar-text: #94a3b8;
+  --card-bg: #1e293b;
+  --card-border: #334155;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #38bdf8;
+  --accent-foreground: #0f172a;
+  --destructive: #f87171;
+  --border: #334155;
+  --input-bg: #1e293b;
+  --input-border: #475569;
+  --ring: #38bdf8;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: system-ui, -apple-system, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ─── Print Styles ───────────────────────────────────────────── */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
 }

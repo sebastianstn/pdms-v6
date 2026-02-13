@@ -8,3 +8,4 @@ export * from "./legal";
 export * from "./home-spital";
 export * from "./lab";
 export * from "./fluid-balance";
+export * from "./therapy";

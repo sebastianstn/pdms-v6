@@ -127,11 +127,14 @@ services:
       KEYCLOAK_CLIENT_SECRET: ${KC_API_SECRET:-dev-secret}
       VALKEY_URL: redis://valkey:6379/0
       RABBITMQ_URL: amqp://pdms:${RABBITMQ_PASSWORD:-pdms_rabbit_2026}@rabbitmq:5672/pdms
-      CORS_ORIGINS: '["http://localhost:3000","http://192.168.1.4:3000","http://localhost:8090"]'
+      CORS_ORIGINS: '["http://localhost:3000","http://192.168.1.4:3000","http://localhost:8090","https://localhost:8443","https://pdms.local:8443"]'
+      AI_ORCHESTRATOR_URL: http://ai-orchestrator:8081
       LOG_LEVEL: DEBUG
       ENVIRONMENT: development
     volumes:
       - ../backend/src:/app/src
+      - ../backend/alembic:/app/alembic
+      - ../backend/alembic.ini:/app/alembic.ini
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health || exit 1"]
       interval: 10s
@@ -166,7 +169,7 @@ services:
       NEXT_PUBLIC_KC_URL: http://localhost:8080
       NEXT_PUBLIC_KC_REALM: pdms-home-spital
       NEXT_PUBLIC_KC_CLIENT: pdms-web
-      NEXT_PUBLIC_DEV_AUTH_BYPASS: "true"
+      NEXT_PUBLIC_DEV_AUTH_BYPASS: "true"  # ⚠️ NUR DEVELOPMENT — NIEMALS in Produktion!
     volumes:
       - ../frontend/src:/app/src
       - ../frontend/public:/app/public
@@ -192,9 +195,11 @@ services:
     restart: unless-stopped
     ports:
       - "8090:80"
+      - "8443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
+      - certbot-webroot:/var/www/certbot:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost/health || exit 1"]
       interval: 10s
@@ -204,6 +209,32 @@ services:
       - web
       - api
       - keycloak
+      - ai-orchestrator
+    networks:
+      - pdms-net
+
+  # ─── AI ORCHESTRATOR ────────────────
+  ai-orchestrator:
+    build:
+      context: ../../ai-orchestrator
+      dockerfile: Dockerfile
+    container_name: pdms-ai-orchestrator
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      CLAUDE_API_KEY: ${CLAUDE_API_KEY:-}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      DEEPSEEK_MODEL: ${DEEPSEEK_MODEL:-deepseek-coder-v2}
+      VLLM_BASE_URL: ${VLLM_BASE_URL:-http://host.docker.internal:8000}
+      BIOGPT_MODEL: ${BIOGPT_MODEL:-microsoft/BioGPT-Large}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     networks:
       - pdms-net
 
@@ -214,6 +245,8 @@ volumes:
   valkeydata:
     driver: local
   rabbitmqdata:
+    driver: local
+  certbot-webroot:
     driver: local
 
 # ─── NETWORKS ──────────────────────────

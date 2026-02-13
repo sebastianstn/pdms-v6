@@ -1,9 +1,11 @@
 """PDMS Home-Spital — FastAPI Application."""
 
 import logging
+import time
+from collections import defaultdict
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.middleware import AuditMiddleware
@@ -28,6 +30,16 @@ from src.api.v1.remote_devices import router as remote_devices_router
 from src.api.v1.self_medication import router as self_medication_router
 from src.api.v1.lab_results import router as lab_results_router
 from src.api.v1.fluid_balance import router as fluid_balance_router
+from src.api.v1.treatment_plans import router as treatment_plans_router
+from src.api.v1.consultations import router as consultations_router
+from src.api.v1.medical_letters import router as medical_letters_router
+from src.api.v1.nursing_diagnoses import router as nursing_diagnoses_router
+from src.api.v1.shift_handovers import router as shift_handovers_router
+from src.api.v1.nutrition import router as nutrition_router
+from src.api.v1.supplies import router as supplies_router
+from src.api.v1.dossier import router as dossier_router
+from src.api.v1.ai import router as ai_router
+from src.api.v1.fhir import router as fhir_router
 from src.api.websocket.alarms_ws import router as alarms_ws_router
 from src.api.websocket.vitals_ws import router as vitals_ws_router
 from src.config import settings
@@ -59,7 +71,7 @@ async def lifespan(app: FastAPI):
         import src.domain.events.handlers  # noqa: F401
         await start_consumer(
             queue_name="pdms.notifications",
-            binding_keys=["alarm.#", "medication.#", "encounter.#", "note.#", "nursing.#", "vital.#", "appointment.#", "consent.#", "home_visit.#", "teleconsult.#", "device.#", "self_medication.#", "lab.#", "fluid.#"],
+            binding_keys=["alarm.#", "medication.#", "encounter.#", "note.#", "nursing.#", "vital.#", "appointment.#", "consent.#", "home_visit.#", "teleconsult.#", "device.#", "self_medication.#", "lab.#", "fluid.#", "treatment_plan.#", "consultation.#", "letter.#", "shift_handover.#", "nutrition.#"],
         )
         logger.info("🐇 RabbitMQ consumer started")
     except Exception as exc:
@@ -92,16 +104,115 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Health check
+# ─── Metrics Collection ──────────────────────────────────────────
+_start_time = time.time()
+_request_count: dict[str, int] = defaultdict(int)
+_request_errors: dict[str, int] = defaultdict(int)
+_request_duration: dict[str, float] = defaultdict(float)
+
+
+@app.middleware("http")
+async def metrics_middleware(request: Request, call_next) -> Response:
+    """Sammelt Request-Metriken (Anzahl, Fehler, Dauer)."""
+    start = time.perf_counter()
+    response = await call_next(request)
+    duration = time.perf_counter() - start
+    method_path = f"{request.method} {request.url.path}"
+    _request_count[method_path] += 1
+    _request_duration[method_path] += duration
+    if response.status_code >= 400:
+        _request_errors[method_path] += 1
+    return response
+
+
+# ─── Health Check (erweiterter System-Status) ────────────────────
 @app.get("/health", tags=["system"])
 async def health():
+    """Erweiterter Health-Check mit DB, Valkey, RabbitMQ Status."""
+    from src.infrastructure.database import AsyncSessionLocal
     from src.infrastructure.valkey import valkey_health
-    vk = await valkey_health()
+
+    # Valkey
+    try:
+        vk = await valkey_health()
+        valkey_status = "ok"
+    except Exception:
+        vk = {}
+        valkey_status = "error"
+
+    # Database
+    try:
+        async with AsyncSessionLocal() as session:
+            await session.execute(__import__("sqlalchemy").text("SELECT 1"))
+        db_status = "ok"
+    except Exception:
+        db_status = "error"
+
+    # RabbitMQ
+    try:
+        from src.infrastructure.rabbitmq import get_rabbitmq_connection
+        conn = await get_rabbitmq_connection()
+        rmq_status = "ok" if not conn.is_closed else "error"
+    except Exception:
+        rmq_status = "error"
+
+    # System
+    uptime = time.time() - _start_time
+    try:
+        import psutil
+        mem = psutil.virtual_memory()
+        system_info = {
+            "cpu_percent": psutil.cpu_percent(interval=0.1),
+            "memory_used_mb": round(mem.used / 1024 / 1024, 1),
+            "memory_total_mb": round(mem.total / 1024 / 1024, 1),
+            "memory_percent": mem.percent,
+        }
+    except ImportError:
+        import os
+        system_info = {"pid": os.getpid()}
+
+    overall = "ok" if all(s == "ok" for s in [valkey_status, db_status, rmq_status]) else "degraded"
+
     return {
-        "status": "ok",
+        "status": overall,
         "service": "pdms-api",
+        "version": app.version,
         "environment": settings.environment,
-        "valkey": vk,
+        "uptime_seconds": round(uptime, 1),
+        "checks": {
+            "database": db_status,
+            "valkey": valkey_status,
+            "rabbitmq": rmq_status,
+        },
+        "system": system_info,
+        "valkey_info": vk,
+    }
+
+
+# ─── Metrics Endpoint ────────────────────────────────────────────
+@app.get("/metrics", tags=["system"])
+async def metrics():
+    """Gibt API-Metriken im JSON-Format zurück."""
+    total_requests = sum(_request_count.values())
+    total_errors = sum(_request_errors.values())
+
+    # Top-10 Endpoints nach Anzahl Requests
+    top_endpoints = sorted(_request_count.items(), key=lambda x: x[1], reverse=True)[:10]
+
+    return {
+        "uptime_seconds": round(time.time() - _start_time, 1),
+        "total_requests": total_requests,
+        "total_errors": total_errors,
+        "error_rate": round(total_errors / max(total_requests, 1) * 100, 2),
+        "top_endpoints": [
+            {
+                "endpoint": ep,
+                "requests": cnt,
+                "errors": _request_errors.get(ep, 0),
+                "avg_duration_ms": round(_request_duration.get(ep, 0) / max(cnt, 1) * 1000, 2),
+            }
+            for ep, cnt in top_endpoints
+        ],
     }
 
 
@@ -126,6 +237,20 @@ app.include_router(remote_devices_router, prefix="/api/v1", tags=["remote-device
 app.include_router(self_medication_router, prefix="/api/v1", tags=["self-medication"])
 app.include_router(lab_results_router, prefix="/api/v1", tags=["lab-results"])
 app.include_router(fluid_balance_router, prefix="/api/v1", tags=["fluid-balance"])
+app.include_router(treatment_plans_router, prefix="/api/v1", tags=["treatment-plans"])
+app.include_router(consultations_router, prefix="/api/v1", tags=["consultations"])
+app.include_router(medical_letters_router, prefix="/api/v1", tags=["medical-letters"])
+app.include_router(nursing_diagnoses_router, prefix="/api/v1", tags=["nursing-diagnoses"])
+app.include_router(shift_handovers_router, prefix="/api/v1", tags=["shift-handovers"])
+app.include_router(nutrition_router, prefix="/api/v1", tags=["nutrition"])
+app.include_router(supplies_router, prefix="/api/v1", tags=["supplies"])
+app.include_router(dossier_router, prefix="/api/v1", tags=["dossier"])
+
+# FHIR R4 (CH Core Profile)
+app.include_router(fhir_router, prefix="/api/v1", tags=["fhir"])
+
+# AI Orchestrator
+app.include_router(ai_router)
 
 # WebSocket routes
 app.include_router(alarms_ws_router, tags=["websocket"])

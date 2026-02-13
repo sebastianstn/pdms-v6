@@ -86,7 +86,7 @@ export function FluidEntryForm({ patientId, encounterId, onSuccess, onCancel }: 
     return (
         <Card>
             <CardHeader>
-                <CardTitle>💧 Flüssigkeit erfassen</CardTitle>
+                <CardTitle>Flüssigkeit erfassen</CardTitle>
             </CardHeader>
             <CardContent>
                 {/* Quick Presets */}

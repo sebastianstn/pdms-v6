@@ -188,7 +188,7 @@ export function LabTrendChartCard({ patientId }: { patientId: string }) {
         <Card>
             <CardHeader>
                 <div className="flex items-center justify-between">
-                    <CardTitle>📈 Labor-Trend</CardTitle>
+                    <CardTitle>Labor-Trend</CardTitle>
                     <div className="flex items-center gap-1 flex-wrap">
                         {DEFAULT_ANALYTES.map((a) => (
                             <button

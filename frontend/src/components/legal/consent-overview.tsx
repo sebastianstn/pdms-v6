@@ -102,7 +102,7 @@ export function ConsentOverview({ patientId }: ConsentOverviewProps) {
             {/* Required consents overview */}
             {consents && consents.length === 0 && (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-700">
-                    ⚠️ Noch keine Einwilligungen erfasst. Bitte alle erforderlichen Einwilligungen einholen.
+                    Noch keine Einwilligungen erfasst. Bitte alle erforderlichen Einwilligungen einholen.
                 </div>
             )}
 

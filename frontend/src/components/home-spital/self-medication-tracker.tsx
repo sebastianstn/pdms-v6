@@ -74,7 +74,7 @@ export function SelfMedicationTracker({ patientId }: SelfMedicationTrackerProps)
 
                 {/* Info Banner */}
                 <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
-                    💡 Die Selbstmedikation wird vom Patienten über die Patienten-App bestätigt.
+                    Die Selbstmedikation wird vom Patienten über die Patienten-App bestätigt.
                     Pflege kann Einträge manuell als «verpasst» oder «übersprungen» markieren.
                 </div>
             </CardContent>

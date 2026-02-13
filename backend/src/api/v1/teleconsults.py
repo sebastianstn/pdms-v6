@@ -20,6 +20,7 @@ from src.domain.services.teleconsult_service import (
     end_teleconsult,
     get_teleconsult,
     list_teleconsults,
+    list_today_teleconsults,
     start_teleconsult,
     update_teleconsult,
 )
@@ -33,6 +34,22 @@ CurrentUser = Annotated[dict, Depends(get_current_user)]
 @router.get("/teleconsults/meta")
 async def teleconsult_meta(user: CurrentUser):
     return {"statuses": TELECONSULT_STATUS_LABELS}
+
+
+@router.get("/teleconsults/today")
+async def today_teleconsults(db: DbSession, user: CurrentUser):
+    """Heutige Teleconsults — Anzahl und Status-Aufschlüsselung fürs Dashboard."""
+    items, total = await list_today_teleconsults(db)
+    completed = sum(1 for tc in items if tc.status == "completed")
+    active = sum(1 for tc in items if tc.status == "active")
+    scheduled = sum(1 for tc in items if tc.status in ("scheduled", "waiting"))
+    return {
+        "total": total,
+        "completed": completed,
+        "active": active,
+        "scheduled": scheduled,
+        "items": [TeleconsultResponse.model_validate(tc) for tc in items],
+    }
 
 
 @router.get("/patients/{patient_id}/teleconsults", response_model=PaginatedTeleconsults)

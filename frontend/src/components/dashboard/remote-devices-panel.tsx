@@ -2,6 +2,7 @@
 
 import { useRemoteDevices } from "@/hooks/use-remote-devices";
 import { DEVICE_TYPE_LABELS, type RemoteDevice } from "@pdms/shared-types";
+import { BatteryLow } from "lucide-react";
 
 interface RemoteDevicesPanelProps {
     patientId: string | null;
@@ -91,8 +92,8 @@ export function RemoteDevicesPanel({ patientId }: RemoteDevicesPanelProps) {
                                     </span>
                                 )}
                                 {device.battery_level != null && device.battery_level < 20 && (
-                                    <span className="text-[8px] text-red-500 font-medium shrink-0">
-                                        🔋 {device.battery_level}%
+                                    <span className="text-[8px] text-red-500 font-medium shrink-0 inline-flex items-center gap-0.5">
+                                        <BatteryLow className="w-3 h-3" /> {device.battery_level}%
                                     </span>
                                 )}
                             </div>

@@ -198,7 +198,7 @@ export function LabMiniTableCard({ patientId, compact }: { patientId: string; co
     return (
         <Card>
             <CardHeader>
-                <CardTitle>🔬 Laborwerte (aktuell)</CardTitle>
+                <CardTitle>Laborwerte (aktuell)</CardTitle>
             </CardHeader>
             <CardContent>
                 <LabMiniTable patientId={patientId} compact={compact} />

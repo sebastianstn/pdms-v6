@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { formatDate, calculateAge } from "@/lib/utils";
+import { User } from "lucide-react";
 
 interface PatientCardProps {
   id: string;
@@ -22,8 +23,8 @@ export function PatientCard({ id, firstName, lastName, dateOfBirth, gender, stat
       className="block bg-white rounded-xl border border-slate-200 p-4 hover:border-blue-300 hover:shadow-sm transition-all"
     >
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-lg shrink-0">
-          {gender === "female" ? "👩" : "👨"}
+        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+          <User className={`w-5 h-5 ${gender === "female" ? "text-pink-500" : "text-blue-500"}`} />
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-slate-900 truncate">{lastName}, {firstName}</p>

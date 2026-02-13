@@ -15,12 +15,12 @@ const STATUS_VARIANT: Record<string, "default" | "success" | "warning" | "danger
 };
 
 const STATUS_ICON: Record<string, string> = {
-    planned: "📋",
-    en_route: "🚗",
-    arrived: "🏠",
-    in_progress: "👩‍⚕️",
-    completed: "✅",
-    cancelled: "❌",
+    planned: "•",
+    en_route: "→",
+    arrived: "⌂",
+    in_progress: "…",
+    completed: "✓",
+    cancelled: "✗",
 };
 
 function fmtTime(iso: string): string {
@@ -82,7 +82,7 @@ export function HomeVisitTimeline({ patientId }: HomeVisitTimelineProps) {
 function HomeVisitRow({ visit }: { visit: HomeVisit }) {
     return (
         <div className="flex items-center gap-3 p-3 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">
-            <span className="text-lg">{STATUS_ICON[visit.status] ?? "📋"}</span>
+            <span className="text-lg">{STATUS_ICON[visit.status] ?? "•"}</span>
             <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-slate-900 truncate">
@@ -100,12 +100,12 @@ function HomeVisitRow({ visit }: { visit: HomeVisit }) {
             </div>
             {visit.patient_condition && (
                 <span className={`text-xs px-2 py-0.5 rounded-full ${visit.patient_condition === "critical"
-                        ? "bg-red-50 text-red-700"
-                        : visit.patient_condition === "deteriorated"
-                            ? "bg-amber-50 text-amber-700"
-                            : visit.patient_condition === "improved"
-                                ? "bg-green-50 text-green-700"
-                                : "bg-slate-50 text-slate-600"
+                    ? "bg-red-50 text-red-700"
+                    : visit.patient_condition === "deteriorated"
+                        ? "bg-amber-50 text-amber-700"
+                        : visit.patient_condition === "improved"
+                            ? "bg-green-50 text-green-700"
+                            : "bg-slate-50 text-slate-600"
                     }`}>
                     {visit.patient_condition}
                 </span>

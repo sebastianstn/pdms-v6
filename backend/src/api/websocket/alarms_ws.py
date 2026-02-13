@@ -4,7 +4,9 @@ import json
 import logging
 from typing import Any
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect
+
+from src.api.websocket.ws_auth import authenticate_websocket
 
 logger = logging.getLogger("pdms.ws.alarms")
 
@@ -15,16 +17,19 @@ _alarm_connections: list[WebSocket] = []
 
 
 @router.websocket("/ws/alarms")
-async def alarm_stream(websocket: WebSocket):
+async def alarm_stream(websocket: WebSocket, token: str | None = Query(None)):
     """WebSocket-Endpoint: Echtzeit-Alarm-Stream.
 
-    Clients verbinden sich und erhalten alle neuen Alarme sofort.
-    Optional: Client sendet JSON mit patient_id zum Filtern.
+    Authentifizierung via Query-Parameter: ws://host/ws/alarms?token=<JWT>
+    In Development ohne Token: Dev-User wird verwendet.
     """
-    await websocket.accept()
+    user = await authenticate_websocket(websocket, token)
+    if user is None:
+        return  # Connection was rejected
+
     _alarm_connections.append(websocket)
     client = websocket.client
-    logger.info(f"🔌 Alarm-WS verbunden: {client}")
+    logger.info("🔌 Alarm-WS verbunden: %s (user=%s)", client, user.get("preferred_username"))
 
     try:
         while True:
@@ -35,7 +40,7 @@ async def alarm_stream(websocket: WebSocket):
             if data == "ping":
                 await websocket.send_text("pong")
     except WebSocketDisconnect:
-        logger.info(f"🔌 Alarm-WS getrennt: {client}")
+        logger.info("🔌 Alarm-WS getrennt: %s", client)
     finally:
         if websocket in _alarm_connections:
             _alarm_connections.remove(websocket)

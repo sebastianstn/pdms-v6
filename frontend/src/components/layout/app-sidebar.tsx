@@ -4,10 +4,12 @@ import { useAuth } from "@/providers/auth-provider";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { LayoutDashboard, Users, Hospital, LogOut } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard", icon: "📊" },
-  { href: "/patients", label: "Patienten", icon: "👤" },
+const NAV_ITEMS: { href: string; label: string; icon: LucideIcon }[] = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/patients", label: "Patienten", icon: Users },
 ];
 
 export function AppSidebar() {
@@ -18,7 +20,8 @@ export function AppSidebar() {
     <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0">
       {/* Logo */}
       <div className="h-16 flex items-center px-5 border-b border-slate-800">
-        <span className="text-xl font-bold text-white">🏥 PDMS</span>
+        <Hospital className="w-6 h-6 text-blue-400" />
+        <span className="text-xl font-bold text-white ml-2">PDMS</span>
         <span className="ml-2 text-xs text-slate-500">Home-Spital</span>
       </div>
 
@@ -35,7 +38,7 @@ export function AppSidebar() {
                 : "hover:bg-slate-800/60 hover:text-white"
             )}
           >
-            <span>{item.icon}</span>
+            <item.icon className="w-4 h-4" />
             <span>{item.label}</span>
           </Link>
         ))}
@@ -51,8 +54,8 @@ export function AppSidebar() {
             <p className="text-sm font-medium text-white truncate">{user?.name}</p>
             <p className="text-xs text-slate-500 truncate">{user?.roles?.[0]}</p>
           </div>
-          <button onClick={logout} className="text-slate-500 hover:text-white text-xs" title="Abmelden">
-            ⏻
+          <button onClick={logout} className="text-slate-500 hover:text-white" title="Abmelden">
+            <LogOut className="w-4 h-4" />
           </button>
         </div>
       </div>

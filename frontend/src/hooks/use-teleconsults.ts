@@ -17,9 +17,26 @@ const keys = {
     list: (patientId: string) => [...keys.all, "list", patientId] as const,
     detail: (id: string) => [...keys.all, "detail", id] as const,
     meta: () => [...keys.all, "meta"] as const,
+    today: () => [...keys.all, "today"] as const,
 };
 
 // ─── Read ─────────────────────────────────────────────────────
+
+interface TodayTeleconsults {
+    total: number;
+    completed: number;
+    active: number;
+    scheduled: number;
+    items: Teleconsult[];
+}
+
+export function useTodayTeleconsults() {
+    return useQuery<TodayTeleconsults>({
+        queryKey: keys.today(),
+        queryFn: () => api.get<TodayTeleconsults>("/teleconsults/today"),
+        refetchInterval: 60_000,
+    });
+}
 
 export function useTeleconsults(patientId: string, status?: string) {
     return useQuery<Teleconsult[]>({

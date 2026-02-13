@@ -5,6 +5,7 @@ import { useAuth } from "@/providers/auth-provider";
 import { usePatients } from "@/hooks/use-patients";
 import { useAlarmCounts, useAlarmWebSocket } from "@/hooks/use-alarms";
 import { useTodayHomeVisits } from "@/hooks/use-home-visits";
+import { useTodayTeleconsults } from "@/hooks/use-teleconsults";
 import { PatientListSidebar } from "@/components/dashboard/patient-list-sidebar";
 import { VitalMonitorChart } from "@/components/dashboard/vital-monitor-chart";
 import { MedicationTimeline } from "@/components/dashboard/medication-timeline";
@@ -19,6 +20,7 @@ export default function DashboardPage() {
   const { data: patients, isLoading: patientsLoading } = usePatients(1);
   const { data: alarmCounts } = useAlarmCounts();
   const { data: homeVisits } = useTodayHomeVisits();
+  const { data: todayTeleconsults } = useTodayTeleconsults();
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
 
   useAlarmWebSocket();
@@ -50,7 +52,7 @@ export default function DashboardPage() {
     {
       label: "Kritisch",
       value: criticalAlarms,
-      icon: <span className="text-xl">⚠</span>,
+      icon: <span className="text-xl text-red-500">!</span>,
       iconBg: "bg-red-50",
       iconColor: "text-red-500",
       sub: "Remote-Alarme aktiv",
@@ -73,7 +75,7 @@ export default function DashboardPage() {
     // TODO: Teleconsult-Stat benötigt /teleconsults/today Backend-Endpoint
     {
       label: "Teleconsults heute",
-      value: "—",
+      value: todayTeleconsults?.total ?? 0,
       icon: (
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
           <rect x="3" y="7" width="13" height="10" rx="2" />
@@ -82,7 +84,7 @@ export default function DashboardPage() {
       ),
       iconBg: "bg-violet-50",
       iconColor: "text-violet-600",
-      sub: "Endpoint noch ausstehend",
+      sub: `${todayTeleconsults?.scheduled ?? 0} geplant, ${todayTeleconsults?.active ?? 0} aktiv`,
       subColor: "text-violet-600",
     },
   ];

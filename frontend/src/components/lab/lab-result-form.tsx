@@ -112,7 +112,7 @@ export function LabResultForm({ patientId, encounterId, onSuccess, onCancel }: P
         <Card>
             <CardHeader>
                 <div className="flex items-center justify-between">
-                    <CardTitle>🔬 Laborwerte erfassen</CardTitle>
+                    <CardTitle>Laborwerte erfassen</CardTitle>
                     <div className="flex items-center gap-1">
                         <button
                             type="button"
