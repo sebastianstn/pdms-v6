@@ -288,6 +288,7 @@ async def create_insurance_company(data: InsuranceCompanyCreate, db: DbSession, 
 
     company = InsuranceCompany(
         name=data.name.strip(),
+        is_active=True,
         supports_basic=data.supports_basic,
         supports_semi_private=data.supports_semi_private,
         supports_private=data.supports_private,
