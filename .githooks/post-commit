@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+backup_script="$repo_root/scripts/active-backup-sync.sh"
+
+if [[ ! -x "$backup_script" ]]; then
+  echo "[PDMS-Backup] Skript nicht ausführbar: $backup_script" >&2
+  exit 0
+fi
+
+if ! "$backup_script"; then
+  echo "[PDMS-Backup] Automatisches Backup fehlgeschlagen (Commit bleibt bestehen)." >&2
+fi
+
+exit 0
