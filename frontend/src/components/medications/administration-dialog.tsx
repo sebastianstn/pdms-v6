@@ -53,7 +53,7 @@ export function AdministrationDialog({ medication, onSuccess, onCancel }: AdminD
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <CardTitle>Verabreichung dokumentieren</CardTitle>
-                        <button onClick={onCancel} className="text-slate-400 hover:text-slate-600">✕</button>
+                        <button onClick={onCancel} className="text-slate-500 hover:text-slate-600">✕</button>
                     </div>
                     <p className="text-sm text-slate-500 mt-1">
                         {medication.name} — {medication.dose} {medication.dose_unit} {medication.route}

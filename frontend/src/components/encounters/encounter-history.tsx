@@ -81,14 +81,14 @@ export function EncounterHistory({ patientId }: EncounterHistoryProps) {
                         <option key={k} value={k}>{v}</option>
                     ))}
                 </select>
-                <span className="text-xs text-slate-400 ml-auto">
+                <span className="text-xs text-slate-500 ml-auto">
                     {total} Aufenthalt{total !== 1 ? "e" : ""}
                 </span>
             </div>
 
             {/* Encounter-Liste */}
             {encounters.length === 0 ? (
-                <p className="text-sm text-slate-400 text-center py-8">
+                <p className="text-sm text-slate-500 text-center py-8">
                     Keine Aufenthalte vorhanden.
                 </p>
             ) : (
@@ -144,7 +144,7 @@ function EncounterRow({ encounter }: { encounter: Encounter }) {
                         </span>
                     )}
                 </div>
-                <div className="flex gap-3 text-xs text-slate-400 mt-0.5">
+                <div className="flex gap-3 text-xs text-slate-500 mt-0.5">
                     <span>Aufnahme: {formatDate(encounter.admitted_at)}</span>
                     {encounter.discharged_at && (
                         <span>Entlassung: {formatDate(encounter.discharged_at)}</span>

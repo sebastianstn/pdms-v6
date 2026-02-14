@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Badge, Spinner } from "@/components/ui";
+import { useUserPermissions } from "@/hooks/use-rbac";
 import {
     useConsents,
     useCreateConsent,
@@ -34,6 +35,7 @@ interface ConsentOverviewProps {
 export function ConsentOverview({ patientId }: ConsentOverviewProps) {
     const { data: consents, isLoading, error } = useConsents(patientId);
     const [showForm, setShowForm] = useState(false);
+    const { canWrite } = useUserPermissions();
     const revokeMut = useRevokeConsent(patientId);
     const deleteMut = useDeleteConsent(patientId);
     const createMut = useCreateConsent();
@@ -58,12 +60,14 @@ export function ConsentOverview({ patientId }: ConsentOverviewProps) {
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-slate-900">Einwilligungen</h3>
-                <button
-                    onClick={() => setShowForm(!showForm)}
-                    className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                >
-                    {showForm ? "Abbrechen" : "+ Neue Einwilligung"}
-                </button>
+                {canWrite("Einwilligungen") && (
+                    <button
+                        onClick={() => setShowForm(!showForm)}
+                        className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                    >
+                        {showForm ? "Abbrechen" : "+ Neue Einwilligung"}
+                    </button>
+                )}
             </div>
 
             {showForm && (
@@ -79,7 +83,7 @@ export function ConsentOverview({ patientId }: ConsentOverviewProps) {
                         </div>
                         <div>
                             <label className="block text-xs font-medium text-slate-600 mb-1">Erteilt durch</label>
-                            <input name="granted_by" className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg" placeholder="Name / Funktion" />
+                            <input name="granted_by" className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg" placeholder="Name / Funktion" autoFocus />
                         </div>
                         <div>
                             <label className="block text-xs font-medium text-slate-600 mb-1">Zeuge</label>
@@ -131,29 +135,31 @@ export function ConsentOverview({ patientId }: ConsentOverviewProps) {
                                     </p>
                                 )}
                             </div>
-                            <div className="flex gap-1">
-                                {c.status === "granted" && (
-                                    <button
-                                        onClick={() => {
-                                            const reason = prompt("Grund für Widerruf:");
-                                            if (reason !== null) revokeMut.mutate({ id: c.id, reason });
-                                        }}
-                                        className="px-2 py-1 text-xs rounded-md bg-amber-50 text-amber-700 hover:bg-amber-100"
-                                    >
-                                        Widerrufen
-                                    </button>
-                                )}
-                                {c.status !== "granted" && (
-                                    <button
-                                        onClick={() => {
-                                            if (confirm("Einwilligung löschen?")) deleteMut.mutate(c.id);
-                                        }}
-                                        className="px-2 py-1 text-xs rounded-md bg-red-50 text-red-600 hover:bg-red-100"
-                                    >
-                                        Löschen
-                                    </button>
-                                )}
-                            </div>
+                            {canWrite("Einwilligungen") && (
+                                <div className="flex gap-1">
+                                    {c.status === "granted" && (
+                                        <button
+                                            onClick={() => {
+                                                const reason = prompt("Grund für Widerruf:");
+                                                if (reason !== null) revokeMut.mutate({ id: c.id, reason });
+                                            }}
+                                            className="px-2 py-1 text-xs rounded-md bg-amber-50 text-amber-700 hover:bg-amber-100"
+                                        >
+                                            Widerrufen
+                                        </button>
+                                    )}
+                                    {c.status !== "granted" && (
+                                        <button
+                                            onClick={() => {
+                                                if (confirm("Einwilligung löschen?")) deleteMut.mutate(c.id);
+                                            }}
+                                            className="px-2 py-1 text-xs rounded-md bg-red-50 text-red-600 hover:bg-red-100"
+                                        >
+                                            Löschen
+                                        </button>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

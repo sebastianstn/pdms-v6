@@ -97,12 +97,15 @@
       "publicClient": true,
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
-      "rootUrl": "http://localhost:3000",
+      "rootUrl": "http://192.168.1.4:3000",
       "redirectUris": [
+        "http://192.168.1.4:3000/*",
+        "http://192.168.1.4:3000/callback",
         "http://localhost:3000/*",
         "https://localhost:8443/*"
       ],
       "webOrigins": [
+        "http://192.168.1.4:3000",
         "http://localhost:3000",
         "https://localhost:8443"
       ],

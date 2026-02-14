@@ -33,9 +33,7 @@ export const RECURRENCE_RULES = [
 export const appointmentCreateSchema = z.object({
     patient_id: z.string().uuid("Ungültige Patienten-ID"),
     encounter_id: z.string().uuid().optional().nullable(),
-    appointment_type: z.enum(APPOINTMENT_TYPES, {
-        errorMap: () => ({ message: "Ungültiger Termin-Typ" }),
-    }),
+    appointment_type: z.enum(APPOINTMENT_TYPES, "Ungültiger Termin-Typ"),
     title: z
         .string()
         .min(1, "Titel ist erforderlich")

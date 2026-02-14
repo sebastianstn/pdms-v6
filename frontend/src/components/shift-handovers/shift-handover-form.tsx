@@ -71,6 +71,7 @@ export function ShiftHandoverForm({ patientId, onSuccess, onCancel }: Props) {
           value={situation} onChange={(e) => setSituation(e.target.value)} required rows={2}
           className="w-full px-3 py-2 border border-red-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
           placeholder="Aktueller Zustand des Patienten…"
+          autoFocus
         />
       </div>
       <div className="bg-blue-50 rounded-lg p-3">

@@ -56,7 +56,7 @@ export function TreatmentPlanList({ patientId, statusFilter, onEdit }: Props) {
                     <div className="flex items-start justify-between mb-2">
                         <div>
                             <h4 className="font-medium text-slate-900">{plan.title}</h4>
-                            <p className="text-sm text-slate-500">{plan.diagnosis} {plan.icd_code && <span className="text-xs text-slate-400">({plan.icd_code})</span>}</p>
+                            <p className="text-sm text-slate-500">{plan.diagnosis} {plan.icd_code && <span className="text-xs text-slate-500">({plan.icd_code})</span>}</p>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${priorityBadge(plan.priority)}`}>
@@ -70,11 +70,11 @@ export function TreatmentPlanList({ patientId, statusFilter, onEdit }: Props) {
 
                     <div className="grid grid-cols-2 gap-3 text-sm mt-3">
                         <div>
-                            <span className="text-xs text-slate-400">Ziele</span>
+                            <span className="text-xs text-slate-500">Ziele</span>
                             <p className="text-slate-700">{plan.goals}</p>
                         </div>
                         <div>
-                            <span className="text-xs text-slate-400">Massnahmen</span>
+                            <span className="text-xs text-slate-500">Massnahmen</span>
                             <p className="text-slate-700">{plan.interventions}</p>
                         </div>
                     </div>
@@ -96,11 +96,11 @@ export function TreatmentPlanList({ patientId, statusFilter, onEdit }: Props) {
                                         >
                                             ✓
                                         </button>
-                                        <span className={item.is_completed ? "line-through text-slate-400" : "text-slate-700"}>
+                                        <span className={item.is_completed ? "line-through text-slate-500" : "text-slate-700"}>
                                             {item.description}
                                         </span>
                                         {item.frequency && (
-                                            <span className="text-xs text-slate-400 ml-auto">{item.frequency}</span>
+                                            <span className="text-xs text-slate-500 ml-auto">{item.frequency}</span>
                                         )}
                                     </li>
                                 ))}

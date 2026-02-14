@@ -138,7 +138,7 @@ export function SupplyPanel({ patientId }: Props) {
                                             <td className="py-2 text-slate-700">{item?.name ?? "–"}</td>
                                             <td className="py-2 text-right font-medium">{u.quantity}</td>
                                             <td className="py-2 pl-4 text-slate-500">{u.reason ?? "–"}</td>
-                                            <td className="py-2 text-right text-xs text-slate-400">
+                                            <td className="py-2 text-right text-xs text-slate-500">
                                                 {new Date(u.created_at).toLocaleDateString("de-CH", {
                                                     day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit",
                                                 })}

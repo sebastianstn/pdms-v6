@@ -206,7 +206,7 @@ export function LabResultForm({ patientId, encounterId, onSuccess, onCancel }: P
                                             placeholder={ANALYTE_DEFAULTS[row.analyte]?.unit ?? "Wert"}
                                             className="w-28 px-2 py-1.5 rounded border border-slate-200 text-sm"
                                         />
-                                        <span className="text-xs text-slate-400 w-16 truncate">
+                                        <span className="text-xs text-slate-500 w-16 truncate">
                                             {ANALYTE_DEFAULTS[row.analyte]?.unit ?? ""}
                                         </span>
                                         <button

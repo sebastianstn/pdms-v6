@@ -35,7 +35,17 @@
         "encounters": "Encounters",
         "audit": "Audit Log",
         "settings": "Settings",
-        "logout": "Logout"
+        "logout": "Logout",
+        "home": "Patient List",
+        "back": "Back",
+        "forward": "Forward",
+        "print": "Print Page"
+    },
+    "search": {
+        "placeholder": "Search patient (name, AHV)...",
+        "loading": "Searching…",
+        "noResults": "No patients found for",
+        "showAll": "Show all {{count}} results →"
     },
     "patient": {
         "title": "Patients",

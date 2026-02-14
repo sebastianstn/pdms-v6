@@ -103,7 +103,7 @@ export function VitalMonitorChart({ patientId }: VitalMonitorChartProps) {
                                 "px-2.5 py-1 rounded-md text-[9px] font-semibold transition-all",
                                 timeRange === range.key
                                     ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white"
-                                    : "bg-slate-50 text-slate-400 hover:text-slate-600"
+                                    : "bg-slate-50 text-slate-500 hover:text-slate-600"
                             )}
                         >
                             {range.label}
@@ -137,7 +137,7 @@ export function VitalMonitorChart({ patientId }: VitalMonitorChartProps) {
             <div className="h-[160px]">
                 {!patientId ? (
                     <div className="flex items-center justify-center h-full">
-                        <p className="text-[11px] text-slate-400">Patient auswählen</p>
+                        <p className="text-[11px] text-slate-500">Patient auswählen</p>
                     </div>
                 ) : isLoading ? (
                     <div className="flex items-center justify-center h-full">
@@ -145,7 +145,7 @@ export function VitalMonitorChart({ patientId }: VitalMonitorChartProps) {
                     </div>
                 ) : chartData.length === 0 ? (
                     <div className="flex items-center justify-center h-full">
-                        <p className="text-[11px] text-slate-400">
+                        <p className="text-[11px] text-slate-500">
                             Keine Vitaldaten im gewählten Zeitraum
                         </p>
                     </div>

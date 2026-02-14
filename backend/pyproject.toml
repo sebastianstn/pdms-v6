@@ -22,6 +22,7 @@ dependencies = [
     "fhir.resources>=7.1.0",
     "python-multipart>=0.0.17",
     "psutil>=6.0.0",
+    "Pillow>=10.4.0",
 ]
 
 [project.optional-dependencies]

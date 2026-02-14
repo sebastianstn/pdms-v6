@@ -25,7 +25,7 @@ function timeAgo(iso: string): string {
 }
 
 function batteryColor(level: number | null | undefined): string {
-    if (level == null) return "text-slate-400";
+    if (level == null) return "text-slate-500";
     if (level > 50) return "text-green-600";
     if (level > 20) return "text-amber-600";
     return "text-red-600";
@@ -66,7 +66,7 @@ export function RemoteDevicePanel({ patientId }: RemoteDevicePanelProps) {
             </CardHeader>
             <CardContent>
                 {devices.length === 0 ? (
-                    <p className="text-sm text-slate-400 py-4 text-center">Keine Geräte registriert.</p>
+                    <p className="text-sm text-slate-500 py-4 text-center">Keine Geräte registriert.</p>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {devices.map((device) => (
@@ -108,7 +108,7 @@ function DeviceCard({ device }: { device: RemoteDevice }) {
                     <span className="text-lg">{icon}</span>
                     <span className="text-sm font-medium text-slate-800">{label}</span>
                 </div>
-                <span className={`text-xs ${device.is_online ? "text-green-600" : "text-slate-400"}`}>
+                <span className={`text-xs ${device.is_online ? "text-green-600" : "text-slate-500"}`}>
                     {device.is_online ? "● Online" : "○ Offline"}
                 </span>
             </div>
@@ -123,7 +123,7 @@ function DeviceCard({ device }: { device: RemoteDevice }) {
                     {(hasAlert || hasLowAlert) && <span className="text-xs text-red-600 ml-1">Alarm</span>}
                 </div>
             ) : (
-                <p className="text-sm text-slate-400">Kein Messwert</p>
+                <p className="text-sm text-slate-500">Kein Messwert</p>
             )}
 
             {/* Footer: battery + last reading time */}
@@ -140,7 +140,7 @@ function DeviceCard({ device }: { device: RemoteDevice }) {
 
             {/* Threshold Info */}
             {(device.alert_threshold_low != null || device.alert_threshold_high != null) && (
-                <div className="text-[10px] text-slate-400">
+                <div className="text-[10px] text-slate-500">
                     Schwellwerte: {device.alert_threshold_low ?? "–"} – {device.alert_threshold_high ?? "–"} {device.last_reading_unit ?? ""}
                 </div>
             )}

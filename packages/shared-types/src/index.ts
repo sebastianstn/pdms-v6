@@ -2,7 +2,6 @@ export * from "./patient";
 export type * from "./clinical";
 export type * from "./auth";
 export type * from "./api";
-export type * from "./documentation";
 export * from "./planning";
 export * from "./legal";
 export * from "./home-spital";

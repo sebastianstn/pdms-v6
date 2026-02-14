@@ -28,7 +28,7 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
     if (!patientId) {
         return (
             <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex items-center justify-center min-h-[300px]">
-                <p className="text-[11px] text-slate-400">Patient auswählen für Details</p>
+                <p className="text-[11px] text-slate-500">Patient auswählen für Details</p>
             </div>
         );
     }
@@ -41,20 +41,18 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
         );
     }
 
-    // The API returns the full patient object; access extended fields via indexing
-    const p = patient as Record<string, unknown>;
     const firstName = patient.first_name;
     const lastName = patient.last_name;
     const genderLabel = patient.gender === "female" ? "Weiblich" : patient.gender === "male" ? "Männlich" : "Divers";
     const age = calculateAge(patient.date_of_birth);
     const initials = getInitials(firstName, lastName);
-    const addressCity = p.address_city as string | undefined;
-    const addressStreet = p.address_street as string | undefined;
-    const addressZip = p.address_zip as string | undefined;
-    const phone = p.phone as string | undefined;
-    const bloodType = p.blood_type as string | undefined;
-    const language = p.language as string | undefined;
-    const primaryContact = contacts?.find((c: Record<string, unknown>) => c.is_primary);
+    const addressCity = patient.address_city;
+    const addressStreet = patient.address_street;
+    const addressZip = patient.address_zip;
+    const phone = patient.phone;
+    const bloodType = patient.blood_type;
+    const language = patient.language;
+    const primaryContact = contacts?.find((c) => c.is_primary);
 
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col">
@@ -75,13 +73,13 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
                             {language ? ` · ${language}` : ""}
                         </p>
                         {addressCity && (
-                            <p className="text-[9px] text-slate-400 inline-flex items-center gap-0.5">
+                            <p className="text-[9px] text-slate-500 inline-flex items-center gap-0.5">
                                 <Home className="w-2.5 h-2.5" /> {addressStreet ? `${addressStreet}, ` : ""}
                                 {addressZip ? `${addressZip} ` : ""}
                                 {addressCity}
                             </p>
                         )}
-                        {phone && <p className="text-[9px] text-slate-400 inline-flex items-center gap-0.5"><Phone className="w-2.5 h-2.5" /> {phone}</p>}
+                        {phone && <p className="text-[9px] text-slate-500 inline-flex items-center gap-0.5"><Phone className="w-2.5 h-2.5" /> {phone}</p>}
                     </div>
                 </div>
             </div>
@@ -106,12 +104,11 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
                     <h4 className="text-[11px] font-bold text-slate-900 mb-1.5">Kontaktperson</h4>
                     <div className="bg-slate-50 rounded-lg px-2.5 py-2">
                         <p className="text-[9px] text-slate-900 font-medium">
-                            {(primaryContact as Record<string, unknown>).relationship_type as string}:{" "}
-                            {(primaryContact as Record<string, unknown>).name as string}
+                            {primaryContact.relationship_type}: {primaryContact.name}
                         </p>
-                        <p className="text-[9px] text-slate-400">
-                            ☎ {(primaryContact as Record<string, unknown>).phone as string}
-                            {(primaryContact as Record<string, unknown>).is_legal_representative
+                        <p className="text-[9px] text-slate-500">
+                            ☎ {primaryContact.phone}
+                            {primaryContact.is_legal_representative
                                 ? " · Vertretungsberechtigt"
                                 : ""}
                         </p>

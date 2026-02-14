@@ -16,11 +16,13 @@ import { RemoteDevicesPanel } from "@/components/dashboard/remote-devices-panel"
 import { StatusBar } from "@/components/dashboard/status-bar";
 
 export default function DashboardPage() {
-  const { user } = useAuth();
-  const { data: patients, isLoading: patientsLoading } = usePatients(1);
-  const { data: alarmCounts } = useAlarmCounts();
-  const { data: homeVisits } = useTodayHomeVisits();
-  const { data: todayTeleconsults } = useTodayTeleconsults();
+  const { user, isLoading: authLoading } = useAuth();
+  const canQuery = !authLoading && !!user;
+
+  const { data: patients, isLoading: patientsLoading } = usePatients(1, undefined, { enabled: canQuery });
+  const { data: alarmCounts } = useAlarmCounts({ enabled: canQuery });
+  const { data: homeVisits } = useTodayHomeVisits({ enabled: canQuery });
+  const { data: todayTeleconsults } = useTodayTeleconsults({ enabled: canQuery });
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
 
   useAlarmWebSocket();
@@ -92,7 +94,7 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col h-full">
       {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-5 shrink-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-1.5 mb-5 shrink-0">
         {stats.map((stat) => (
           <div
             key={stat.label}
@@ -106,7 +108,7 @@ export default function DashboardPage() {
                 <p className="text-2xl font-extrabold text-slate-900 leading-none">
                   {patientsLoading ? "…" : stat.value}
                 </p>
-                <p className="text-[11px] text-slate-400 font-medium mt-0.5">{stat.label}</p>
+                <p className="text-[11px] text-slate-500 font-medium mt-0.5">{stat.label}</p>
               </div>
             </div>
             {/* Progress bar */}
@@ -118,7 +120,7 @@ export default function DashboardPage() {
                     style={{ width: `${stat.progressPercent}%` }}
                   />
                 </div>
-                <p className="text-[9px] text-slate-400 mt-1 text-center">{stat.sub}</p>
+                <p className="text-[9px] text-slate-500 mt-1 text-center">{stat.sub}</p>
               </div>
             )}
             {/* Dot indicators */}
@@ -127,12 +129,12 @@ export default function DashboardPage() {
                 {Array.from({ length: Math.min(stat.dots, 5) }).map((_, i) => (
                   <div key={i} className="w-2 h-2 rounded-full bg-red-300 animate-pulse" />
                 ))}
-                <span className="text-[9px] text-slate-400 ml-1">{stat.sub}</span>
+                <span className="text-[9px] text-slate-500 ml-1">{stat.sub}</span>
               </div>
             )}
             {/* Simple sub text */}
             {!stat.progressPercent && stat.dots === undefined && (
-              <p className={`text-[9px] font-semibold mt-3 ${stat.subColor || "text-slate-400"}`}>
+              <p className={`text-[9px] font-semibold mt-3 ${stat.subColor || "text-slate-500"}`}>
                 ● {stat.sub}
               </p>
             )}
@@ -141,7 +143,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Main Grid ── */}
-      <div className="grid grid-cols-12 gap-4 flex-1 min-h-0 overflow-auto pb-2">
+      <div className="grid grid-cols-12 gap-1.5 flex-1 min-h-0 overflow-auto pb-2">
 
         {/* ─ Left: Patient List ─ */}
         <div className="col-span-12 lg:col-span-2 min-w-[180px]">
@@ -154,18 +156,18 @@ export default function DashboardPage() {
         </div>
 
         {/* ─ Center: Vital Chart + Medication ─ */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col gap-4">
+        <div className="col-span-12 lg:col-span-5 flex flex-col gap-1.5">
           <VitalMonitorChart patientId={selectedPatientId} />
           <MedicationTimeline patientId={selectedPatientId} />
         </div>
 
         {/* ─ Right: Alarms + Details + Visits + Devices ─ */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col gap-4">
+        <div className="col-span-12 lg:col-span-5 flex flex-col gap-1.5">
           {/* Alarms */}
           <RemoteAlarms />
 
           {/* Two-column: Patient Details + Home Visits */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-1.5">
             <PatientDetailPanel patientId={selectedPatientId} />
             <HomeVisitPanel visits={homeVisits ?? []} patients={patients?.items} />
           </div>

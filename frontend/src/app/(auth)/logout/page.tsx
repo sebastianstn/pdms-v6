@@ -3,10 +3,17 @@
 import { useEffect } from "react";
 import { getLogoutUrl, clearTokens } from "@/lib/auth";
 
+const IS_DEV_BYPASS = process.env.NEXT_PUBLIC_DEV_AUTH_BYPASS === "true";
+
 export default function LogoutPage() {
   useEffect(() => {
     clearTokens();
-    window.location.href = getLogoutUrl();
+    if (IS_DEV_BYPASS) {
+      sessionStorage.setItem("pdms_dev_logged_out", "true");
+      window.location.href = "/login?mode=keycloak";
+    } else {
+      window.location.href = getLogoutUrl();
+    }
   }, []);
 
   return (

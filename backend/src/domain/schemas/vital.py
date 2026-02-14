@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 class VitalSignCreate(BaseModel):
     patient_id: uuid.UUID
     encounter_id: uuid.UUID | None = None
+    recorded_at: datetime | None = None
     heart_rate: float | None = Field(None, ge=0, le=300)
     systolic_bp: float | None = Field(None, ge=0, le=400)
     diastolic_bp: float | None = Field(None, ge=0, le=300)

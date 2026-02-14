@@ -61,7 +61,7 @@ export function ProviderCard({ patientId }: ProviderCardProps) {
                                 <option key={k} value={k}>{v}</option>
                             ))}
                         </select>
-                        <input name="name" required placeholder="Name / Praxis *" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
+                        <input name="name" required placeholder="Name / Praxis *" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" autoFocus />
                         <input name="contact_person" placeholder="Kontaktperson" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
                         <input name="phone" placeholder="Telefon" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
                         <input name="email" type="email" placeholder="E-Mail" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
@@ -78,7 +78,7 @@ export function ProviderCard({ patientId }: ProviderCardProps) {
             )}
 
             {providers && providers.length === 0 && (
-                <p className="text-xs text-slate-400 text-center py-4">Keine Zuweiser erfasst.</p>
+                <p className="text-xs text-slate-500 text-center py-4">Keine Zuweiser erfasst.</p>
             )}
 
             {providers && providers.map((p) => (
@@ -87,7 +87,7 @@ export function ProviderCard({ patientId }: ProviderCardProps) {
                         <div className="flex items-center gap-2">
                             <span className="text-sm font-medium text-slate-900">{p.name}</span>
                             <Badge variant="default">{PROVIDER_TYPE_LABELS[p.provider_type]}</Badge>
-                            {p.speciality && <span className="text-xs text-slate-400">{p.speciality}</span>}
+                            {p.speciality && <span className="text-xs text-slate-500">{p.speciality}</span>}
                         </div>
                         <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
                             {p.contact_person && <span className="inline-flex items-center gap-1"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> {p.contact_person}</span>}

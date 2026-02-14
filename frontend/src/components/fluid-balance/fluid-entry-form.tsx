@@ -158,6 +158,7 @@ export function FluidEntryForm({ patientId, encounterId, onSuccess, onCancel }: 
                                 placeholder="z.B. 500"
                                 className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm"
                                 required
+                                autoFocus
                             />
                         </div>
                     </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Badge, Spinner } from "@/components/ui";
+import { useUserPermissions } from "@/hooks/use-rbac";
 import {
     useDirectives,
     useCreateDirective,
@@ -22,6 +23,7 @@ interface DirectiveListProps {
 export function DirectiveList({ patientId }: DirectiveListProps) {
     const { data: directives, isLoading } = useDirectives(patientId);
     const [showForm, setShowForm] = useState(false);
+    const { canWrite } = useUserPermissions();
     const createMut = useCreateDirective();
     const deleteMut = useDeleteDirective(patientId);
 
@@ -51,12 +53,14 @@ export function DirectiveList({ patientId }: DirectiveListProps) {
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-slate-900">Patientenverfügungen & Vorsorgeaufträge</h3>
-                <button
-                    onClick={() => setShowForm(!showForm)}
-                    className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                >
-                    {showForm ? "Abbrechen" : "+ Neue Verfügung"}
-                </button>
+                {canWrite("Patientenverfügungen") && (
+                    <button
+                        onClick={() => setShowForm(!showForm)}
+                        className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                    >
+                        {showForm ? "Abbrechen" : "+ Neue Verfügung"}
+                    </button>
+                )}
             </div>
 
             {showForm && (
@@ -100,7 +104,7 @@ export function DirectiveList({ patientId }: DirectiveListProps) {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label className="block text-xs font-medium text-slate-600 mb-1">Vertrauensperson</label>
-                            <input name="trusted_person_name" className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg" />
+                            <input name="trusted_person_name" className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg" autoFocus />
                         </div>
                         <div>
                             <label className="block text-xs font-medium text-slate-600 mb-1">Telefon VP</label>
@@ -126,7 +130,7 @@ export function DirectiveList({ patientId }: DirectiveListProps) {
             )}
 
             {directives && directives.length === 0 && (
-                <p className="text-sm text-slate-400 text-center py-8">Keine Patientenverfügungen erfasst.</p>
+                <p className="text-sm text-slate-500 text-center py-8">Keine Patientenverfügungen erfasst.</p>
             )}
 
             {directives && directives.map((d) => (
@@ -139,25 +143,27 @@ export function DirectiveList({ patientId }: DirectiveListProps) {
                             </Badge>
                             {!d.is_valid && <Badge variant="warning">Ungültig</Badge>}
                         </div>
-                        <button
-                            onClick={() => { if (confirm("Verfügung löschen?")) deleteMut.mutate(d.id); }}
-                            className="px-2 py-1 text-xs rounded-md bg-red-50 text-red-600 hover:bg-red-100"
-                        >
-                            Löschen
-                        </button>
+                        {canWrite("Patientenverfügungen") && (
+                            <button
+                                onClick={() => { if (confirm("Verfügung löschen?")) deleteMut.mutate(d.id); }}
+                                className="px-2 py-1 text-xs rounded-md bg-red-50 text-red-600 hover:bg-red-100"
+                            >
+                                Löschen
+                            </button>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                        <span className={d.intensive_care ? "text-green-700" : "text-slate-400"}>
+                        <span className={d.intensive_care ? "text-green-700" : "text-slate-500"}>
                             {d.intensive_care ? "✓" : "✗"} Intensivmedizin
                         </span>
-                        <span className={d.mechanical_ventilation ? "text-green-700" : "text-slate-400"}>
+                        <span className={d.mechanical_ventilation ? "text-green-700" : "text-slate-500"}>
                             {d.mechanical_ventilation ? "✓" : "✗"} Beatmung
                         </span>
-                        <span className={d.dialysis ? "text-green-700" : "text-slate-400"}>
+                        <span className={d.dialysis ? "text-green-700" : "text-slate-500"}>
                             {d.dialysis ? "✓" : "✗"} Dialyse
                         </span>
-                        <span className={d.artificial_nutrition ? "text-green-700" : "text-slate-400"}>
+                        <span className={d.artificial_nutrition ? "text-green-700" : "text-slate-500"}>
                             {d.artificial_nutrition ? "✓" : "✗"} Künstl. Ernährung
                         </span>
                     </div>

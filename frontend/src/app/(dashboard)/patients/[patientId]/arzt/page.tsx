@@ -14,12 +14,15 @@ import { LabResultForm } from "@/components/lab/lab-result-form";
 import { TreatmentPlanList, TreatmentPlanForm } from "@/components/treatment-plans";
 import { ConsultationList, ConsultationForm } from "@/components/consultations";
 import { MedicalLetterList, MedicalLetterForm } from "@/components/medical-letters";
+import { DiagnosisList, DiagnosisForm } from "@/components/diagnoses";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui";
+import { useUserPermissions } from "@/hooks/use-rbac";
 import type { Medication } from "@/hooks/use-medications";
 import type { ClinicalNote } from "@/hooks/use-clinical-notes";
 
 export default function ArztPage() {
   const { patientId } = useParams<{ patientId: string }>();
+  const { canWrite } = useUserPermissions();
   const [showForm, setShowForm] = useState(false);
   const [editMed, setEditMed] = useState<Medication | null>(null);
   const [adminMed, setAdminMed] = useState<Medication | null>(null);
@@ -36,23 +39,112 @@ export default function ArztPage() {
   const [showPlanForm, setShowPlanForm] = useState(false);
   const [showConsilForm, setShowConsilForm] = useState(false);
   const [showLetterForm, setShowLetterForm] = useState(false);
+  const [showDiagForm, setShowDiagForm] = useState(false);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-1.5">
+      {/* ─── Diagnosen (ICD-10) ─────────────────────────── */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Diagnosen</CardTitle>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                ICD-10 kodierte Haupt-, Neben- und Verdachtsdiagnosen.
+              </p>
+            </div>
+            {canWrite("Diagnosen") && (
+              <button
+                onClick={() => setShowDiagForm((v) => !v)}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                {showDiagForm ? "Abbrechen" : "+ Neue Diagnose"}
+              </button>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {showDiagForm && (
+            <div className="mb-6">
+              <DiagnosisForm
+                patientId={patientId}
+                onSuccess={() => setShowDiagForm(false)}
+                onCancel={() => setShowDiagForm(false)}
+              />
+            </div>
+          )}
+          <DiagnosisList patientId={patientId} />
+        </CardContent>
+      </Card>
+
+      {/* Verordnungen */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Medikamenten-Verordnungen</CardTitle>
+              <p className="text-sm text-slate-500 mt-1">
+                Verordnungen erstellen, bearbeiten und einsehen.
+              </p>
+            </div>
+            {canWrite("Medikamente") && (
+              <button
+                onClick={() => setShowForm((v) => !v)}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                {showForm ? "Abbrechen" : "+ Neue Verordnung"}
+              </button>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {showForm && (
+            <div className="mb-6">
+              <MedicationForm
+                patientId={patientId}
+                onSuccess={() => setShowForm(false)}
+                onCancel={() => setShowForm(false)}
+              />
+            </div>
+          )}
+
+          <MedicationTable
+            patientId={patientId}
+            onAdminister={(med) => setAdminMed(med)}
+            onEdit={(med) => setEditMed(med)}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Verabreichungs-Dialog */}
+      {adminMed && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="w-full max-w-lg">
+            <AdministrationDialog
+              medication={adminMed}
+              onSuccess={() => setAdminMed(null)}
+              onCancel={() => setAdminMed(null)}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Laborwerte — Trend-Chart (CRP Default) */}
       <LabTrendChartCard patientId={patientId} />
 
       {/* Laborwerte — Aktuelle Übersicht + Erfassung */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-1.5">
         <LabMiniTableCard patientId={patientId} />
         <div>
           <div className="flex items-center justify-end mb-3">
-            <button
-              onClick={() => setShowLabForm((v) => !v)}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-            >
-              {showLabForm ? "Abbrechen" : "Laborwerte erfassen"}
-            </button>
+            {canWrite("Laborwerte") && (
+              <button
+                onClick={() => setShowLabForm((v) => !v)}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                {showLabForm ? "Abbrechen" : "Laborwerte erfassen"}
+              </button>
+            )}
           </div>
           {showLabForm && (
             <LabResultForm
@@ -74,16 +166,18 @@ export default function ArztPage() {
                 Verlaufsnotizen, Konsilien, Aufnahme- und Entlassberichte.
               </p>
             </div>
-            <button
-              onClick={() => {
-                setShowNoteForm((v) => !v);
-                setEditNote(null);
-                setViewNote(null);
-              }}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-            >
-              {showNoteForm ? "Abbrechen" : "+ Neue Notiz"}
-            </button>
+            {canWrite("Klinische Notizen") && (
+              <button
+                onClick={() => {
+                  setShowNoteForm((v) => !v);
+                  setEditNote(null);
+                  setViewNote(null);
+                }}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                {showNoteForm ? "Abbrechen" : "+ Neue Notiz"}
+              </button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -136,56 +230,6 @@ export default function ArztPage() {
         </CardContent>
       </Card>
 
-      {/* Verordnungen */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Medikamenten-Verordnungen</CardTitle>
-              <p className="text-sm text-slate-500 mt-1">
-                Verordnungen erstellen, bearbeiten und einsehen.
-              </p>
-            </div>
-            <button
-              onClick={() => setShowForm((v) => !v)}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-            >
-              {showForm ? "Abbrechen" : "+ Neue Verordnung"}
-            </button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {showForm && (
-            <div className="mb-6">
-              <MedicationForm
-                patientId={patientId}
-                onSuccess={() => setShowForm(false)}
-                onCancel={() => setShowForm(false)}
-              />
-            </div>
-          )}
-
-          <MedicationTable
-            patientId={patientId}
-            onAdminister={(med) => setAdminMed(med)}
-            onEdit={(med) => setEditMed(med)}
-          />
-        </CardContent>
-      </Card>
-
-      {/* Verabreichungs-Dialog */}
-      {adminMed && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="w-full max-w-lg">
-            <AdministrationDialog
-              medication={adminMed}
-              onSuccess={() => setAdminMed(null)}
-              onCancel={() => setAdminMed(null)}
-            />
-          </div>
-        </div>
-      )}
-
       {/* ─── Therapiepläne ──────────────────────────────── */}
       <Card>
         <CardHeader>
@@ -196,12 +240,14 @@ export default function ArztPage() {
                 Behandlungspläne mit Zielen und Massnahmen.
               </p>
             </div>
-            <button
-              onClick={() => setShowPlanForm((v) => !v)}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-            >
-              {showPlanForm ? "Abbrechen" : "+ Neuer Plan"}
-            </button>
+            {canWrite("Therapiepläne") && (
+              <button
+                onClick={() => setShowPlanForm((v) => !v)}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                {showPlanForm ? "Abbrechen" : "+ Neuer Plan"}
+              </button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -228,12 +274,14 @@ export default function ArztPage() {
                 Anfragen und Berichte von Fachspezialisten.
               </p>
             </div>
-            <button
-              onClick={() => setShowConsilForm((v) => !v)}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-            >
-              {showConsilForm ? "Abbrechen" : "+ Neues Konsil"}
-            </button>
+            {canWrite("Konsilien") && (
+              <button
+                onClick={() => setShowConsilForm((v) => !v)}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                {showConsilForm ? "Abbrechen" : "+ Neues Konsil"}
+              </button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
@@ -260,12 +308,14 @@ export default function ArztPage() {
                 Entlass-, Überweisungs- und Verlaufsberichte.
               </p>
             </div>
-            <button
-              onClick={() => setShowLetterForm((v) => !v)}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-            >
-              {showLetterForm ? "Abbrechen" : "+ Neuer Brief"}
-            </button>
+            {canWrite("Arztbriefe") && (
+              <button
+                onClick={() => setShowLetterForm((v) => !v)}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                {showLetterForm ? "Abbrechen" : "+ Neuer Brief"}
+              </button>
+            )}
           </div>
         </CardHeader>
         <CardContent>

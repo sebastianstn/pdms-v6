@@ -1,5 +1,5 @@
 """Phase 3c Models — Therapieplan, Konsilien, Arztbriefe, Pflegediagnosen,
-Schichtübergabe, Ernährung, Verbrauchsmaterial."""
+Schichtübergabe, Ernährung, Verbrauchsmaterial, Medizinische Diagnosen."""
 
 import uuid
 from datetime import UTC, date, datetime
@@ -9,6 +9,41 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.infrastructure.database import Base
+
+
+# ─── Medizinische Diagnosen (ICD-10) ──────────────────────────
+
+class Diagnosis(Base):
+    """Medizinische Diagnose — ICD-10 kodiert, ärztlich gestellt."""
+    __tablename__ = "diagnoses"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    patient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("patients.id"), index=True)
+    encounter_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("encounters.id"))
+
+    icd_code: Mapped[str | None] = mapped_column(String(20))  # z.B. I50.0, J18.9
+    title: Mapped[str] = mapped_column(String(255))  # Kurzbezeichnung
+    description: Mapped[str | None] = mapped_column(Text)  # Detailbeschreibung
+
+    diagnosis_type: Mapped[str] = mapped_column(
+        String(20), default="haupt",
+    )  # haupt, neben, verdacht
+    severity: Mapped[str | None] = mapped_column(String(20))  # leicht, mittel, schwer
+    body_site: Mapped[str | None] = mapped_column(String(100))  # Lokalisation
+    laterality: Mapped[str | None] = mapped_column(String(20))  # links, rechts, beidseits
+
+    status: Mapped[str] = mapped_column(String(20), default="active")  # active, resolved, ruled_out, recurrence
+    onset_date: Mapped[date | None] = mapped_column(Date)  # Beginn der Erkrankung
+    resolved_date: Mapped[date | None] = mapped_column(Date)  # Datum der Genesung
+
+    diagnosed_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
+    diagnosed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    notes: Mapped[str | None] = mapped_column(Text)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC),
+    )
 
 
 # ─── Therapieplan ──────────────────────────────────────────────

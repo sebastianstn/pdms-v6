@@ -167,7 +167,7 @@ export function FluidBalanceOverview({ patientId }: Props) {
                 )}
 
                 {data?.entry_count === 0 && (
-                    <p className="text-sm text-slate-400 text-center mt-4">Keine Einträge in den letzten {hours}h.</p>
+                    <p className="text-sm text-slate-500 text-center mt-4">Keine Einträge in den letzten {hours}h.</p>
                 )}
             </CardContent>
         </Card>

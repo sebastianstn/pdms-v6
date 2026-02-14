@@ -28,6 +28,7 @@ class Patient(Base):
     address_canton: Mapped[str | None] = mapped_column(String(2))
     language: Mapped[str] = mapped_column(String(5), default="de")
     status: Mapped[str] = mapped_column(String(20), default="active")  # active, discharged, deceased
+    photo_url: Mapped[str | None] = mapped_column(String(500))
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

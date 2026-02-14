@@ -14,6 +14,7 @@ export interface Patient {
   address_zip?: string;
   address_city?: string;
   address_canton?: string;
+  photo_url?: string;
   language: string;
   status: "active" | "discharged" | "deceased";
   created_at: string;

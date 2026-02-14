@@ -36,9 +36,9 @@ export function SelfMedicationTracker({ patientId }: SelfMedicationTrackerProps)
         );
     }
 
-    const logs = data ?? [];
-    const pending = logs.filter((l: SelfMedicationLog) => l.status === "pending").length;
-    const missed = logs.filter((l: SelfMedicationLog) => l.status === "missed").length;
+    const logs: SelfMedicationLog[] = Array.isArray(data) ? data : (data as unknown as { items?: SelfMedicationLog[] })?.items ?? [];
+    const pending = logs.filter((l) => l.status === "pending").length;
+    const missed = logs.filter((l) => l.status === "missed").length;
 
     return (
         <Card>
@@ -53,7 +53,7 @@ export function SelfMedicationTracker({ patientId }: SelfMedicationTrackerProps)
             </CardHeader>
             <CardContent>
                 {logs.length === 0 ? (
-                    <p className="text-sm text-slate-400 py-4 text-center">
+                    <p className="text-sm text-slate-500 py-4 text-center">
                         Keine Selbstmedikations-Einträge.
                     </p>
                 ) : (

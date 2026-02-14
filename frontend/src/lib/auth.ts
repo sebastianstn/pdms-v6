@@ -8,6 +8,36 @@ export const KC_CONFIG = {
   clientId: process.env.NEXT_PUBLIC_KC_CLIENT || "pdms-web",
 };
 
+/**
+ * Liefert die effektive Keycloak-URL.
+ * Falls KC_URL auf localhost zeigt, die App aber über eine LAN-IP geöffnet wurde,
+ * wird derselbe Host wie die App mit dem Keycloak-Port verwendet.
+ */
+function getEffectiveKcUrl(): string {
+  const configured = KC_CONFIG.url;
+
+  if (typeof window === "undefined") {
+    return configured;
+  }
+
+  const appHost = window.location.hostname;
+  if (!appHost || appHost === "localhost" || appHost === "127.0.0.1") {
+    return configured;
+  }
+
+  try {
+    const parsed = new URL(configured);
+    if (parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1") {
+      const port = parsed.port || "8080";
+      return `${parsed.protocol}//${appHost}:${port}`;
+    }
+  } catch {
+    // Fallback auf konfigurierte URL
+  }
+
+  return configured;
+}
+
 const TOKEN_KEY = "pdms_token";
 const REFRESH_KEY = "pdms_refresh";
 const VERIFIER_KEY = "pdms_pkce_verifier";
@@ -56,7 +86,7 @@ export async function getLoginUrl(): Promise<string> {
     code_challenge: challenge,
     code_challenge_method: "S256",
   });
-  return `${KC_CONFIG.url}/realms/${KC_CONFIG.realm}/protocol/openid-connect/auth?${params}`;
+  return `${getEffectiveKcUrl()}/realms/${KC_CONFIG.realm}/protocol/openid-connect/auth?${params}`;
 }
 
 /** Exchange authorization code for tokens */
@@ -64,7 +94,7 @@ export async function exchangeCode(code: string): Promise<TokenResponse> {
   const verifier = sessionStorage.getItem(VERIFIER_KEY) || "";
   sessionStorage.removeItem(VERIFIER_KEY);
 
-  const tokenUrl = `${KC_CONFIG.url}/realms/${KC_CONFIG.realm}/protocol/openid-connect/token`;
+  const tokenUrl = `${getEffectiveKcUrl()}/realms/${KC_CONFIG.realm}/protocol/openid-connect/token`;
   const body = new URLSearchParams({
     grant_type: "authorization_code",
     client_id: KC_CONFIG.clientId,
@@ -88,7 +118,7 @@ export async function exchangeCode(code: string): Promise<TokenResponse> {
 
 /** Refresh the access token */
 export async function refreshAccessToken(refreshToken: string): Promise<TokenResponse> {
-  const tokenUrl = `${KC_CONFIG.url}/realms/${KC_CONFIG.realm}/protocol/openid-connect/token`;
+  const tokenUrl = `${getEffectiveKcUrl()}/realms/${KC_CONFIG.realm}/protocol/openid-connect/token`;
   const body = new URLSearchParams({
     grant_type: "refresh_token",
     client_id: KC_CONFIG.clientId,
@@ -123,7 +153,7 @@ export function getLogoutUrl(): string {
     client_id: KC_CONFIG.clientId,
     post_logout_redirect_uri: window.location.origin,
   });
-  return `${KC_CONFIG.url}/realms/${KC_CONFIG.realm}/protocol/openid-connect/logout?${params}`;
+  return `${getEffectiveKcUrl()}/realms/${KC_CONFIG.realm}/protocol/openid-connect/logout?${params}`;
 }
 
 // --- Token storage helpers ---

@@ -295,17 +295,17 @@ class TestAuthSchemas:
         from pydantic import ValidationError
 
         user = UserCreate(
-            keycloak_id="kc-123",
             username="test",
             email="test@pdms.local",
             role="arzt",
+            password="secret123",
         )
         assert user.role == "arzt"
 
         with pytest.raises(ValidationError):
             UserCreate(
-                keycloak_id="kc-123",
                 username="test",
                 email="test@pdms.local",
                 role="invalid_role",
+                password="secret123",
             )

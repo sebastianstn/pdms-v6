@@ -36,7 +36,7 @@ export function RemoteDevicesPanel({ patientId }: RemoteDevicesPanelProps) {
         return (
             <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
                 <h3 className="text-[13px] font-bold text-slate-900 mb-3">Remote-Geräte</h3>
-                <p className="text-[11px] text-slate-400 text-center py-4">Patient auswählen</p>
+                <p className="text-[11px] text-slate-500 text-center py-4">Patient auswählen</p>
             </div>
         );
     }
@@ -48,7 +48,7 @@ export function RemoteDevicesPanel({ patientId }: RemoteDevicesPanelProps) {
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
             <div className="flex items-center justify-between mb-3">
                 <h3 className="text-[13px] font-bold text-slate-900">Remote-Geräte</h3>
-                <span className="text-[10px] text-slate-400">
+                <span className="text-[10px] text-slate-500">
                     {isLoading ? "…" : `${onlineCount}/${deviceList.length} online`}
                 </span>
             </div>
@@ -57,7 +57,7 @@ export function RemoteDevicesPanel({ patientId }: RemoteDevicesPanelProps) {
                     <div className="w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
                 </div>
             ) : deviceList.length === 0 ? (
-                <p className="text-[11px] text-slate-400 text-center py-4">Keine Geräte registriert</p>
+                <p className="text-[11px] text-slate-500 text-center py-4">Keine Geräte registriert</p>
             ) : (
                 <div className="space-y-2">
                     {deviceList.map((device) => {

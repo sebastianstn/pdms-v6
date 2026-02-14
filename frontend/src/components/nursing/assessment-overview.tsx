@@ -61,7 +61,7 @@ function AssessmentCard({
                             {assessment.total_score}
                         </span>
                         {meta.unit && (
-                            <span className="text-sm text-slate-400">{meta.unit}</span>
+                            <span className="text-sm text-slate-500">{meta.unit}</span>
                         )}
                     </div>
                     {risk && (
@@ -71,12 +71,12 @@ function AssessmentCard({
                             Risiko: {risk.label}
                         </span>
                     )}
-                    <p className="text-xs text-slate-400 mt-2">
+                    <p className="text-xs text-slate-500 mt-2">
                         {formatDateTime(assessment.assessed_at)}
                     </p>
                 </div>
             ) : (
-                <p className="text-xs text-slate-400 mt-3">Noch nicht erfasst</p>
+                <p className="text-xs text-slate-500 mt-3">Noch nicht erfasst</p>
             )}
         </div>
     );

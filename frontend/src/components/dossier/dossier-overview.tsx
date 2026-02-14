@@ -63,7 +63,7 @@ export function DossierOverview({ patientId }: Props) {
   const { summary, encounter, latest_vitals, latest_handover, active_nutrition, recent_notes, recent_nursing } = data;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-1.5">
       {/* Encounter-Banner */}
       {encounter && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -85,7 +85,7 @@ export function DossierOverview({ patientId }: Props) {
       )}
 
       {/* Zusammenfassungs-Kacheln */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-1.5">
         <StatCard label="Alarme" value={summary.active_alarms} color={summary.active_alarms > 0 ? "red" : "emerald"} />
         <StatCard label="Medikamente" value={summary.active_medications} color="blue" />
         <StatCard label="Therapiepläne" value={summary.active_treatment_plans} color="purple" />
@@ -96,7 +96,7 @@ export function DossierOverview({ patientId }: Props) {
       </div>
 
       {/* Vitaldaten + Letzte Übergabe */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-1.5">
         {/* Letzte Vitaldaten */}
         <Card>
           <CardHeader>
@@ -142,18 +142,18 @@ export function DossierOverview({ patientId }: Props) {
           </CardHeader>
           <CardContent>
             {latest_handover ? (
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div>
                   <span className="text-xs font-semibold text-red-600">S — Situation</span>
                   <p className="text-sm text-slate-700">{(latest_handover as Record<string, string>).situation}</p>
                 </div>
                 {(latest_handover as Record<string, string>).shift_type && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <span className="text-xs font-medium text-slate-500">Schicht:</span>
                     <span className="text-xs text-slate-700">{(latest_handover as Record<string, string>).shift_type}</span>
                   </div>
                 )}
-                <p className="text-xs text-slate-400 pt-1">{(latest_handover as Record<string, string>).handover_date}</p>
+                <p className="text-xs text-slate-500 pt-1">{(latest_handover as Record<string, string>).handover_date}</p>
               </div>
             ) : (
               <p className="text-sm text-slate-500 text-center py-4">Keine Übergabe vorhanden.</p>
@@ -163,21 +163,21 @@ export function DossierOverview({ patientId }: Props) {
       </div>
 
       {/* Letzte Notizen + Pflege-Einträge */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-1.5">
         <Card>
           <CardHeader>
             <CardTitle>Letzte Notizen</CardTitle>
           </CardHeader>
           <CardContent>
             {recent_notes.length > 0 ? (
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {recent_notes.map((note, i) => {
                   const n = note as Record<string, string>;
                   return (
                     <div key={i} className="border-b border-slate-100 pb-2 last:border-0">
                       <div className="flex items-center justify-between">
                         <span className="font-medium text-sm text-slate-900">{n.title}</span>
-                        <span className="text-xs text-slate-400">{formatDate(n.created_at)}</span>
+                        <span className="text-xs text-slate-500">{formatDate(n.created_at)}</span>
                       </div>
                       <p className="text-xs text-slate-500 mt-0.5">{n.note_type} · {n.status}</p>
                     </div>
@@ -196,14 +196,14 @@ export function DossierOverview({ patientId }: Props) {
           </CardHeader>
           <CardContent>
             {recent_nursing.length > 0 ? (
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {recent_nursing.map((entry, i) => {
                   const e = entry as Record<string, string>;
                   return (
                     <div key={i} className="border-b border-slate-100 pb-2 last:border-0">
                       <div className="flex items-center justify-between">
                         <span className="font-medium text-sm text-slate-900">{e.title}</span>
-                        <span className="text-xs text-slate-400">{formatDate(e.recorded_at)}</span>
+                        <span className="text-xs text-slate-500">{formatDate(e.recorded_at)}</span>
                       </div>
                       <p className="text-xs text-slate-500 mt-0.5">{e.category} · {e.priority}</p>
                     </div>

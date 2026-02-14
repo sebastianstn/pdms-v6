@@ -38,7 +38,7 @@ export function MedicationTimeline({ patientId }: MedicationTimelineProps) {
                 <h3 className="text-[13px] font-bold text-slate-900 mb-3">
                     Medikamentenplan (Zuhause)
                 </h3>
-                <p className="text-[11px] text-slate-400 text-center py-6">
+                <p className="text-[11px] text-slate-500 text-center py-6">
                     Patient auswählen
                 </p>
             </div>
@@ -51,7 +51,7 @@ export function MedicationTimeline({ patientId }: MedicationTimelineProps) {
                 <h3 className="text-[13px] font-bold text-slate-900">
                     Medikamentenplan (Zuhause)
                 </h3>
-                <span className="text-[10px] font-semibold text-slate-400">
+                <span className="text-[10px] font-semibold text-slate-500">
                     {isLoading ? "…" : `${medications.length} aktiv`}
                 </span>
             </div>
@@ -61,7 +61,7 @@ export function MedicationTimeline({ patientId }: MedicationTimelineProps) {
                     <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
                 </div>
             ) : medications.length === 0 ? (
-                <p className="text-[11px] text-slate-400 text-center py-6">
+                <p className="text-[11px] text-slate-500 text-center py-6">
                     Keine aktiven Medikamente
                 </p>
             ) : (
@@ -81,7 +81,7 @@ export function MedicationTimeline({ patientId }: MedicationTimelineProps) {
                                     <p className="text-[11px] font-semibold text-slate-900 leading-tight truncate">
                                         {med.name}
                                     </p>
-                                    <p className="text-[9px] text-slate-400">
+                                    <p className="text-[9px] text-slate-500">
                                         {med.dose} {med.dose_unit} ·{" "}
                                         {ROUTE_LABELS[med.route] ?? med.route} · {med.frequency}
                                     </p>

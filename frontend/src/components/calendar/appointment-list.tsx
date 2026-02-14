@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Badge, Spinner } from "@/components/ui";
+import { useUserPermissions } from "@/hooks/use-rbac";
 import {
     useAppointments,
     useCreateAppointment,
@@ -59,6 +60,7 @@ export function AppointmentList({ patientId }: AppointmentListProps) {
     const [showForm, setShowForm] = useState(false);
     const [typeFilter, setTypeFilter] = useState<string>("");
     const [statusFilter, setStatusFilter] = useState<string>("");
+    const { canWrite } = useUserPermissions();
 
     const { data: appointments, isLoading, error } = useAppointments(patientId, {
         appointment_type: typeFilter || undefined,
@@ -97,12 +99,14 @@ export function AppointmentList({ patientId }: AppointmentListProps) {
 
                 <div className="flex-1" />
 
-                <button
-                    onClick={() => setShowForm(!showForm)}
-                    className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                >
-                    {showForm ? "Abbrechen" : "+ Neuer Termin"}
-                </button>
+                {canWrite("Termine") && (
+                    <button
+                        onClick={() => setShowForm(!showForm)}
+                        className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                    >
+                        {showForm ? "Abbrechen" : "+ Neuer Termin"}
+                    </button>
+                )}
             </div>
 
             {/* Inline create form */}
@@ -128,7 +132,7 @@ export function AppointmentList({ patientId }: AppointmentListProps) {
             )}
 
             {appointments && appointments.length === 0 && (
-                <p className="text-sm text-slate-400 text-center py-8">
+                <p className="text-sm text-slate-500 text-center py-8">
                     Keine Termine vorhanden.
                 </p>
             )}
@@ -180,7 +184,7 @@ function AppointmentRow({
                     {fmtDate(a.scheduled_date).slice(0, 5)}
                 </div>
                 <div className="text-xs text-slate-500">{fmtTime(a.start_time)}</div>
-                <div className="text-[10px] text-slate-400">{a.duration_minutes} Min.</div>
+                <div className="text-[10px] text-slate-500">{a.duration_minutes} Min.</div>
             </div>
 
             {/* Info */}
@@ -199,7 +203,7 @@ function AppointmentRow({
                     {a.is_recurring && <span>Wiederkehrend</span>}
                 </div>
                 {a.notes && (
-                    <p className="text-xs text-slate-400 mt-1 truncate">{a.notes}</p>
+                    <p className="text-xs text-slate-500 mt-1 truncate">{a.notes}</p>
                 )}
             </div>
 
@@ -286,7 +290,7 @@ function AppointmentForm({
                 </div>
                 <div className="sm:col-span-2">
                     <label className="block text-xs font-medium text-slate-600 mb-1">Titel *</label>
-                    <input name="title" required className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg" placeholder="z.B. IV-Antibiotika Tag 5" />
+                    <input name="title" required className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg" placeholder="z.B. IV-Antibiotika Tag 5" autoFocus />
                 </div>
                 <div>
                     <label className="block text-xs font-medium text-slate-600 mb-1">Datum *</label>

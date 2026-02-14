@@ -80,7 +80,7 @@ export function ConsultationList({ patientId, statusFilter }: Props) {
                             )}
                         </div>
                     )}
-                    <p className="text-xs text-slate-400 mt-2">{formatDate(c.created_at)}</p>
+                    <p className="text-xs text-slate-500 mt-2">{formatDate(c.created_at)}</p>
                 </div>
             ))}
         </div>

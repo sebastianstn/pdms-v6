@@ -57,7 +57,7 @@ function trendIcon(trend: string | undefined) {
             trend === "↓↓" ? "text-blue-600" :
                 trend === "↑" ? "text-amber-600" :
                     trend === "↓" ? "text-blue-500" :
-                        "text-slate-400";
+                        "text-slate-500";
     return <span className={`${color} font-bold text-sm`}>{trend}</span>;
 }
 
@@ -137,7 +137,7 @@ export function LabMiniTable({ patientId, category, compact = false }: Props) {
                                             {formatValue(item.value, item.unit)}
                                         </td>
                                         {!compact && (
-                                            <td className="py-1.5 px-2 text-center text-xs text-slate-400">
+                                            <td className="py-1.5 px-2 text-center text-xs text-slate-500">
                                                 {item.ref_min != null && item.ref_max != null
                                                     ? `${item.ref_min}–${item.ref_max}`
                                                     : item.ref_max != null
@@ -154,7 +154,7 @@ export function LabMiniTable({ patientId, category, compact = false }: Props) {
                                             {trendIcon(item.trend ?? undefined)}
                                         </td>
                                         {!compact && (
-                                            <td className="py-1.5 pl-3 text-right text-xs text-slate-400">
+                                            <td className="py-1.5 pl-3 text-right text-xs text-slate-500">
                                                 {formatDate(item.resulted_at)}
                                             </td>
                                         )}

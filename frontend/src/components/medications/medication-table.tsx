@@ -45,7 +45,7 @@ export function MedicationTable({ patientId, onAdminister, onEdit }: MedicationT
     }
 
     if (!data?.items?.length) {
-        return <p className="text-sm text-slate-400 py-8 text-center">Keine Medikamente verordnet.</p>;
+        return <p className="text-sm text-slate-500 py-8 text-center">Keine Medikamente verordnet.</p>;
     }
 
     return (
@@ -74,7 +74,7 @@ export function MedicationTable({ patientId, onAdminister, onEdit }: MedicationT
                                     <div>
                                         <p className="font-medium text-slate-900">{med.name}</p>
                                         {med.generic_name && (
-                                            <p className="text-xs text-slate-400">{med.generic_name}</p>
+                                            <p className="text-xs text-slate-500">{med.generic_name}</p>
                                         )}
                                         {med.is_prn && (
                                             <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-50 text-purple-600 font-medium">

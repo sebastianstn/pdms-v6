@@ -35,7 +35,17 @@
         "encounters": "Ricoveri",
         "audit": "Registro audit",
         "settings": "Impostazioni",
-        "logout": "Disconnettersi"
+        "logout": "Disconnettersi",
+        "home": "Lista pazienti",
+        "back": "Indietro",
+        "forward": "Avanti",
+        "print": "Stampa pagina"
+    },
+    "search": {
+        "placeholder": "Cerca paziente (nome, AVS)...",
+        "loading": "Ricerca in corso…",
+        "noResults": "Nessun paziente trovato per",
+        "showAll": "Mostra tutti i {{count}} risultati →"
     },
     "patient": {
         "title": "Pazienti",

@@ -27,6 +27,7 @@
     "nav": {
         "dashboard": "Dashboard",
         "patients": "Patienten",
+        "admin": "Admin",
         "vitals": "Vitaldaten",
         "medications": "Medikamente",
         "appointments": "Termine",
@@ -35,7 +36,17 @@
         "encounters": "Aufenthalte",
         "audit": "Audit-Log",
         "settings": "Einstellungen",
-        "logout": "Abmelden"
+        "logout": "Abmelden",
+        "home": "Patientenliste",
+        "back": "Zurück",
+        "forward": "Vorwärts",
+        "print": "Seite drucken"
+    },
+    "search": {
+        "placeholder": "Patient suchen (Name, AHV)...",
+        "loading": "Suche läuft…",
+        "noResults": "Keine Patienten gefunden für",
+        "showAll": "Alle {{count}} Ergebnisse anzeigen →"
     },
     "patient": {
         "title": "Patienten",

@@ -18,6 +18,10 @@ const keys = {
     meta: () => [...keys.all, "meta"] as const,
 };
 
+interface QueryOptions {
+    enabled?: boolean;
+}
+
 // ─── Read ─────────────────────────────────────────────────────
 
 export function useHomeVisits(
@@ -40,10 +44,11 @@ export function useHomeVisits(
     });
 }
 
-export function useTodayHomeVisits() {
+export function useTodayHomeVisits(options?: QueryOptions) {
     return useQuery<HomeVisit[]>({
         queryKey: keys.today(),
         queryFn: () => api.get<HomeVisit[]>("/home-visits/today"),
+        enabled: options?.enabled,
         refetchInterval: 30_000, // Refresh every 30s
     });
 }

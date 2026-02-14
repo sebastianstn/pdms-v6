@@ -20,6 +20,10 @@ const keys = {
     today: () => [...keys.all, "today"] as const,
 };
 
+interface QueryOptions {
+    enabled?: boolean;
+}
+
 // ─── Read ─────────────────────────────────────────────────────
 
 interface TodayTeleconsults {
@@ -30,10 +34,11 @@ interface TodayTeleconsults {
     items: Teleconsult[];
 }
 
-export function useTodayTeleconsults() {
+export function useTodayTeleconsults(options?: QueryOptions) {
     return useQuery<TodayTeleconsults>({
         queryKey: keys.today(),
         queryFn: () => api.get<TodayTeleconsults>("/teleconsults/today"),
+        enabled: options?.enabled,
         refetchInterval: 60_000,
     });
 }

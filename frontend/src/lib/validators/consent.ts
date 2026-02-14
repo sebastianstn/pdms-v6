@@ -21,9 +21,7 @@ export const CONSENT_STATUSES = [
 
 export const consentCreateSchema = z.object({
     patient_id: z.string().uuid("Ungültige Patienten-ID"),
-    consent_type: z.enum(CONSENT_TYPES, {
-        errorMap: () => ({ message: "Ungültiger Einwilligungstyp" }),
-    }),
+    consent_type: z.enum(CONSENT_TYPES, "Ungültiger Einwilligungstyp"),
     status: z.enum(["pending", "granted", "refused"]).default("pending"),
     granted_by: z.string().max(200).optional().nullable(),
     valid_from: z.string().date("Ungültiges Datum (YYYY-MM-DD)").optional().nullable(),

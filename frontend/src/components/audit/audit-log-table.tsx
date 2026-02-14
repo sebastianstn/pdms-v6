@@ -133,10 +133,10 @@ function AuditRow({
                     {ROLE_LABELS[entry.user_role] || entry.user_role}
                 </Badge>
             </td>
-            <td className="px-3 py-2 text-xs text-slate-400">
+            <td className="px-3 py-2 text-xs text-slate-500">
                 {entry.ip_address || "—"}
             </td>
-            <td className="px-3 py-2 text-xs text-slate-400">
+            <td className="px-3 py-2 text-xs text-slate-500">
                 {String(entry.details?.status ?? "—")}
             </td>
         </tr>
@@ -158,7 +158,7 @@ function AuditDetailPanel({
                 <h4 className="font-semibold text-sm">Audit-Detail</h4>
                 <button
                     onClick={onClose}
-                    className="text-slate-400 hover:text-slate-600 text-lg leading-none"
+                    className="text-slate-500 hover:text-slate-600 text-lg leading-none"
                 >
                     ✕
                 </button>
@@ -301,7 +301,7 @@ export function AuditLogTable({ patientId }: AuditLogTableProps) {
             )}
 
             {items.length === 0 ? (
-                <div className="text-center py-8 text-slate-400">
+                <div className="text-center py-8 text-slate-500">
                     <p>Keine Audit-Einträge gefunden.</p>
                 </div>
             ) : (

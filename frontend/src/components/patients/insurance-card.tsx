@@ -68,7 +68,7 @@ export function InsuranceCard({ patientId }: InsuranceCardProps) {
             {showForm && (
                 <form onSubmit={handleCreate} className="bg-blue-50/50 border border-blue-200 rounded-lg p-3 space-y-2">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <input name="insurer_name" required placeholder="Versicherer *" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
+                        <input name="insurer_name" required placeholder="Versicherer *" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" autoFocus />
                         <input name="policy_number" required placeholder="Policen-Nr. *" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
                         <select name="insurance_type" required className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white">
                             {Object.entries(TYPE_LABELS).map(([k, v]) => (
@@ -96,7 +96,7 @@ export function InsuranceCard({ patientId }: InsuranceCardProps) {
             )}
 
             {insurances && insurances.length === 0 && (
-                <p className="text-xs text-slate-400 text-center py-4">Keine Versicherungen erfasst.</p>
+                <p className="text-xs text-slate-500 text-center py-4">Keine Versicherungen erfasst.</p>
             )}
 
             {insurances && insurances.map((ins) => (

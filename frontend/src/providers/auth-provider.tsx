@@ -27,6 +27,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: () => void;
   logout: () => void;
+  devLogin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -35,6 +36,7 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   login: () => { },
   logout: () => { },
+  devLogin: () => { },
 });
 
 function jwtToUser(payload: JwtPayload): User {
@@ -48,6 +50,7 @@ function jwtToUser(payload: JwtPayload): User {
 }
 
 const IS_DEV_BYPASS = process.env.NEXT_PUBLIC_DEV_AUTH_BYPASS === "true";
+const DEV_LOGGED_OUT_KEY = "pdms_dev_logged_out";
 
 const DEV_USER: User = {
   sub: "dev-user-0000-0000-000000000000",
@@ -57,10 +60,17 @@ const DEV_USER: User = {
   roles: ["admin", "arzt", "pflege"],
 };
 
+/** Prüft ob im Dev-Modus ein Logout aktiv ist. */
+function isDevLoggedOut(): boolean {
+  if (typeof window === "undefined") return false;
+  return sessionStorage.getItem(DEV_LOGGED_OUT_KEY) === "true";
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(IS_DEV_BYPASS ? DEV_USER : null);
-  const [token, setToken] = useState<string | null>(IS_DEV_BYPASS ? "dev-token" : null);
-  const [isLoading, setIsLoading] = useState(!IS_DEV_BYPASS);
+  // Initialisierung ohne sessionStorage — SSR-sicher (verhindert Hydration-Mismatch)
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const scheduleRefresh = useCallback((expiresIn: number) => {
@@ -86,6 +96,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // Dev-Bypass: sofort als DEV_USER einloggen (nur Client-seitig)
+    if (IS_DEV_BYPASS && !isDevLoggedOut()) {
+      setUser(DEV_USER);
+      setToken("dev-token");
+      setIsLoading(false);
+      return;
+    }
+
     // Check for existing token on mount
     const storedToken = getStoredToken();
     if (storedToken) {
@@ -135,11 +153,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setToken(null);
     if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
-    window.location.href = getLogoutUrl();
+
+    if (IS_DEV_BYPASS) {
+      // Dev-Modus: Flag setzen und in den Keycloak-Login-Modus wechseln
+      sessionStorage.setItem(DEV_LOGGED_OUT_KEY, "true");
+      window.location.href = "/login?mode=keycloak";
+    } else {
+      window.location.href = getLogoutUrl();
+    }
+  }, []);
+
+  /** Dev-Login: wird von der Login-Seite aufgerufen. */
+  const devLogin = useCallback(() => {
+    if (!IS_DEV_BYPASS) return;
+    sessionStorage.removeItem(DEV_LOGGED_OUT_KEY);
+    setUser(DEV_USER);
+    setToken("dev-token");
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, logout, devLogin }}>
       {children}
     </AuthContext.Provider>
   );

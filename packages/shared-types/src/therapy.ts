@@ -532,3 +532,86 @@ export const SUPPLY_CATEGORY_LABELS: Record<SupplyCategory, string> = {
   respiratory: "Atemwege",
   other: "Andere",
 };
+
+
+// ─── Medizinische Diagnosen (ICD-10) ──────────────────────────
+
+export type DiagnosisType = "haupt" | "neben" | "verdacht";
+export type DiagnosisStatus = "active" | "resolved" | "ruled_out" | "recurrence";
+export type DiagnosisSeverity = "leicht" | "mittel" | "schwer";
+export type DiagnosisLaterality = "links" | "rechts" | "beidseits";
+
+export interface Diagnosis {
+  id: string;
+  patient_id: string;
+  encounter_id?: string;
+  icd_code?: string;
+  title: string;
+  description?: string;
+  diagnosis_type: DiagnosisType;
+  severity?: DiagnosisSeverity;
+  body_site?: string;
+  laterality?: DiagnosisLaterality;
+  status: DiagnosisStatus;
+  onset_date?: string;
+  resolved_date?: string;
+  diagnosed_by?: string;
+  diagnosed_at: string;
+  notes?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface DiagnosisCreate {
+  patient_id: string;
+  encounter_id?: string;
+  icd_code?: string;
+  title: string;
+  description?: string;
+  diagnosis_type?: DiagnosisType;
+  severity?: DiagnosisSeverity;
+  body_site?: string;
+  laterality?: DiagnosisLaterality;
+  onset_date?: string;
+  notes?: string;
+}
+
+export interface DiagnosisUpdate {
+  icd_code?: string;
+  title?: string;
+  description?: string;
+  diagnosis_type?: DiagnosisType;
+  severity?: DiagnosisSeverity;
+  body_site?: string;
+  laterality?: DiagnosisLaterality;
+  status?: DiagnosisStatus;
+  onset_date?: string;
+  resolved_date?: string;
+  notes?: string;
+}
+
+export interface PaginatedDiagnoses {
+  items: Diagnosis[];
+  total: number;
+  page: number;
+  per_page: number;
+}
+
+export const DIAGNOSIS_TYPE_LABELS: Record<DiagnosisType, string> = {
+  haupt: "Hauptdiagnose",
+  neben: "Nebendiagnose",
+  verdacht: "Verdachtsdiagnose",
+};
+
+export const DIAGNOSIS_STATUS_LABELS: Record<DiagnosisStatus, string> = {
+  active: "Aktiv",
+  resolved: "Behoben",
+  ruled_out: "Ausgeschlossen",
+  recurrence: "Rezidiv",
+};
+
+export const DIAGNOSIS_SEVERITY_LABELS: Record<DiagnosisSeverity, string> = {
+  leicht: "Leicht",
+  mittel: "Mittel",
+  schwer: "Schwer",
+};

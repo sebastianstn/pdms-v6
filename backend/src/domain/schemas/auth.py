@@ -42,21 +42,34 @@ class UserInfo(BaseModel):
     id: uuid.UUID
     username: str
     email: str
+    first_name: str | None = None
+    last_name: str | None = None
     role: str
     is_active: bool = True
     last_login: datetime | None = None
+    created_at: datetime | None = None
 
 
 class UserCreate(BaseModel):
     """Schema zum Erstellen eines neuen Benutzers."""
-    keycloak_id: str = Field(..., min_length=1, max_length=255)
-    username: str = Field(..., min_length=1, max_length=100)
-    email: str = Field(..., min_length=1, max_length=255)
-    role: str = Field(..., pattern=r"^(arzt|pflege|admin)$")
+    username: str = Field(..., min_length=2, max_length=100)
+    email: str = Field(..., min_length=5, max_length=255)
+    first_name: str | None = Field(None, max_length=100)
+    last_name: str | None = Field(None, max_length=100)
+    role: str = Field(..., pattern=r"^(arzt|pflege|fage|admin)$")
+    password: str = Field(..., min_length=6, max_length=128, description="Initiales Passwort")
 
 
 class UserUpdate(BaseModel):
     """Schema zum Aktualisieren eines Benutzers."""
+    username: str | None = Field(None, min_length=2, max_length=100)
     email: str | None = Field(None, max_length=255)
-    role: str | None = Field(None, pattern=r"^(arzt|pflege|admin)$")
+    first_name: str | None = Field(None, max_length=100)
+    last_name: str | None = Field(None, max_length=100)
+    role: str | None = Field(None, pattern=r"^(arzt|pflege|fage|admin)$")
     is_active: bool | None = None
+
+
+class PasswordReset(BaseModel):
+    """Schema für Passwort-Reset durch Admin."""
+    new_password: str = Field(..., min_length=6, max_length=128)

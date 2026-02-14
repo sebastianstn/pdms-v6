@@ -58,7 +58,7 @@ export function TeleconsultPanel({ patientId }: TeleconsultPanelProps) {
             </CardHeader>
             <CardContent>
                 {teleconsults.length === 0 ? (
-                    <p className="text-sm text-slate-400 py-4 text-center">Keine Telekonsultationen.</p>
+                    <p className="text-sm text-slate-500 py-4 text-center">Keine Telekonsultationen.</p>
                 ) : (
                     <div className="space-y-3">
                         {teleconsults.map((tc) => (
@@ -106,7 +106,7 @@ function TeleconsultCard({ teleconsult: tc, onStart, onEnd, isStarting, isEnding
                         </span>
                     )}
                 </div>
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-slate-500">
                     {fmtTime(tc.scheduled_start)}
                     {tc.duration_minutes && ` • ${fmtDuration(tc.duration_minutes)}`}
                 </span>

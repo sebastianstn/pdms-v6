@@ -55,7 +55,7 @@ export function ClinicalNoteDetail({ note, onEdit, onClose }: ClinicalNoteDetail
                             <Badge variant={statusVariant[note.status]}>
                                 {NOTE_STATUS_LABELS[note.status]}
                             </Badge>
-                            <span className="text-xs text-slate-400">
+                            <span className="text-xs text-slate-500">
                                 {NOTE_TYPE_LABELS[note.note_type]}
                             </span>
                             {note.is_confidential && (
@@ -67,7 +67,7 @@ export function ClinicalNoteDetail({ note, onEdit, onClose }: ClinicalNoteDetail
                     {onClose && (
                         <button
                             onClick={onClose}
-                            className="text-slate-400 hover:text-slate-600 text-lg"
+                            className="text-slate-500 hover:text-slate-600 text-lg"
                         >
                             ✕
                         </button>
@@ -75,7 +75,7 @@ export function ClinicalNoteDetail({ note, onEdit, onClose }: ClinicalNoteDetail
                 </div>
 
                 {/* Meta */}
-                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-slate-400">
+                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-slate-500">
                     <span>Erstellt: {formatDate(note.created_at)}</span>
                     {note.updated_at !== note.created_at && (
                         <span>Aktualisiert: {formatDate(note.updated_at)}</span>

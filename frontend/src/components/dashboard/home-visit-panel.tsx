@@ -27,7 +27,7 @@ function getStatusStyle(status: HomeVisitStatus) {
         case "cancelled":
             return { bg: "bg-slate-50 border-slate-200 opacity-50", dot: "bg-slate-300 text-white", icon: "x" };
         default:
-            return { bg: "bg-slate-50 border-slate-200", dot: "bg-slate-100 text-slate-400", icon: "" };
+            return { bg: "bg-slate-50 border-slate-200", dot: "bg-slate-100 text-slate-500", icon: "" };
     }
 }
 
@@ -69,7 +69,7 @@ export function HomeVisitPanel({ visits, patients }: HomeVisitPanelProps) {
             </div>
             {displayVisits.length === 0 ? (
                 <div className="flex-1 flex items-center justify-center py-6">
-                    <p className="text-[11px] text-slate-400">Keine Hausbesuche heute</p>
+                    <p className="text-[11px] text-slate-500">Keine Hausbesuche heute</p>
                 </div>
             ) : (
                 <div className="space-y-2 flex-1">
@@ -109,7 +109,7 @@ export function HomeVisitPanel({ visits, patients }: HomeVisitPanelProps) {
                                         className={`text-[9px] ${
                                             ["en_route", "arrived", "in_progress"].includes(visit.status)
                                                 ? "text-cyan-600 font-medium"
-                                                : "text-slate-400"
+                                                : "text-slate-500"
                                         }`}
                                     >
                                         {city ? `${city} · ` : ""}

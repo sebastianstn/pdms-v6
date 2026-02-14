@@ -72,7 +72,7 @@ export function AssessmentForm({ patientId, assessmentType, onSuccess, onCancel 
                     <CardTitle>{definition.name}</CardTitle>
                     <div className="text-right">
                         <span className="text-2xl font-bold text-slate-900">{totalScore}</span>
-                        <span className="text-sm text-slate-400 ml-1">/ {definition.max_score}</span>
+                        <span className="text-sm text-slate-500 ml-1">/ {definition.max_score}</span>
                     </div>
                 </div>
             </CardHeader>

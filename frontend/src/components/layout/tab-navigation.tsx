@@ -29,7 +29,7 @@ export function TabNavigation() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex gap-1 mt-4 bg-white rounded-xl border border-slate-200 p-1.5">
+    <nav className="flex gap-1 mt-0 bg-white rounded-xl border border-slate-200 p-1.5">
       {TABS.map((tab) => {
         const href = `/patients/${patientId}/${tab.key}`;
         const isActive = pathname.endsWith(tab.key);

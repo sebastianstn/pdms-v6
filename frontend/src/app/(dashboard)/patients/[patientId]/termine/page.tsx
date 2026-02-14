@@ -13,7 +13,7 @@ export default function TerminePage() {
   const [view, setView] = useState<"week" | "list">("week");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-1.5">
       {/* Calendar / List Toggle */}
       <Card>
         <CardHeader>
@@ -51,7 +51,7 @@ export default function TerminePage() {
       </Card>
 
       {/* Home-Spital: Hausbesuche + Telekonsultationen */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-1.5">
         <HomeVisitTimeline patientId={patientId} />
         <TeleconsultPanel patientId={patientId} />
       </div>

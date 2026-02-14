@@ -76,19 +76,19 @@ export function NutritionPanel({ patientId }: Props) {
                                             <div className="grid grid-cols-3 gap-2 text-sm">
                                                 {o.caloric_target && (
                                                     <div>
-                                                        <span className="text-xs text-slate-400">Kalorien</span>
+                                                        <span className="text-xs text-slate-500">Kalorien</span>
                                                         <p className="font-medium">{o.caloric_target} kcal</p>
                                                     </div>
                                                 )}
                                                 {o.protein_target && (
                                                     <div>
-                                                        <span className="text-xs text-slate-400">Protein</span>
+                                                        <span className="text-xs text-slate-500">Protein</span>
                                                         <p className="font-medium">{o.protein_target} g</p>
                                                     </div>
                                                 )}
                                                 {o.fluid_target && (
                                                     <div>
-                                                        <span className="text-xs text-slate-400">Flüssigkeit</span>
+                                                        <span className="text-xs text-slate-500">Flüssigkeit</span>
                                                         <p className="font-medium">{o.fluid_target} ml</p>
                                                     </div>
                                                 )}
@@ -124,10 +124,10 @@ export function NutritionPanel({ patientId }: Props) {
                                         </div>
                                         <div className="mt-2 flex items-center gap-4">
                                             <div>
-                                                <span className="text-xs text-slate-400">Score</span>
+                                                <span className="text-xs text-slate-500">Score</span>
                                                 <p className="text-lg font-bold text-slate-900">{s.total_score}</p>
                                             </div>
-                                            <p className="text-xs text-slate-400">
+                                            <p className="text-xs text-slate-500">
                                                 {new Date(s.created_at).toLocaleDateString("de-CH")}
                                             </p>
                                         </div>

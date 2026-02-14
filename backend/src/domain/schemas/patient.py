@@ -19,6 +19,7 @@ class PatientCreate(BaseModel):
     address_zip: str | None = None
     address_city: str | None = None
     address_canton: str | None = Field(None, max_length=2)
+    photo_url: str | None = None
     language: str = "de"
 
 
@@ -32,6 +33,7 @@ class PatientUpdate(BaseModel):
     address_city: str | None = None
     address_canton: str | None = None
     status: str | None = None
+    photo_url: str | None = None
 
 
 class PatientResponse(BaseModel):
@@ -50,6 +52,7 @@ class PatientResponse(BaseModel):
     address_zip: str | None
     address_city: str | None
     address_canton: str | None
+    photo_url: str | None
     language: str
     status: str
     created_at: datetime

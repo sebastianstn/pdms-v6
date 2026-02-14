@@ -54,7 +54,7 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
 
     if (isLoading) {
         return (
-            <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+            <div className="flex items-center gap-2 p-1 bg-slate-50 rounded-lg border border-slate-200">
                 <Spinner size="sm" />
                 <span className="text-sm text-slate-500">Encounter laden…</span>
             </div>
@@ -64,7 +64,7 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
     // Kein aktiver Encounter
     if (!encounter) {
         return (
-            <div className="flex items-center justify-between p-3 bg-amber-50 rounded-lg border border-amber-200">
+            <div className="flex items-center justify-between p-1 bg-amber-50 rounded-lg border border-amber-200">
                 <div className="flex items-center gap-2">
                     <span className="text-amber-600 font-bold">!</span>
                     <span className="text-sm text-amber-700">Kein aktiver Aufenthalt</span>
@@ -82,7 +82,7 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
     }
 
     return (
-        <div className="p-4 bg-green-50/50 rounded-lg border border-green-200 space-y-3">
+        <div className="p-1 bg-green-50/50 rounded-lg border border-green-200 space-y-2">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -99,7 +99,7 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
                         </span>
                     )}
                 </div>
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-slate-500">
                     Aufnahme: {formatDate(encounter.admitted_at)}
                 </span>
             </div>
@@ -146,6 +146,7 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
                             onChange={(e) => setTransferWard(e.target.value)}
                             className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm w-32"
                             placeholder="z.B. IPS-2"
+                            autoFocus
                         />
                     </div>
                     <div>
@@ -196,6 +197,7 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
                             onChange={(e) => setDischargeReason(e.target.value)}
                             className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-sm"
                             placeholder="z.B. Besserung, Verlegung externes Spital"
+                            autoFocus
                         />
                     </div>
                     <button

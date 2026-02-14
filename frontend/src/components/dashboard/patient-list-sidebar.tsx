@@ -64,7 +64,7 @@ export function PatientListSidebar({ patients, isLoading, selectedId, onSelect }
             <div className="px-4 pt-4 pb-2 shrink-0">
                 <div className="flex items-center justify-between">
                     <h3 className="text-sm font-bold text-slate-900">Patienten</h3>
-                    <span className="text-xs text-slate-400">{patients.length}</span>
+                    <span className="text-xs text-slate-500">{patients.length}</span>
                 </div>
 
                 {/* Filter Tabs */}
@@ -77,7 +77,7 @@ export function PatientListSidebar({ patients, isLoading, selectedId, onSelect }
                                 "px-3 py-1 rounded-md text-[10px] font-semibold transition-all",
                                 filter === tab.key
                                     ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white shadow-sm"
-                                    : "text-slate-400 hover:text-slate-600 hover:bg-slate-50"
+                                    : "text-slate-500 hover:text-slate-600 hover:bg-slate-50"
                             )}
                         >
                             {tab.label}
@@ -93,7 +93,7 @@ export function PatientListSidebar({ patients, isLoading, selectedId, onSelect }
                         <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
                     </div>
                 ) : filteredPatients.length === 0 ? (
-                    <p className="text-xs text-slate-400 text-center py-8">Keine Patienten</p>
+                    <p className="text-xs text-slate-500 text-center py-8">Keine Patienten</p>
                 ) : (
                     filteredPatients.map((patient) => {
                         const isSelected = patient.id === selectedId;
@@ -126,7 +126,7 @@ export function PatientListSidebar({ patients, isLoading, selectedId, onSelect }
                                         <p className="text-[11px] font-semibold text-slate-900 truncate">
                                             {patient.first_name.charAt(0)}. {patient.last_name}
                                         </p>
-                                        <p className="text-[9px] text-slate-400">
+                                        <p className="text-[9px] text-slate-500">
                                             {age}J · {genderLabel}
                                         </p>
                                     </div>
@@ -149,7 +149,7 @@ export function PatientListSidebar({ patients, isLoading, selectedId, onSelect }
 
                 {patients.length > 6 && (
                     <div className="text-center py-2">
-                        <p className="text-[9px] text-slate-400">+{patients.length - 6} weitere</p>
+                        <p className="text-[9px] text-slate-500">+{patients.length - 6} weitere</p>
                     </div>
                 )}
             </div>

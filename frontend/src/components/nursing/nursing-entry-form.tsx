@@ -100,6 +100,7 @@ export function NursingEntryForm({ patientId, onSuccess, onCancel }: NursingEntr
                             value={form.title || ""}
                             onChange={(e) => update("title", e.target.value)}
                             required
+                            autoFocus
                         />
                     </div>
 

@@ -1,10 +1,11 @@
 /**
  * Alarm data hooks — active alarms query, acknowledge/resolve mutations, WebSocket real-time.
  */
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api-client";
 import { wsManager } from "@/lib/websocket";
+import { useAuth } from "@/providers/auth-provider";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -36,18 +37,23 @@ interface AlarmCounts {
     total: number;
 }
 
+interface QueryOptions {
+    enabled?: boolean;
+}
+
 /**
  * Alle Alarme abfragen mit optionalem Status-Filter.
  */
 export function useAlarms(status: "active" | "acknowledged" | "resolved" = "active", patientId?: string) {
     const params = new URLSearchParams({ status });
     const validPatient = patientId && UUID_RE.test(patientId);
+    const enabled = !patientId || Boolean(validPatient);
     if (validPatient) params.set("patient_id", patientId);
 
     return useQuery<PaginatedAlarms>({
         queryKey: ["alarms", status, patientId],
         queryFn: () => api.get(`/alarms?${params.toString()}`),
-        enabled: !patientId || validPatient,
+        enabled,
         refetchInterval: 15_000,
     });
 }
@@ -55,10 +61,11 @@ export function useAlarms(status: "active" | "acknowledged" | "resolved" = "acti
 /**
  * Schnelle Alarm-Zählung für Dashboard-Badges.
  */
-export function useAlarmCounts() {
+export function useAlarmCounts(options?: QueryOptions) {
     return useQuery<AlarmCounts>({
         queryKey: ["alarms", "counts"],
         queryFn: () => api.get("/alarms/counts"),
+        enabled: options?.enabled,
         refetchInterval: 10_000,
     });
 }
@@ -95,18 +102,25 @@ export function useResolveAlarm() {
  */
 export function useAlarmWebSocket(onNewAlarm?: (alarm: Alarm) => void) {
     const qc = useQueryClient();
+    const { user } = useAuth();
+    // Stable ref für den Callback — verhindert reconnect bei jedem Render
+    const callbackRef = useRef(onNewAlarm);
+    callbackRef.current = onNewAlarm;
 
     useEffect(() => {
+        // Nur verbinden wenn User authentifiziert ist
+        if (!user) return;
+
         const cleanup = wsManager.connect("/alarms", (data) => {
             // Alarm-Queries invalidieren damit die Liste refreshed
             qc.invalidateQueries({ queryKey: ["alarms"] });
 
             // Callback aufrufen (z.B. für Toast-Notification)
-            if (onNewAlarm && data && typeof data === "object") {
-                onNewAlarm(data as Alarm);
+            if (callbackRef.current && data && typeof data === "object") {
+                callbackRef.current(data as Alarm);
             }
         });
 
         return cleanup;
-    }, [qc, onNewAlarm]);
+    }, [qc, user]);
 }

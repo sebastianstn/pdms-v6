@@ -35,7 +35,17 @@
         "encounters": "Séjours",
         "audit": "Journal d'audit",
         "settings": "Paramètres",
-        "logout": "Déconnexion"
+        "logout": "Déconnexion",
+        "home": "Liste des patients",
+        "back": "Retour",
+        "forward": "Suivant",
+        "print": "Imprimer la page"
+    },
+    "search": {
+        "placeholder": "Rechercher un patient (nom, AVS)...",
+        "loading": "Recherche en cours…",
+        "noResults": "Aucun patient trouvé pour",
+        "showAll": "Afficher les {{count}} résultats →"
     },
     "patient": {
         "title": "Patients",

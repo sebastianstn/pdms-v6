@@ -12,13 +12,18 @@ interface PaginatedPatients {
   per_page: number;
 }
 
-export function usePatients(page = 1, search?: string) {
+interface QueryOptions {
+  enabled?: boolean;
+}
+
+export function usePatients(page = 1, search?: string, options?: QueryOptions) {
   const params = new URLSearchParams({ page: String(page) });
   if (search) params.set("search", search);
 
   return useQuery<PaginatedPatients>({
     queryKey: ["patients", page, search],
     queryFn: () => api.get(`/patients?${params}`),
+    enabled: options?.enabled,
   });
 }
 
@@ -45,6 +50,22 @@ export function useUpdatePatient(id: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: Partial<Patient>) => api.patch<Patient>(`/patients/${id}`, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["patients"] });
+      qc.invalidateQueries({ queryKey: ["patients", id] });
+    },
+  });
+}
+
+export function useUploadPatientPhoto(id: string) {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      return api.post<Patient>(`/patients/${id}/photo`, formData);
+    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["patients"] });
       qc.invalidateQueries({ queryKey: ["patients", id] });

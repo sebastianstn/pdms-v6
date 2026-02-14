@@ -52,7 +52,7 @@ export function NursingEntryList({ patientId, category, handoverOnly, onEdit }: 
     }
 
     if (!data?.items?.length) {
-        return <p className="text-sm text-slate-400 py-8 text-center">Keine Pflegeeinträge vorhanden.</p>;
+        return <p className="text-sm text-slate-500 py-8 text-center">Keine Pflegeeinträge vorhanden.</p>;
     }
 
     return (
@@ -79,7 +79,7 @@ export function NursingEntryList({ patientId, category, handoverOnly, onEdit }: 
                                     </span>
                                 )}
                             </div>
-                            <span className="text-xs text-slate-400 whitespace-nowrap">
+                            <span className="text-xs text-slate-500 whitespace-nowrap">
                                 {formatDateTime(entry.recorded_at)}
                             </span>
                         </div>
@@ -115,7 +115,7 @@ export function NursingEntryList({ patientId, category, handoverOnly, onEdit }: 
             })}
 
             {data.total > data.items.length && (
-                <p className="text-xs text-slate-400 text-center pt-2">
+                <p className="text-xs text-slate-500 text-center pt-2">
                     {data.items.length} von {data.total} Einträgen angezeigt
                 </p>
             )}

@@ -66,7 +66,7 @@ export function HomeVisitTimeline({ patientId }: HomeVisitTimelineProps) {
             </CardHeader>
             <CardContent>
                 {filtered.length === 0 ? (
-                    <p className="text-sm text-slate-400 py-4 text-center">Keine Hausbesuche geplant.</p>
+                    <p className="text-sm text-slate-500 py-4 text-center">Keine Hausbesuche geplant.</p>
                 ) : (
                     <div className="space-y-2">
                         {filtered.map((visit) => (

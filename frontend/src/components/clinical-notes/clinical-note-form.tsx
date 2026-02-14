@@ -127,6 +127,7 @@ export function ClinicalNoteForm({
                         placeholder="z.B. Verlauf 14.02 — Kardiologisches Konsil"
                         required
                         maxLength={255}
+                        autoFocus
                     />
                 </div>
             </div>
@@ -148,7 +149,7 @@ export function ClinicalNoteForm({
             {/* Zusammenfassung */}
             <div>
                 <label className="block text-sm font-medium text-slate-600 mb-1">
-                    Zusammenfassung <span className="text-slate-400">(optional)</span>
+                    Zusammenfassung <span className="text-slate-500">(optional)</span>
                 </label>
                 <textarea
                     value={summary}
@@ -162,7 +163,7 @@ export function ClinicalNoteForm({
                 {/* Tags */}
                 <div>
                     <label className="block text-sm font-medium text-slate-600 mb-1">
-                        Tags <span className="text-slate-400">(kommagetrennt)</span>
+                        Tags <span className="text-slate-500">(kommagetrennt)</span>
                     </label>
                     <input
                         type="text"

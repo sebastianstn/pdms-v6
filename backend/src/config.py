@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     keycloak_realm: str = "pdms-home-spital"
     keycloak_client_id: str = "pdms-api"
     keycloak_client_secret: str = Field(default="", validation_alias="KC_API_SECRET")
+    keycloak_admin_realm: str = Field(default="master", validation_alias="KC_ADMIN_REALM")
+    keycloak_admin_username: str = Field(default="", validation_alias="KC_ADMIN_USERNAME")
+    keycloak_admin_password: str = Field(default="", validation_alias="KC_ADMIN_PASSWORD")
+    keycloak_sync_users: bool = Field(default=True, validation_alias="KEYCLOAK_SYNC_USERS")
 
     # Valkey (Redis-compatible)
     valkey_url: str = "redis://localhost:6379/0"
@@ -28,6 +32,13 @@ class Settings(BaseSettings):
     # App
     log_level: str = "DEBUG"
     environment: str = "development"
+
+    # Media / Uploads
+    media_root: str = "./uploads"
+    media_url_prefix: str = "/media"
+    patient_photo_max_mb: int = 5
+    patient_photo_target_px: int = 512
+    patient_photo_quality: int = 82
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 

@@ -44,7 +44,7 @@ export function NursingDiagnosisForm({ patientId, onSuccess, onCancel }: Props) 
                 <div className="col-span-2">
                     <label className="block text-sm font-medium text-slate-700 mb-1">Pflegediagnose *</label>
                     <input
-                        value={title} onChange={(e) => setTitle(e.target.value)} required
+                        value={title} onChange={(e) => setTitle(e.target.value)} required autoFocus
                         className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="z.B. Beeinträchtigte Hautintegrität"
                     />

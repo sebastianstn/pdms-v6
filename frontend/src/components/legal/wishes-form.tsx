@@ -2,6 +2,7 @@
 
 import { usePatientWishes, useUpsertWishes } from "@/hooks/use-directives";
 import { Card, CardHeader, CardContent, CardTitle, Spinner } from "@/components/ui";
+import { useUserPermissions } from "@/hooks/use-rbac";
 import type { WishesUpsert } from "@pdms/shared-types";
 import { useRef } from "react";
 
@@ -25,6 +26,8 @@ interface WishesFormProps {
 export function WishesForm({ patientId }: WishesFormProps) {
     const { data: wishes, isLoading } = usePatientWishes(patientId);
     const upsertMut = useUpsertWishes(patientId);
+    const { canWrite } = useUserPermissions();
+    const writable = canWrite("Patientenverfügungen");
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     if (isLoading) {
@@ -64,13 +67,14 @@ export function WishesForm({ patientId }: WishesFormProps) {
                                 onChange={(e) => handleChange(key, e.target.value)}
                                 placeholder={placeholder}
                                 rows={2}
-                                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                disabled={!writable}
+                                className={`w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${!writable ? "opacity-60 cursor-not-allowed bg-slate-50" : ""}`}
                             />
                         </div>
                     ))}
                 </div>
                 {wishes?.recorded_at && (
-                    <p className="text-xs text-slate-400 mt-4">
+                    <p className="text-xs text-slate-500 mt-4">
                         Zuletzt aktualisiert: {new Date(wishes.updated_at).toLocaleString("de-CH")}
                     </p>
                 )}

@@ -28,7 +28,7 @@ export function StatusBar() {
     return (
         <div className="mt-3 flex items-center gap-3 px-1 py-1.5 shrink-0">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-            <div className="flex items-center gap-2 text-[8px] text-slate-400 flex-wrap">
+            <div className="flex items-center gap-2 text-[8px] text-slate-500 flex-wrap">
                 <span>System Online</span>
                 <span>·</span>
                 <span>DB: PostgreSQL 16 + TimescaleDB</span>
@@ -39,7 +39,7 @@ export function StatusBar() {
                 <span>·</span>
                 <span className="inline-flex items-center gap-1"><Shield className="w-2.5 h-2.5" /> Daten in CH (nDSG-konform)</span>
             </div>
-            <span className="ml-auto text-[8px] text-slate-400 shrink-0">
+            <span className="ml-auto text-[8px] text-slate-500 shrink-0">
                 PDMS Home-Spital v0.1.0
                 {dateTimeStr ? ` · ${dateTimeStr}` : ""}
             </span>

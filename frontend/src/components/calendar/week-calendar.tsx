@@ -138,7 +138,7 @@ export function WeekCalendar({ patientId }: WeekCalendarProps) {
                                     <span
                                         className={`text-xs ${isToday
                                             ? "bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center"
-                                            : "text-slate-400"
+                                            : "text-slate-500"
                                             }`}
                                     >
                                         {day.getDate()}
@@ -158,7 +158,7 @@ export function WeekCalendar({ patientId }: WeekCalendarProps) {
                                         </div>
                                     ))}
                                     {dayAppts.length === 0 && (
-                                        <p className="text-[10px] text-slate-300 text-center pt-4">—</p>
+                                        <p className="text-[10px] text-slate-500 text-center pt-4">—</p>
                                     )}
                                 </div>
                             </div>

@@ -69,7 +69,7 @@ export function VitalChart({
   if (data.length === 0) {
     return (
       <div
-        className="flex items-center justify-center text-slate-400 text-sm"
+        className="flex items-center justify-center text-slate-500 text-sm"
         style={{ height }}
       >
         Keine Vitaldaten vorhanden
@@ -83,37 +83,39 @@ export function VitalChart({
   );
 
   return (
-    <ResponsiveContainer width="100%" height={height}>
-      <LineChart data={sorted} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-        <XAxis
-          dataKey="recorded_at"
-          tickFormatter={formatXAxis}
-          tick={{ fontSize: 12, fill: "#94a3b8" }}
-          stroke="#cbd5e1"
-        />
-        <YAxis tick={{ fontSize: 12, fill: "#94a3b8" }} stroke="#cbd5e1" />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend
-          formatter={(value: string) => VITAL_LABELS[value]?.label ?? value}
-          wrapperStyle={{ fontSize: 12 }}
-        />
-        {parameters.map((param) => {
-          const meta = VITAL_LABELS[param];
-          return (
-            <Line
-              key={param}
-              type="monotone"
-              dataKey={param}
-              stroke={meta?.color ?? "#6366f1"}
-              strokeWidth={2}
-              dot={{ r: 2 }}
-              activeDot={{ r: 5 }}
-              connectNulls
-            />
-          );
-        })}
-      </LineChart>
-    </ResponsiveContainer>
+    <div className="w-full min-w-0" style={{ height }}>
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={height}>
+        <LineChart data={sorted} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+          <XAxis
+            dataKey="recorded_at"
+            tickFormatter={formatXAxis}
+            tick={{ fontSize: 12, fill: "#94a3b8" }}
+            stroke="#cbd5e1"
+          />
+          <YAxis tick={{ fontSize: 12, fill: "#94a3b8" }} stroke="#cbd5e1" />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            formatter={(value: string) => VITAL_LABELS[value]?.label ?? value}
+            wrapperStyle={{ fontSize: 12 }}
+          />
+          {parameters.map((param) => {
+            const meta = VITAL_LABELS[param];
+            return (
+              <Line
+                key={param}
+                type="monotone"
+                dataKey={param}
+                stroke={meta?.color ?? "#6366f1"}
+                strokeWidth={2}
+                dot={{ r: 2 }}
+                activeDot={{ r: 5 }}
+                connectNulls
+              />
+            );
+          })}
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

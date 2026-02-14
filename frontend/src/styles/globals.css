@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Klassen-basierter Dark-Mode statt Media-Query */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-pdms-50: #f0f9ff;
   --color-pdms-100: #e0f2fe;
@@ -51,11 +54,24 @@
   --ring: #38bdf8;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: system-ui, -apple-system, sans-serif;
-  transition: background-color 0.2s ease, color 0.2s ease;
+@layer base {
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: system-ui, -apple-system, sans-serif;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  input,
+  textarea,
+  select {
+    color: var(--foreground);
+  }
+
+  ::placeholder {
+    color: var(--muted-foreground);
+    opacity: 1;
+  }
 }
 
 /* ─── Print Styles ───────────────────────────────────────────── */

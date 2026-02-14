@@ -70,7 +70,7 @@ export function RemoteAlarms() {
                                         {message}
                                     </p>
                                 </div>
-                                <span className="text-[9px] text-slate-400 shrink-0">
+                                <span className="text-[9px] text-slate-500 shrink-0">
                                     {timeAgo(alarm.triggered_at)}
                                 </span>
                                 <button

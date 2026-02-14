@@ -97,14 +97,14 @@ export function ClinicalNoteList({ patientId, onEdit, onView }: ClinicalNoteList
                     ))}
                 </select>
 
-                <span className="text-xs text-slate-400 self-center ml-auto">
+                <span className="text-xs text-slate-500 self-center ml-auto">
                     {total} Notiz{total !== 1 ? "en" : ""}
                 </span>
             </div>
 
             {/* Note Cards */}
             {notes.length === 0 ? (
-                <p className="text-sm text-slate-400 text-center py-8">
+                <p className="text-sm text-slate-500 text-center py-8">
                     Keine klinischen Notizen vorhanden.
                 </p>
             ) : (
@@ -173,7 +173,7 @@ function NoteCard({ note, patientId, onEdit, onView, onDelete }: NoteCardProps) 
                         <Badge variant={statusVariant[note.status]}>
                             {NOTE_STATUS_LABELS[note.status]}
                         </Badge>
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-slate-500">
                             {NOTE_TYPE_LABELS[note.note_type]}
                         </span>
                         {note.is_confidential && (
@@ -194,7 +194,7 @@ function NoteCard({ note, patientId, onEdit, onView, onDelete }: NoteCardProps) 
                             {note.summary}
                         </p>
                     )}
-                    <div className="flex items-center gap-3 mt-2 text-xs text-slate-400">
+                    <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
                         <span>{formatDate(note.created_at)}</span>
                         {note.tags && note.tags.length > 0 && (
                             <span>

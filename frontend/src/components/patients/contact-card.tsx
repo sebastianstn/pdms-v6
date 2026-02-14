@@ -54,7 +54,7 @@ export function ContactCard({ patientId }: ContactCardProps) {
             {showForm && (
                 <form onSubmit={handleCreate} className="bg-blue-50/50 border border-blue-200 rounded-lg p-3 space-y-2">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <input name="name" required placeholder="Name *" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
+                        <input name="name" required placeholder="Name *" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" autoFocus />
                         <input name="relationship_type" required placeholder="Beziehung * (z.B. Ehepartner)" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
                         <input name="phone" required placeholder="Telefon *" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
                         <input name="email" type="email" placeholder="E-Mail" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
@@ -83,7 +83,7 @@ export function ContactCard({ patientId }: ContactCardProps) {
             )}
 
             {contacts && contacts.length === 0 && (
-                <p className="text-xs text-slate-400 text-center py-4">Keine Kontaktpersonen erfasst.</p>
+                <p className="text-xs text-slate-500 text-center py-4">Keine Kontaktpersonen erfasst.</p>
             )}
 
             {contacts && contacts.map((c) => (
@@ -91,7 +91,7 @@ export function ContactCard({ patientId }: ContactCardProps) {
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                             <span className="text-sm font-medium text-slate-900">{c.name}</span>
-                            <span className="text-xs text-slate-400">({c.relationship_type})</span>
+                            <span className="text-xs text-slate-500">({c.relationship_type})</span>
                             {c.is_primary && <Badge variant="info">Hauptkontakt</Badge>}
                             {c.is_legal_representative && <Badge variant="warning">Gesetzl. Vertreter</Badge>}
                             {c.is_key_person && <Badge variant="success">Bezugsperson</Badge>}
@@ -101,7 +101,7 @@ export function ContactCard({ patientId }: ContactCardProps) {
                             {c.email && <span>{c.email}</span>}
                             {c.address && <span>{c.address}</span>}
                         </div>
-                        {c.notes && <p className="text-xs text-slate-400 mt-1">{c.notes}</p>}
+                        {c.notes && <p className="text-xs text-slate-500 mt-1">{c.notes}</p>}
                     </div>
                     <button
                         onClick={() => { if (confirm("Kontakt löschen?")) deleteMut.mutate(c.id); }}

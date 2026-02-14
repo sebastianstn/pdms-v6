@@ -24,7 +24,7 @@ function priorityColor(p: NursingDiagnosisPriority): string {
     switch (p) {
         case "high": return "text-red-600";
         case "normal": return "text-amber-600";
-        case "low": return "text-slate-400";
+        case "low": return "text-slate-500";
     }
 }
 
@@ -51,7 +51,7 @@ export function NursingDiagnosisList({ patientId, statusFilter }: Props) {
                                     <span className={`text-lg ${priorityColor(d.priority)}`}>●</span>
                                     <h4 className="font-medium text-slate-900">{d.title}</h4>
                                     {d.nanda_code && (
-                                        <span className="text-xs text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">
+                                        <span className="text-xs text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded">
                                             NANDA {d.nanda_code}
                                         </span>
                                     )}
@@ -65,18 +65,18 @@ export function NursingDiagnosisList({ patientId, statusFilter }: Props) {
 
                         {d.defining_characteristics && (
                             <div className="mt-2">
-                                <span className="text-xs text-slate-400">Merkmale</span>
+                                <span className="text-xs text-slate-500">Merkmale</span>
                                 <p className="text-sm text-slate-700">{d.defining_characteristics}</p>
                             </div>
                         )}
 
                         <div className="grid grid-cols-2 gap-3 mt-3">
                             <div>
-                                <span className="text-xs text-slate-400">Ziele</span>
+                                <span className="text-xs text-slate-500">Ziele</span>
                                 <p className="text-sm text-slate-700">{d.goals}</p>
                             </div>
                             <div>
-                                <span className="text-xs text-slate-400">Massnahmen</span>
+                                <span className="text-xs text-slate-500">Massnahmen</span>
                                 <p className="text-sm text-slate-700">{d.interventions}</p>
                             </div>
                         </div>

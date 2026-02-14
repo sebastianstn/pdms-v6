@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Spinner } from "@/components/ui";
+import { useUserPermissions } from "@/hooks/use-rbac";
 import {
     useDeathNotifications,
     useCreateDeathNotification,
@@ -18,6 +19,8 @@ export function DeathNotificationList({ patientId }: DeathNotificationListProps)
     const [showForm, setShowForm] = useState(false);
     const createMut = useCreateDeathNotification();
     const deleteMut = useDeleteDeathNotification(patientId);
+    const { canWrite } = useUserPermissions();
+    const writable = canWrite("Patientenverfügungen");
 
     if (isLoading) return <div className="flex justify-center py-8"><Spinner size="md" /></div>;
 
@@ -40,12 +43,14 @@ export function DeathNotificationList({ patientId }: DeathNotificationListProps)
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-slate-900">Todesfall-Mitteilungen</h3>
-                <button
-                    onClick={() => setShowForm(!showForm)}
-                    className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                >
-                    {showForm ? "Abbrechen" : "+ Kontakt hinzufügen"}
-                </button>
+                {writable && (
+                    <button
+                        onClick={() => setShowForm(!showForm)}
+                        className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                    >
+                        {showForm ? "Abbrechen" : "+ Kontakt hinzufügen"}
+                    </button>
+                )}
             </div>
 
             {showForm && (
@@ -53,7 +58,7 @@ export function DeathNotificationList({ patientId }: DeathNotificationListProps)
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         <div>
                             <label className="block text-xs font-medium text-slate-600 mb-1">Name *</label>
-                            <input name="contact_name" required className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg" />
+                            <input name="contact_name" required className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg" autoFocus />
                         </div>
                         <div>
                             <label className="block text-xs font-medium text-slate-600 mb-1">Telefon</label>
@@ -90,7 +95,7 @@ export function DeathNotificationList({ patientId }: DeathNotificationListProps)
             )}
 
             {notifications && notifications.length === 0 && (
-                <p className="text-sm text-slate-400 text-center py-8">Keine Kontakte für Todesfall-Mitteilungen hinterlegt.</p>
+                <p className="text-sm text-slate-500 text-center py-8">Keine Kontakte für Todesfall-Mitteilungen hinterlegt.</p>
             )}
 
             {notifications && notifications.length > 0 && (
@@ -107,7 +112,7 @@ export function DeathNotificationList({ patientId }: DeathNotificationListProps)
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
                                         <span className="font-medium text-sm text-slate-900">{n.contact_name}</span>
-                                        {n.contact_role && <span className="text-xs text-slate-400">({n.contact_role})</span>}
+                                        {n.contact_role && <span className="text-xs text-slate-500">({n.contact_role})</span>}
                                     </div>
                                     <div className="flex items-center gap-3 text-xs text-slate-500">
                                         {n.contact_phone && <span>Tel. {n.contact_phone}</span>}
@@ -115,12 +120,14 @@ export function DeathNotificationList({ patientId }: DeathNotificationListProps)
                                         {n.instructions && <span className="italic">{n.instructions}</span>}
                                     </div>
                                 </div>
-                                <button
-                                    onClick={() => { if (confirm("Kontakt entfernen?")) deleteMut.mutate(n.id); }}
-                                    className="px-2 py-1 text-xs rounded-md bg-red-50 text-red-600 hover:bg-red-100"
-                                >
-                                    Entfernen
-                                </button>
+                                {writable && (
+                                    <button
+                                        onClick={() => { if (confirm("Kontakt entfernen?")) deleteMut.mutate(n.id); }}
+                                        className="px-2 py-1 text-xs rounded-md bg-red-50 text-red-600 hover:bg-red-100"
+                                    >
+                                        Entfernen
+                                    </button>
+                                )}
                             </div>
                         ))}
                 </div>

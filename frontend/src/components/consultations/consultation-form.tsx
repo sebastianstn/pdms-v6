@@ -70,6 +70,7 @@ export function ConsultationForm({ patientId, onSuccess, onCancel }: Props) {
           value={question} onChange={(e) => setQuestion(e.target.value)} required rows={3}
           className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Bitte konsiliarische Beurteilung…"
+          autoFocus
         />
       </div>
       <div>

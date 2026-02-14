@@ -4,9 +4,11 @@ import logging
 import time
 from collections import defaultdict
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from src.api.middleware import AuditMiddleware
 from src.api.v1.alarms import router as alarms_router
@@ -37,12 +39,17 @@ from src.api.v1.nursing_diagnoses import router as nursing_diagnoses_router
 from src.api.v1.shift_handovers import router as shift_handovers_router
 from src.api.v1.nutrition import router as nutrition_router
 from src.api.v1.supplies import router as supplies_router
+from src.api.v1.diagnoses import router as diagnoses_router
+from src.api.v1.icd10 import router as icd10_router
+from src.api.v1.medikament_katalog import router as medikament_katalog_router
 from src.api.v1.dossier import router as dossier_router
+from src.api.v1.rbac import router as rbac_router
 from src.api.v1.ai import router as ai_router
 from src.api.v1.fhir import router as fhir_router
 from src.api.websocket.alarms_ws import router as alarms_ws_router
 from src.api.websocket.vitals_ws import router as vitals_ws_router
 from src.config import settings
+from src.infrastructure.rbac_guard import require_rbac
 
 logging.basicConfig(level=getattr(logging, settings.log_level.upper(), logging.INFO))
 logger = logging.getLogger("pdms")
@@ -93,6 +100,21 @@ app = FastAPI(
     redoc_url="/redoc",
     lifespan=lifespan,
 )
+
+# Media-Uploads (z. B. Patientenbilder)
+media_root = Path(settings.media_root)
+try:
+    media_root.mkdir(parents=True, exist_ok=True)
+except PermissionError:
+    fallback_media_root = Path("/tmp/pdms-uploads")
+    fallback_media_root.mkdir(parents=True, exist_ok=True)
+    logger.warning(
+        "Media-Root '%s' nicht beschreibbar, nutze Fallback '%s'",
+        media_root,
+        fallback_media_root,
+    )
+    media_root = fallback_media_root
+app.mount(settings.media_url_prefix, StaticFiles(directory=str(media_root)), name="media")
 
 # Middleware (order matters: last added = first executed)
 app.add_middleware(AuditMiddleware)
@@ -216,35 +238,39 @@ async def metrics():
     }
 
 
-app.include_router(patients_router, prefix="/api/v1", tags=["patients"])
-app.include_router(vitals_router, prefix="/api/v1", tags=["vitals"])
-app.include_router(alarms_router, prefix="/api/v1", tags=["alarms"])
-app.include_router(medications_router, prefix="/api/v1", tags=["medications"])
-app.include_router(nursing_router, prefix="/api/v1", tags=["nursing"])
-app.include_router(clinical_notes_router, prefix="/api/v1", tags=["clinical-notes"])
-app.include_router(encounters_router, prefix="/api/v1", tags=["encounters"])
-app.include_router(appointments_router, prefix="/api/v1", tags=["appointments"])
-app.include_router(consents_router, prefix="/api/v1", tags=["consents"])
-app.include_router(directives_router, prefix="/api/v1", tags=["directives"])
+app.include_router(patients_router, prefix="/api/v1", tags=["patients"], dependencies=[require_rbac("Patientenstammdaten")])
+app.include_router(vitals_router, prefix="/api/v1", tags=["vitals"], dependencies=[require_rbac("Vitalparameter")])
+app.include_router(alarms_router, prefix="/api/v1", tags=["alarms"], dependencies=[require_rbac("Alarme")])
+app.include_router(medications_router, prefix="/api/v1", tags=["medications"], dependencies=[require_rbac("Medikamente")])
+app.include_router(nursing_router, prefix="/api/v1", tags=["nursing"], dependencies=[require_rbac("Pflege-Dokumentation")])
+app.include_router(clinical_notes_router, prefix="/api/v1", tags=["clinical-notes"], dependencies=[require_rbac("Klinische Notizen")])
+app.include_router(encounters_router, prefix="/api/v1", tags=["encounters"], dependencies=[require_rbac("Aufenthalte")])
+app.include_router(appointments_router, prefix="/api/v1", tags=["appointments"], dependencies=[require_rbac("Termine")])
+app.include_router(consents_router, prefix="/api/v1", tags=["consents"], dependencies=[require_rbac("Einwilligungen")])
+app.include_router(directives_router, prefix="/api/v1", tags=["directives"], dependencies=[require_rbac("Patientenverfügungen")])
 app.include_router(insurance_router, prefix="/api/v1", tags=["insurance"])
 app.include_router(contacts_router, prefix="/api/v1", tags=["contacts"])
 app.include_router(providers_router, prefix="/api/v1", tags=["providers"])
 app.include_router(users_router, prefix="/api/v1", tags=["users"])
-app.include_router(audit_router, prefix="/api/v1", tags=["audit"])
-app.include_router(home_visits_router, prefix="/api/v1", tags=["home-visits"])
-app.include_router(teleconsults_router, prefix="/api/v1", tags=["teleconsults"])
-app.include_router(remote_devices_router, prefix="/api/v1", tags=["remote-devices"])
-app.include_router(self_medication_router, prefix="/api/v1", tags=["self-medication"])
-app.include_router(lab_results_router, prefix="/api/v1", tags=["lab-results"])
-app.include_router(fluid_balance_router, prefix="/api/v1", tags=["fluid-balance"])
-app.include_router(treatment_plans_router, prefix="/api/v1", tags=["treatment-plans"])
-app.include_router(consultations_router, prefix="/api/v1", tags=["consultations"])
-app.include_router(medical_letters_router, prefix="/api/v1", tags=["medical-letters"])
-app.include_router(nursing_diagnoses_router, prefix="/api/v1", tags=["nursing-diagnoses"])
-app.include_router(shift_handovers_router, prefix="/api/v1", tags=["shift-handovers"])
-app.include_router(nutrition_router, prefix="/api/v1", tags=["nutrition"])
-app.include_router(supplies_router, prefix="/api/v1", tags=["supplies"])
+app.include_router(audit_router, prefix="/api/v1", tags=["audit"], dependencies=[require_rbac("Audit-Trail")])
+app.include_router(home_visits_router, prefix="/api/v1", tags=["home-visits"], dependencies=[require_rbac("Hausbesuche")])
+app.include_router(teleconsults_router, prefix="/api/v1", tags=["teleconsults"], dependencies=[require_rbac("Teleconsults")])
+app.include_router(remote_devices_router, prefix="/api/v1", tags=["remote-devices"], dependencies=[require_rbac("Remote-Geräte")])
+app.include_router(self_medication_router, prefix="/api/v1", tags=["self-medication"], dependencies=[require_rbac("Selbstmedikation")])
+app.include_router(lab_results_router, prefix="/api/v1", tags=["lab-results"], dependencies=[require_rbac("Laborwerte")])
+app.include_router(fluid_balance_router, prefix="/api/v1", tags=["fluid-balance"], dependencies=[require_rbac("I/O-Bilanz")])
+app.include_router(treatment_plans_router, prefix="/api/v1", tags=["treatment-plans"], dependencies=[require_rbac("Therapiepläne")])
+app.include_router(consultations_router, prefix="/api/v1", tags=["consultations"], dependencies=[require_rbac("Konsilien")])
+app.include_router(medical_letters_router, prefix="/api/v1", tags=["medical-letters"], dependencies=[require_rbac("Arztbriefe")])
+app.include_router(nursing_diagnoses_router, prefix="/api/v1", tags=["nursing-diagnoses"], dependencies=[require_rbac("Pflegediagnosen")])
+app.include_router(shift_handovers_router, prefix="/api/v1", tags=["shift-handovers"], dependencies=[require_rbac("Schichtübergabe")])
+app.include_router(nutrition_router, prefix="/api/v1", tags=["nutrition"], dependencies=[require_rbac("Ernährung")])
+app.include_router(supplies_router, prefix="/api/v1", tags=["supplies"], dependencies=[require_rbac("Verbrauchsmaterial")])
+app.include_router(diagnoses_router, prefix="/api/v1", tags=["diagnoses"], dependencies=[require_rbac("Diagnosen")])
+app.include_router(icd10_router, prefix="/api/v1", tags=["icd10"])
+app.include_router(medikament_katalog_router, prefix="/api/v1", tags=["medikament-katalog"])
 app.include_router(dossier_router, prefix="/api/v1", tags=["dossier"])
+app.include_router(rbac_router, prefix="/api/v1", tags=["rbac"])
 
 # FHIR R4 (CH Core Profile)
 app.include_router(fhir_router, prefix="/api/v1", tags=["fhir"])

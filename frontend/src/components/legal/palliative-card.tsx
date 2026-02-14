@@ -2,6 +2,7 @@
 
 import { usePalliativeCare, useUpsertPalliative } from "@/hooks/use-directives";
 import { Card, CardHeader, CardContent, CardTitle, Spinner, Badge } from "@/components/ui";
+import { useUserPermissions } from "@/hooks/use-rbac";
 import type { PalliativeUpsert } from "@pdms/shared-types";
 import { useRef } from "react";
 
@@ -12,6 +13,8 @@ interface PalliativeCardProps {
 export function PalliativeCard({ patientId }: PalliativeCardProps) {
     const { data: palliative, isLoading } = usePalliativeCare(patientId);
     const upsertMut = useUpsertPalliative(patientId);
+    const { canWrite } = useUserPermissions();
+    const writable = canWrite("Patientenverfügungen");
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     if (isLoading) {
@@ -35,15 +38,17 @@ export function PalliativeCard({ patientId }: PalliativeCardProps) {
                             {isActive ? "Aktiv" : "Nicht aktiv"}
                         </Badge>
                     </div>
-                    <button
-                        onClick={() => upsertMut.mutate({ is_active: !isActive })}
-                        className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${isActive
-                            ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                            : "bg-red-600 text-white hover:bg-red-700"
-                            }`}
-                    >
-                        {isActive ? "Deaktivieren" : "Aktivieren"}
-                    </button>
+                    {writable && (
+                        <button
+                            onClick={() => upsertMut.mutate({ is_active: !isActive })}
+                            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${isActive
+                                ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                                : "bg-red-600 text-white hover:bg-red-700"
+                                }`}
+                        >
+                            {isActive ? "Deaktivieren" : "Aktivieren"}
+                        </button>
+                    )}
                 </div>
             </CardHeader>
             <CardContent>
@@ -65,7 +70,8 @@ export function PalliativeCard({ patientId }: PalliativeCardProps) {
                                     defaultValue={(palliative as unknown as Record<string, string | undefined>)?.[key] ?? ""}
                                     onChange={(e) => save({ [key]: e.target.value || undefined })}
                                     placeholder="Dosierung / Applikationsweg"
-                                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg"
+                                    disabled={!writable}
+                                    className={`w-full px-3 py-2 text-sm border border-slate-200 rounded-lg ${!writable ? "opacity-60 cursor-not-allowed bg-slate-50" : ""}`}
                                 />
                             </div>
                         ))}
@@ -76,7 +82,8 @@ export function PalliativeCard({ patientId }: PalliativeCardProps) {
                             defaultValue={palliative?.reserve_other ?? ""}
                             onChange={(e) => save({ reserve_other: e.target.value || undefined })}
                             rows={2}
-                            className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg"
+                            disabled={!writable}
+                            className={`w-full px-3 py-2 text-sm border border-slate-200 rounded-lg ${!writable ? "opacity-60 cursor-not-allowed bg-slate-50" : ""}`}
                         />
                     </div>
                 </div>
@@ -92,7 +99,8 @@ export function PalliativeCard({ patientId }: PalliativeCardProps) {
                             <input
                                 defaultValue={palliative?.palliative_service_name ?? ""}
                                 onChange={(e) => save({ palliative_service_name: e.target.value || undefined })}
-                                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg"
+                                disabled={!writable}
+                                className={`w-full px-3 py-2 text-sm border border-slate-200 rounded-lg ${!writable ? "opacity-60 cursor-not-allowed bg-slate-50" : ""}`}
                             />
                         </div>
                         <div>
@@ -100,7 +108,8 @@ export function PalliativeCard({ patientId }: PalliativeCardProps) {
                             <input
                                 defaultValue={palliative?.palliative_service_phone ?? ""}
                                 onChange={(e) => save({ palliative_service_phone: e.target.value || undefined })}
-                                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg"
+                                disabled={!writable}
+                                className={`w-full px-3 py-2 text-sm border border-slate-200 rounded-lg ${!writable ? "opacity-60 cursor-not-allowed bg-slate-50" : ""}`}
                             />
                         </div>
                         <div>
@@ -108,7 +117,8 @@ export function PalliativeCard({ patientId }: PalliativeCardProps) {
                             <input
                                 defaultValue={palliative?.palliative_service_email ?? ""}
                                 onChange={(e) => save({ palliative_service_email: e.target.value || undefined })}
-                                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg"
+                                disabled={!writable}
+                                className={`w-full px-3 py-2 text-sm border border-slate-200 rounded-lg ${!writable ? "opacity-60 cursor-not-allowed bg-slate-50" : ""}`}
                             />
                         </div>
                     </div>
@@ -122,12 +132,13 @@ export function PalliativeCard({ patientId }: PalliativeCardProps) {
                         onChange={(e) => save({ goals_of_care: e.target.value || undefined })}
                         rows={3}
                         placeholder="z.B. Symptomkontrolle, Lebensqualität, Begleitung..."
-                        className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg"
+                        disabled={!writable}
+                        className={`w-full px-3 py-2 text-sm border border-slate-200 rounded-lg ${!writable ? "opacity-60 cursor-not-allowed bg-slate-50" : ""}`}
                     />
                 </div>
 
                 {palliative?.updated_at && (
-                    <p className="text-xs text-slate-400 mt-3">
+                    <p className="text-xs text-slate-500 mt-3">
                         Zuletzt aktualisiert: {new Date(palliative.updated_at).toLocaleString("de-CH")}
                     </p>
                 )}

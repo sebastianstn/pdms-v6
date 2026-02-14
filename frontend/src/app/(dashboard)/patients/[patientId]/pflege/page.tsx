@@ -16,6 +16,7 @@ import { ShiftHandoverList, ShiftHandoverForm } from "@/components/shift-handove
 import { NutritionPanel } from "@/components/nutrition";
 import { SupplyPanel } from "@/components/supplies";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui";
+import { useUserPermissions } from "@/hooks/use-rbac";
 import type { Medication } from "@/hooks/use-medications";
 import type { AssessmentType } from "@/hooks/use-nursing";
 
@@ -23,6 +24,7 @@ type Tab = "entries" | "io_bilanz" | "medications" | "assessments" | "home_spita
 
 export default function PflegePage() {
   const { patientId } = useParams<{ patientId: string }>();
+  const { canWrite } = useUserPermissions();
   const [activeTab, setActiveTab] = useState<Tab>("entries");
   const [showEntryForm, setShowEntryForm] = useState(false);
   const [showFluidForm, setShowFluidForm] = useState(false);
@@ -45,7 +47,7 @@ export default function PflegePage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-1.5">
       {/* Tab-Navigation */}
       <div className="flex items-center gap-1 border-b border-slate-200">
         {tabs.map((tab) => (
@@ -74,12 +76,14 @@ export default function PflegePage() {
                     Beobachtungen, Interventionen und Massnahmen dokumentieren.
                   </p>
                 </div>
-                <button
-                  onClick={() => setShowEntryForm((v) => !v)}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                >
-                  {showEntryForm ? "Abbrechen" : "+ Neuer Eintrag"}
-                </button>
+                {canWrite("Pflege-Dokumentation") && (
+                  <button
+                    onClick={() => setShowEntryForm((v) => !v)}
+                    className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                  >
+                    {showEntryForm ? "Abbrechen" : "+ Neuer Eintrag"}
+                  </button>
+                )}
               </div>
             </CardHeader>
             <CardContent>
@@ -94,7 +98,7 @@ export default function PflegePage() {
               )}
 
               {/* Kategorie-Filter */}
-              <div className="flex items-center gap-2 mb-4 flex-wrap">
+              <div className="flex items-center gap-1.5 mb-4 flex-wrap">
                 <span className="text-xs text-slate-500">Filter:</span>
                 {[
                   { value: undefined, label: "Alle" },
@@ -126,7 +130,7 @@ export default function PflegePage() {
 
       {/* ─── I/O-Bilanz Tab ────────────────────────────── */}
       {activeTab === "io_bilanz" && (
-        <div className="space-y-6">
+        <div className="space-y-1.5">
           <FluidBalanceOverview patientId={patientId} />
 
           <Card>
@@ -138,12 +142,14 @@ export default function PflegePage() {
                     Einfuhr und Ausfuhr dokumentieren.
                   </p>
                 </div>
-                <button
-                  onClick={() => setShowFluidForm((v) => !v)}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                >
-                  {showFluidForm ? "Schliessen" : "+ Neuer Eintrag"}
-                </button>
+                {canWrite("I/O-Bilanz") && (
+                  <button
+                    onClick={() => setShowFluidForm((v) => !v)}
+                    className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                  >
+                    {showFluidForm ? "Schliessen" : "+ Neuer Eintrag"}
+                  </button>
+                )}
               </div>
             </CardHeader>
             {showFluidForm && (
@@ -206,7 +212,7 @@ export default function PflegePage() {
 
       {/* ─── Home-Spital Tab ─────────────────────────── */}
       {activeTab === "home_spital" && (
-        <div className="space-y-6">
+        <div className="space-y-1.5">
           <RemoteDevicePanel patientId={patientId} />
           <SelfMedicationTracker patientId={patientId} />
         </div>
@@ -223,12 +229,14 @@ export default function PflegePage() {
                   Diagnosen nach NANDA-I mit Zielen und Interventionen.
                 </p>
               </div>
-              <button
-                onClick={() => setShowDiagForm((v) => !v)}
-                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-              >
-                {showDiagForm ? "Abbrechen" : "+ Neue Diagnose"}
-              </button>
+              {canWrite("Pflegediagnosen") && (
+                <button
+                  onClick={() => setShowDiagForm((v) => !v)}
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                >
+                  {showDiagForm ? "Abbrechen" : "+ Neue Diagnose"}
+                </button>
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -257,12 +265,14 @@ export default function PflegePage() {
                   Strukturierte Patientenübergabe zwischen Schichten.
                 </p>
               </div>
-              <button
-                onClick={() => setShowHandoverForm((v) => !v)}
-                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-              >
-                {showHandoverForm ? "Abbrechen" : "+ Neue Übergabe"}
-              </button>
+              {canWrite("Schichtübergabe") && (
+                <button
+                  onClick={() => setShowHandoverForm((v) => !v)}
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                >
+                  {showHandoverForm ? "Abbrechen" : "+ Neue Übergabe"}
+                </button>
+              )}
             </div>
           </CardHeader>
           <CardContent>
