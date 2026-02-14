@@ -79,3 +79,28 @@ pdms-home-spital/
 ## Lizenz
 
 MIT
+
+## Sicherer Git-Workflow (Commit + Sync)
+
+Einmalig im Repo ausführen:
+
+```bash
+./scripts/setup-git-workflow.sh
+```
+
+Damit werden lokal gesetzt:
+
+- `commit.template=.gitmessage.txt`
+- `core.hooksPath=.githooks`
+- `pull.rebase=true`
+- `rebase.autoStash=true`
+
+Enthaltene Schutzmechanismen:
+
+- **pre-commit:** blockiert versehentliche Commits von `backend/uploads/` und `.env`-Dateien
+- **pre-push:** führt schnelle Checks nur auf geänderten Dateien aus (`ruff` für geänderte `backend/src`-Dateien, `eslint` für geänderte `frontend/src`-Dateien)
+
+Notfall-Bypass (sparsam verwenden):
+
+- `SKIP_GIT_CHECKS=1 git commit ...`
+- `SKIP_PREPUSH_TESTS=1 git push`

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Optionaler Bypass (z. B. in Notfällen):
+# SKIP_GIT_CHECKS=1 git commit ...
+if [[ "${SKIP_GIT_CHECKS:-0}" == "1" ]]; then
+  exit 0
+fi
+
+staged_files="$(git diff --cached --name-only)"
+
+# Keine lokalen Upload-Dateien versionieren
+if echo "$staged_files" | grep -qE '^backend/uploads/'; then
+  echo "❌ Commit blockiert: Dateien unter backend/uploads/ sind lokal und dürfen nicht versioniert werden."
+  echo "   Entferne sie aus dem Index: git restore --staged backend/uploads/..."
+  exit 1
+fi
+
+# .env-Dateien niemals committen
+if echo "$staged_files" | grep -qE '(^|/)\.env($|\.)'; then
+  echo "❌ Commit blockiert: .env-Dateien dürfen nicht versioniert werden."
+  exit 1
+fi
+
+exit 0

@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "${SKIP_GIT_CHECKS:-0}" == "1" || "${SKIP_PREPUSH_TESTS:-0}" == "1" ]]; then
+  echo "⚠️  Pre-Push-Checks übersprungen (SKIP_GIT_CHECKS/SKIP_PREPUSH_TESTS gesetzt)."
+  exit 0
+fi
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+echo "🔎 Pre-Push: schnelle Checks starten ..."
+
+# Gegen welchen Stand vergleichen wir?
+if git rev-parse --verify --quiet origin/main >/dev/null; then
+  diff_range="origin/main...HEAD"
+else
+  diff_range="HEAD"
+fi
+
+# Backend: Ruff nur auf geänderten Python-Dateien unter backend/src
+if [[ -d backend ]]; then
+  mapfile -t backend_py_files < <(git diff --name-only --diff-filter=ACMRT "$diff_range" -- "backend/src/*.py" "backend/src/**/*.py")
+  if [[ ${#backend_py_files[@]} -gt 0 ]]; then
+    echo "• Ruff auf ${#backend_py_files[@]} geänderten Backend-Datei(en)"
+    if command -v /mnt/data/pdms-v6/.venv/bin/python >/dev/null 2>&1; then
+      /mnt/data/pdms-v6/.venv/bin/python -m ruff check "${backend_py_files[@]}"
+    else
+      python -m ruff check "${backend_py_files[@]}"
+    fi
+  else
+    echo "• Keine geänderten Backend-Python-Dateien gefunden — Ruff übersprungen"
+  fi
+fi
+
+# Frontend: ESLint nur auf geänderten JS/TS-Dateien
+if [[ -d frontend ]] && command -v pnpm >/dev/null 2>&1; then
+  mapfile -t frontend_files < <(git diff --name-only --diff-filter=ACMRT "$diff_range" -- "frontend/src/*.js" "frontend/src/**/*.js" "frontend/src/*.jsx" "frontend/src/**/*.jsx" "frontend/src/*.ts" "frontend/src/**/*.ts" "frontend/src/*.tsx" "frontend/src/**/*.tsx")
+  if [[ ${#frontend_files[@]} -gt 0 ]]; then
+    echo "• ESLint auf ${#frontend_files[@]} geänderten Frontend-Datei(en)"
+    (
+      cd frontend
+      pnpm exec eslint "${frontend_files[@]/#frontend\//}"
+    )
+  else
+    echo "• Keine geänderten Frontend-Dateien gefunden — ESLint übersprungen"
+  fi
+fi
+
+echo "✅ Pre-Push-Checks erfolgreich."
+exit 0

@@ -1,0 +1,20 @@
+<Typ>(<Bereich>): <Kurze Änderung auf Deutsch>
+
+Kontext:
+- Warum ist die Änderung nötig?
+
+Änderungen:
+- 
+
+Tests:
+- [ ] pytest backend/tests/test_...
+- [ ] pnpm --filter @pdms/web lint
+
+Risiko / Rollback:
+- Risiko: niedrig | mittel | hoch
+- Rollback: git revert <commit>
+
+Compliance:
+- [ ] Keine PHI in Logs/Fehlermeldungen
+- [ ] RBAC/Audit-Trail berücksichtigt (falls relevant)
+- [ ] nDSG/IEC-62304 Auswirkungen bewertet (falls relevant)
