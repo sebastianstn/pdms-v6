@@ -4,7 +4,7 @@
 import { z } from "zod";
 
 export const PatientCreateSchema = z.object({
-  ahv_number: z.string().regex(/^\d{3}\.\d{4}\.\d{4}\.\d{2}$/, "Format: 756.XXXX.XXXX.XX").optional(),
+  ahv_number: z.string().regex(/^756\.\d{4}\.\d{4}\.\d{2}$/, "Format: 756.XXXX.XXXX.XX").optional(),
   first_name: z.string().min(1, "Pflichtfeld").max(100),
   last_name: z.string().min(1, "Pflichtfeld").max(100),
   date_of_birth: z.string().min(1, "Pflichtfeld"),

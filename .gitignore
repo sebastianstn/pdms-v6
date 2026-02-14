@@ -49,6 +49,9 @@ htmlcov/
 docker/nginx/ssl/*.pem
 docker/nginx/ssl/*.key
 
+# Lokale Uploads (nicht versionieren)
+backend/uploads/
+
 # Turbo
 .turbo/
 apps/web/tsconfig.tsbuildinfo

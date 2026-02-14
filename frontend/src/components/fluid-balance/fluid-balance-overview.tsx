@@ -13,11 +13,14 @@
 
 import { useState } from "react";
 import { useFluidBalanceSummary } from "@/hooks/use-fluid-balance";
+import { useUserPermissions } from "@/hooks/use-rbac";
+import { FluidEntryForm } from "@/components/fluid-balance/fluid-entry-form";
 import { Card, CardHeader, CardContent, CardTitle, Spinner } from "@/components/ui";
 import { FLUID_CATEGORY_LABELS } from "@pdms/shared-types";
 
 interface Props {
     patientId: string;
+    enableEntryModal?: boolean;
 }
 
 const HOURS_OPTIONS = [
@@ -37,9 +40,11 @@ function balanceColor(balance: number): string {
     return "text-emerald-600 bg-emerald-50";
 }
 
-export function FluidBalanceOverview({ patientId }: Props) {
+export function FluidBalanceOverview({ patientId, enableEntryModal = false }: Props) {
     const [hours, setHours] = useState(24);
+    const [showEntryModal, setShowEntryModal] = useState(false);
     const { data, isLoading, isError } = useFluidBalanceSummary(patientId, hours);
+    const { canWrite } = useUserPermissions();
 
     if (isLoading) {
         return (
@@ -75,14 +80,22 @@ export function FluidBalanceOverview({ patientId }: Props) {
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <CardTitle>I/O-Bilanz</CardTitle>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
+                        {enableEntryModal && canWrite("I/O-Bilanz") && (
+                            <button
+                                onClick={() => setShowEntryModal(true)}
+                                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                            >
+                                + Bilanz-Eintrag
+                            </button>
+                        )}
                         {HOURS_OPTIONS.map((opt) => (
                             <button
                                 key={opt.value}
                                 onClick={() => setHours(opt.value)}
                                 className={`px-2.5 py-1 text-xs rounded-lg transition-colors ${hours === opt.value
-                                        ? "bg-blue-600 text-white"
-                                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                                     }`}
                             >
                                 {opt.label}
@@ -170,6 +183,23 @@ export function FluidBalanceOverview({ patientId }: Props) {
                     <p className="text-sm text-slate-500 text-center mt-4">Keine Einträge in den letzten {hours}h.</p>
                 )}
             </CardContent>
+
+            {showEntryModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div
+                        className="absolute inset-0 bg-slate-900/40"
+                        onClick={() => setShowEntryModal(false)}
+                        aria-hidden="true"
+                    />
+                    <div className="relative z-10 w-full max-w-2xl">
+                        <FluidEntryForm
+                            patientId={patientId}
+                            onSuccess={() => setShowEntryModal(false)}
+                            onCancel={() => setShowEntryModal(false)}
+                        />
+                    </div>
+                </div>
+            )}
         </Card>
     );
 }

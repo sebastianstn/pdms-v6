@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Badge, Spinner } from "@/components/ui";
 import {
     useInsurances,
+    useInsuranceProviders,
     useCreateInsurance,
     useUpdateInsurance,
     useDeleteInsurance,
@@ -15,6 +16,47 @@ const TYPE_LABELS: Record<InsuranceType, string> = {
     zusatz: "Zusatzversicherung",
     unfall: "Unfallversicherung",
     iv: "Invalidenversicherung",
+};
+
+const SWISS_INSURERS: string[] = [
+    "Aquilana",
+    "Assura",
+    "Atupri",
+    "Avenir",
+    "CONCORDIA",
+    "CSS",
+    "EGK",
+    "Galenos",
+    "Groupe Mutuel",
+    "Helsana",
+    "KLuG",
+    "KPT",
+    "Kolping",
+    "Mutuel",
+    "ÖKK",
+    "Philos",
+    "Sanitas",
+    "SLKK",
+    "Sodalis",
+    "Sumiswalder",
+    "SWICA",
+    "Visana",
+    "vita surselva",
+    "Vivacare",
+];
+
+type InsuranceFormType = InsuranceType | "zusatz_halbprivat" | "zusatz_privat";
+
+function normalizeInsuranceType(formValue: string): InsuranceType {
+    if (formValue === "zusatz_halbprivat" || formValue === "zusatz_privat") {
+        return "zusatz";
+    }
+    return formValue as InsuranceType;
+}
+
+const GARANT_LABELS: Record<string, string> = {
+    tiers_payant: "Tiers payant (Versicherung zahlt direkt)",
+    tiers_garant: "Tiers garant (Patient zahlt zuerst)",
 };
 
 function fmtDate(iso?: string) {
@@ -29,26 +71,45 @@ interface InsuranceCardProps {
 export function InsuranceCard({ patientId }: InsuranceCardProps) {
     const { data: insurances, isLoading } = useInsurances(patientId);
     const [showForm, setShowForm] = useState(false);
+    const [selectedCoverage, setSelectedCoverage] = useState<"basic" | "semi_private" | "private">("basic");
+    const { data: providerOptions } = useInsuranceProviders(selectedCoverage);
     const createMut = useCreateInsurance();
     const deleteMut = useDeleteInsurance(patientId);
+    const insurers = providerOptions && providerOptions.length > 0 ? providerOptions : SWISS_INSURERS.map((name) => ({
+        id: name,
+        name,
+        is_active: true,
+        supports_basic: true,
+        supports_semi_private: true,
+        supports_private: true,
+        logo_text: name.slice(0, 2).toUpperCase(),
+        logo_color: "#2563EB",
+    }));
+    const insurerLogoMap = new Map(insurers.map((insurer) => [insurer.name, insurer]));
 
     if (isLoading) return <div className="flex justify-center py-8"><Spinner size="md" /></div>;
 
     const handleCreate = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const fd = new FormData(e.currentTarget);
+        const selectedType = (fd.get("insurance_type") as string) || "grundversicherung";
         const data: InsuranceCreate = {
             patient_id: patientId,
             insurer_name: fd.get("insurer_name") as string,
             policy_number: fd.get("policy_number") as string,
-            insurance_type: fd.get("insurance_type") as InsuranceType,
+            insurance_type: normalizeInsuranceType(selectedType),
             valid_from: (fd.get("valid_from") as string) || undefined,
             valid_until: (fd.get("valid_until") as string) || undefined,
             franchise: fd.get("franchise") ? Number(fd.get("franchise")) : undefined,
             kostengutsprache: fd.get("kostengutsprache") === "on",
             garant: (fd.get("garant") as string) || undefined,
             bvg_number: (fd.get("bvg_number") as string) || undefined,
-            notes: (fd.get("notes") as string) || undefined,
+            notes:
+                selectedType === "zusatz_halbprivat"
+                    ? "Deckung: Halbprivat"
+                    : selectedType === "zusatz_privat"
+                        ? "Deckung: Privat"
+                        : (fd.get("notes") as string) || undefined,
         };
         createMut.mutate(data, { onSuccess: () => setShowForm(false) });
     };
@@ -68,19 +129,49 @@ export function InsuranceCard({ patientId }: InsuranceCardProps) {
             {showForm && (
                 <form onSubmit={handleCreate} className="bg-blue-50/50 border border-blue-200 rounded-lg p-3 space-y-2">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <input name="insurer_name" required placeholder="Versicherer *" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" autoFocus />
+                        <>
+                            <input
+                                name="insurer_name"
+                                list="swiss-insurers"
+                                required
+                                placeholder="Versicherer *"
+                                className="px-3 py-2 text-sm border border-slate-200 rounded-lg"
+                                autoFocus
+                            />
+                            <datalist id="swiss-insurers">
+                                {insurers.map((insurer) => (
+                                    <option key={insurer.id} value={insurer.name} />
+                                ))}
+                            </datalist>
+                        </>
                         <input name="policy_number" required placeholder="Policen-Nr. *" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
-                        <select name="insurance_type" required className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white">
-                            {Object.entries(TYPE_LABELS).map(([k, v]) => (
-                                <option key={k} value={k}>{v}</option>
-                            ))}
+                        <select
+                            name="insurance_type"
+                            required
+                            defaultValue={"grundversicherung" as InsuranceFormType}
+                            onChange={(event) => {
+                                const value = event.target.value;
+                                if (value === "grundversicherung") {
+                                    setSelectedCoverage("basic");
+                                } else if (value === "zusatz_halbprivat") {
+                                    setSelectedCoverage("semi_private");
+                                } else {
+                                    setSelectedCoverage("private");
+                                }
+                            }}
+                            className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white"
+                        >
+                            <option value="grundversicherung">Grundversicherung</option>
+                            <option value="zusatz_halbprivat">Halbprivat</option>
+                            <option value="zusatz_privat">Privat</option>
+                            <option value="unfall">Unfallversicherung</option>
+                            <option value="iv">Invalidenversicherung</option>
                         </select>
                         <input name="franchise" type="number" placeholder="Franchise (CHF)" className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
                         <select name="garant" className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white">
                             <option value="">Garant wählen...</option>
-                            <option value="patient">Patient</option>
-                            <option value="versicherung">Versicherung</option>
-                            <option value="kanton">Kanton</option>
+                            <option value="tiers_garant">Tiers garant (Patient)</option>
+                            <option value="tiers_payant">Tiers payant (Versicherung)</option>
                         </select>
                         <input name="bvg_number" placeholder="BVG-Nr." className="px-3 py-2 text-sm border border-slate-200 rounded-lg" />
                         <label className="flex items-center gap-2 text-sm text-slate-600">
@@ -103,6 +194,13 @@ export function InsuranceCard({ patientId }: InsuranceCardProps) {
                 <div key={ins.id} className="flex items-center gap-3 p-3 bg-white rounded-lg border border-slate-200">
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
+                            <span
+                                className="inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-[10px] font-semibold text-white"
+                                style={{ backgroundColor: insurerLogoMap.get(ins.insurer_name)?.logo_color ?? "#2563EB" }}
+                                title={ins.insurer_name}
+                            >
+                                {(insurerLogoMap.get(ins.insurer_name)?.logo_text ?? ins.insurer_name.slice(0, 2)).toUpperCase()}
+                            </span>
                             <span className="text-sm font-medium text-slate-900">{ins.insurer_name}</span>
                             <Badge variant="default">{TYPE_LABELS[ins.insurance_type]}</Badge>
                             {ins.kostengutsprache && <Badge variant="success">KG</Badge>}
@@ -110,7 +208,7 @@ export function InsuranceCard({ patientId }: InsuranceCardProps) {
                         <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
                             <span>Nr. {ins.policy_number}</span>
                             {ins.franchise && <span>Franchise: {ins.franchise} CHF</span>}
-                            {ins.garant && <span>Garant: {ins.garant}</span>}
+                            {ins.garant && <span>Garant: {GARANT_LABELS[ins.garant] ?? ins.garant}</span>}
                             <span>Gültig: {fmtDate(ins.valid_from)} – {fmtDate(ins.valid_until)}</span>
                         </div>
                     </div>

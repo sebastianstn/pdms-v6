@@ -5,6 +5,8 @@ import uuid
 import pytest
 from httpx import AsyncClient
 
+from src.domain.services.alarm_service import THRESHOLDS, _evaluate_severity
+
 
 class TestAlarmEndpoints:
     """Alarm-Endpoint Erreichbarkeit."""
@@ -99,3 +101,12 @@ class TestAlarmActions:
         fake_id = str(uuid.uuid4())
         response = await arzt_client.patch(f"/api/v1/alarms/{fake_id}/resolve")
         assert response.status_code in (404, 500)
+
+
+class TestAlarmThresholds:
+    """Schwellenwert-Logik für Alarme."""
+
+    def test_spo2_warning_threshold_is_90(self):
+        """SpO2-Warnung muss bei Werten unter 90% greifen."""
+        assert THRESHOLDS["spo2"]["warning"][0] == 90
+        assert _evaluate_severity(89, THRESHOLDS["spo2"]) == "warning"

@@ -75,6 +75,32 @@ export interface InsuranceMeta {
   garant_options: Record<string, string>;
 }
 
+export interface InsuranceProviderOption {
+  id: string;
+  name: string;
+  is_active: boolean;
+  supports_basic: boolean;
+  supports_semi_private: boolean;
+  supports_private: boolean;
+  logo_text: string;
+  logo_color: string;
+}
+
+export interface InsuranceCompanyCreate {
+  name: string;
+  supports_basic?: boolean;
+  supports_semi_private?: boolean;
+  supports_private?: boolean;
+}
+
+export interface InsuranceCompanyUpdate {
+  name?: string;
+  is_active?: boolean;
+  supports_basic?: boolean;
+  supports_semi_private?: boolean;
+  supports_private?: boolean;
+}
+
 // ─── Emergency Contact Types ──────────────────────────────────
 
 export interface EmergencyContact {

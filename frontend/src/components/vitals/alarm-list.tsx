@@ -4,7 +4,7 @@ import { useAlarms, useAcknowledgeAlarm, useResolveAlarm, type Alarm } from "@/h
 import { Card, CardHeader, CardContent, CardTitle, Badge, Spinner } from "@/components/ui";
 import { AlarmBadge } from "@/components/vitals/alarm-badge";
 import { VITAL_LABELS } from "@/lib/constants";
-import { formatDateTime } from "@/lib/utils";
+import { formatCompactNumber, formatDateTime } from "@/lib/utils";
 
 interface AlarmListProps {
     /** Optionaler Patient-Filter */
@@ -75,12 +75,21 @@ interface AlarmRowProps {
 function AlarmRow({ alarm, compact, onAcknowledge, onResolve, isAcknowledging, isResolving }: AlarmRowProps) {
     const label = VITAL_LABELS[alarm.parameter]?.label ?? alarm.parameter;
     const unit = VITAL_LABELS[alarm.parameter]?.unit ?? "";
+    const formattedValue = formatCompactNumber(alarm.value);
+    const thresholdText =
+        alarm.threshold_min != null && alarm.threshold_max != null
+            ? `${formatCompactNumber(alarm.threshold_min)}–${formatCompactNumber(alarm.threshold_max)} ${unit}`
+            : alarm.threshold_min != null
+                ? `< ${formatCompactNumber(alarm.threshold_min)} ${unit}`
+                : alarm.threshold_max != null
+                    ? `> ${formatCompactNumber(alarm.threshold_max)} ${unit}`
+                    : null;
 
     return (
         <div
             className={`flex items-center gap-3 p-3 rounded-lg border ${alarm.severity === "critical"
-                    ? "border-red-200 bg-red-50/50"
-                    : "border-amber-200 bg-amber-50/50"
+                ? "border-red-200 bg-red-50/50"
+                : "border-amber-200 bg-amber-50/50"
                 }`}
         >
             <AlarmBadge
@@ -90,13 +99,13 @@ function AlarmRow({ alarm, compact, onAcknowledge, onResolve, isAcknowledging, i
 
             <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-slate-900 truncate">
-                    {label}: {alarm.value} {unit}
+                    {label}: {formattedValue} {unit}
                 </p>
                 <p className="text-xs text-slate-500">
                     {formatDateTime(alarm.triggered_at)}
-                    {alarm.threshold_min != null && alarm.threshold_max != null && (
+                    {thresholdText && (
                         <span className="ml-2">
-                            (Grenze: {alarm.threshold_min}–{alarm.threshold_max} {unit})
+                            (Grenze: {thresholdText})
                         </span>
                     )}
                 </p>

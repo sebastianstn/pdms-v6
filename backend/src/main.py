@@ -2,9 +2,9 @@
 
 import logging
 import time
+import uuid
 from collections import defaultdict
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -48,7 +48,7 @@ from src.api.v1.ai import router as ai_router
 from src.api.v1.fhir import router as fhir_router
 from src.api.websocket.alarms_ws import router as alarms_ws_router
 from src.api.websocket.vitals_ws import router as vitals_ws_router
-from src.config import settings
+from src.config import get_media_root_path, settings
 from src.infrastructure.rbac_guard import require_rbac
 
 logging.basicConfig(level=getattr(logging, settings.log_level.upper(), logging.INFO))
@@ -102,18 +102,7 @@ app = FastAPI(
 )
 
 # Media-Uploads (z. B. Patientenbilder)
-media_root = Path(settings.media_root)
-try:
-    media_root.mkdir(parents=True, exist_ok=True)
-except PermissionError:
-    fallback_media_root = Path("/tmp/pdms-uploads")
-    fallback_media_root.mkdir(parents=True, exist_ok=True)
-    logger.warning(
-        "Media-Root '%s' nicht beschreibbar, nutze Fallback '%s'",
-        media_root,
-        fallback_media_root,
-    )
-    media_root = fallback_media_root
+media_root = get_media_root_path()
 app.mount(settings.media_url_prefix, StaticFiles(directory=str(media_root)), name="media")
 
 # Middleware (order matters: last added = first executed)
@@ -178,6 +167,18 @@ async def health():
     except Exception:
         rmq_status = "error"
 
+    # Media-Storage (lokale Uploads)
+    media_root_path = get_media_root_path()
+    test_file = media_root_path / f".healthcheck-{uuid.uuid4().hex}.tmp"
+    try:
+        test_file.write_text("ok", encoding="utf-8")
+        test_file.unlink(missing_ok=True)
+        media_status = "ok"
+        media_error: str | None = None
+    except Exception as exc:
+        media_status = "error"
+        media_error = str(exc)
+
     # System
     uptime = time.time() - _start_time
     try:
@@ -193,7 +194,7 @@ async def health():
         import os
         system_info = {"pid": os.getpid()}
 
-    overall = "ok" if all(s == "ok" for s in [valkey_status, db_status, rmq_status]) else "degraded"
+    overall = "ok" if all(s == "ok" for s in [valkey_status, db_status, rmq_status, media_status]) else "degraded"
 
     return {
         "status": overall,
@@ -205,6 +206,13 @@ async def health():
             "database": db_status,
             "valkey": valkey_status,
             "rabbitmq": rmq_status,
+            "media_storage": media_status,
+        },
+        "media": {
+            "root_path": str(media_root_path),
+            "url_prefix": settings.media_url_prefix,
+            "writable": media_status == "ok",
+            "error": media_error,
         },
         "system": system_info,
         "valkey_info": vk,

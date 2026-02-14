@@ -54,9 +54,9 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
 
     if (isLoading) {
         return (
-            <div className="flex items-center gap-2 p-1 bg-slate-50 rounded-lg border border-slate-200">
+            <div className="flex items-center gap-2 px-2 py-0.5 bg-slate-50 rounded-lg border border-slate-200">
                 <Spinner size="sm" />
-                <span className="text-sm text-slate-500">Encounter laden…</span>
+                <span className="text-xs text-slate-500">Encounter laden…</span>
             </div>
         );
     }
@@ -64,15 +64,15 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
     // Kein aktiver Encounter
     if (!encounter) {
         return (
-            <div className="flex items-center justify-between p-1 bg-amber-50 rounded-lg border border-amber-200">
+            <div className="flex items-center justify-between px-2 py-0.5 bg-amber-50 rounded-lg border border-amber-200">
                 <div className="flex items-center gap-2">
                     <span className="text-amber-600 font-bold">!</span>
-                    <span className="text-sm text-amber-700">Kein aktiver Aufenthalt</span>
+                    <span className="text-xs text-amber-700">Kein aktiver Aufenthalt</span>
                 </div>
                 {onAdmit && (
                     <button
                         onClick={onAdmit}
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                        className="px-2.5 py-1 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
                     >
                         Aufnahme starten
                     </button>
@@ -82,43 +82,44 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
     }
 
     return (
-        <div className="p-1 bg-green-50/50 rounded-lg border border-green-200 space-y-2">
+        <div className="px-2 py-1 bg-green-50/50 rounded-lg border border-green-200 space-y-1">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+            <div className="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3 flex-wrap min-w-0">
                     <Badge variant={statusVariant[encounter.status]}>
                         {ENCOUNTER_STATUS_LABELS[encounter.status]}
                     </Badge>
-                    <span className="text-sm font-medium text-slate-700">
+                    <span className="text-xs font-medium text-slate-700">
                         {ENCOUNTER_TYPE_LABELS[encounter.encounter_type]}
                     </span>
                     {encounter.ward && (
-                        <span className="text-sm text-slate-500">
+                        <span className="text-xs text-slate-500">
                             Station: <strong>{encounter.ward}</strong>
                             {encounter.bed ? ` / Bett ${encounter.bed}` : ""}
                         </span>
                     )}
+                    {encounter.reason && (
+                        <span className="text-xs leading-tight text-slate-600 truncate max-w-[40ch]" title={encounter.reason}>
+                            · {encounter.reason}
+                        </span>
+                    )}
                 </div>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-slate-500 self-start sm:self-auto">
                     Aufnahme: {formatDate(encounter.admitted_at)}
                 </span>
             </div>
-
-            {encounter.reason && (
-                <p className="text-sm text-slate-600">{encounter.reason}</p>
-            )}
 
             {/* Aktions-Buttons */}
             <div className="flex flex-wrap items-center gap-2">
                 <button
                     onClick={() => setShowTransfer((v) => !v)}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
+                    className="px-2.5 py-1 text-xs rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
                 >
                     Verlegen
                 </button>
                 <button
                     onClick={() => setShowDischarge((v) => !v)}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors"
+                    className="px-2.5 py-1 text-xs rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors"
                 >
                     Entlassen
                 </button>
@@ -129,7 +130,7 @@ export function EncounterBanner({ patientId, onAdmit }: EncounterBannerProps) {
                         }
                     }}
                     disabled={cancelMut.isPending}
-                    className="px-3 py-1.5 text-xs rounded-lg bg-red-50 text-red-700 hover:bg-red-100 transition-colors"
+                    className="px-2.5 py-1 text-xs rounded-lg bg-red-50 text-red-700 hover:bg-red-100 transition-colors"
                 >
                     ✕ Abbrechen
                 </button>

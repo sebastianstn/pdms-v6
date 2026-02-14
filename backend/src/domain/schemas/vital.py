@@ -21,6 +21,19 @@ class VitalSignCreate(BaseModel):
     source: str = "manual"
 
 
+class VitalSignUpdate(BaseModel):
+    recorded_at: datetime | None = None
+    heart_rate: float | None = Field(None, ge=0, le=300)
+    systolic_bp: float | None = Field(None, ge=0, le=400)
+    diastolic_bp: float | None = Field(None, ge=0, le=300)
+    spo2: float | None = Field(None, ge=0, le=100)
+    temperature: float | None = Field(None, ge=25, le=45)
+    respiratory_rate: float | None = Field(None, ge=0, le=80)
+    gcs: int | None = Field(None, ge=3, le=15)
+    pain_score: int | None = Field(None, ge=0, le=10)
+    source: str | None = None
+
+
 class VitalSignResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

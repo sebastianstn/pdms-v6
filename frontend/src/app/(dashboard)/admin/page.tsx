@@ -13,6 +13,13 @@ import {
   type UserCreateInput,
   type UserUpdateInput,
 } from "@/hooks/use-users";
+import {
+  useInsuranceCatalog,
+  useCreateInsuranceCompany,
+  useUpdateInsuranceCompany,
+  useDeleteInsuranceCompany,
+} from "@/hooks/use-insurance";
+import type { InsuranceProviderOption } from "@pdms/shared-types";
 import { useAuth } from "@/providers/auth-provider";
 import {
   Shield,
@@ -26,9 +33,10 @@ import {
   Users,
   FileText,
   Lock,
+  Building2,
 } from "lucide-react";
 
-type Tab = "users" | "audit" | "access";
+type Tab = "users" | "audit" | "access" | "insurers";
 
 const ROLE_LABELS: Record<string, string> = {
   arzt: "Arzt",
@@ -70,6 +78,7 @@ export default function AdminPage() {
     { key: "users", label: "Benutzer", icon: Users },
     { key: "audit", label: "Audit-Trail", icon: FileText },
     { key: "access", label: "Zugriffsberechtigungen", icon: Lock },
+    { key: "insurers", label: "Versicherer", icon: Building2 },
   ];
 
   return (
@@ -127,6 +136,9 @@ export default function AdminPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Tab: Versicherer-Katalog */}
+      {activeTab === "insurers" && <InsuranceCatalogManagement />}
     </div>
   );
 }
@@ -297,6 +309,160 @@ function UserManagement() {
         <DeleteConfirmModal user={modal.user} onClose={() => setModal({ type: "closed" })} />
       )}
     </>
+  );
+}
+
+function InsuranceCatalogManagement() {
+  const { data, isLoading, error } = useInsuranceCatalog();
+  const createMut = useCreateInsuranceCompany();
+  const updateMut = useUpdateInsuranceCompany();
+  const deleteMut = useDeleteInsuranceCompany();
+
+  const [name, setName] = useState("");
+  const [supportsBasic, setSupportsBasic] = useState(true);
+  const [supportsSemiPrivate, setSupportsSemiPrivate] = useState(true);
+  const [supportsPrivate, setSupportsPrivate] = useState(true);
+
+  const addCompany = () => {
+    if (!name.trim()) return;
+    createMut.mutate(
+      {
+        name: name.trim(),
+        supports_basic: supportsBasic,
+        supports_semi_private: supportsSemiPrivate,
+        supports_private: supportsPrivate,
+      },
+      {
+        onSuccess: () => {
+          setName("");
+          setSupportsBasic(true);
+          setSupportsSemiPrivate(true);
+          setSupportsPrivate(true);
+        },
+      },
+    );
+  };
+
+  const patchCompany = (company: InsuranceProviderOption, patch: Partial<InsuranceProviderOption>) => {
+    updateMut.mutate({
+      id: company.id,
+      data: {
+        name: patch.name,
+        is_active: patch.is_active,
+        supports_basic: patch.supports_basic,
+        supports_semi_private: patch.supports_semi_private,
+        supports_private: patch.supports_private,
+      },
+    });
+  };
+
+  if (isLoading) return <div className="py-8 flex justify-center"><Spinner /></div>;
+  if (error) return <p className="text-red-600 text-sm">Fehler: {(error as Error).message}</p>;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Versicherer-Katalog</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Neuer Versicherer (z. B. Sympany)"
+            className="md:col-span-2 rounded border border-slate-300 px-3 py-1.5 text-sm"
+          />
+          <label className="flex items-center gap-2 text-sm text-slate-600">
+            <input type="checkbox" checked={supportsBasic} onChange={(e) => setSupportsBasic(e.target.checked)} />
+            Grund
+          </label>
+          <label className="flex items-center gap-2 text-sm text-slate-600">
+            <input type="checkbox" checked={supportsSemiPrivate} onChange={(e) => setSupportsSemiPrivate(e.target.checked)} />
+            Halbprivat
+          </label>
+          <label className="flex items-center gap-2 text-sm text-slate-600">
+            <input type="checkbox" checked={supportsPrivate} onChange={(e) => setSupportsPrivate(e.target.checked)} />
+            Privat
+          </label>
+        </div>
+        <div className="flex justify-end">
+          <Button onClick={addCompany} disabled={createMut.isPending || !name.trim()}>
+            {createMut.isPending ? <Spinner /> : "Versicherer hinzufügen"}
+          </Button>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase text-slate-500">
+                <th className="px-3 py-2">Logo</th>
+                <th className="px-3 py-2">Name</th>
+                <th className="px-3 py-2">Grund</th>
+                <th className="px-3 py-2">Halbprivat</th>
+                <th className="px-3 py-2">Privat</th>
+                <th className="px-3 py-2">Status</th>
+                <th className="px-3 py-2 text-right">Aktion</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data?.map((company) => (
+                <tr key={company.id} className="border-b border-slate-100">
+                  <td className="px-3 py-2">
+                    <span
+                      className="inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-[10px] font-semibold text-white"
+                      style={{ backgroundColor: company.logo_color }}
+                      title={company.name}
+                    >
+                      {company.logo_text}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 font-medium text-slate-800">{company.name}</td>
+                  <td className="px-3 py-2">
+                    <input
+                      type="checkbox"
+                      checked={company.supports_basic}
+                      onChange={(e) => patchCompany(company, { supports_basic: e.target.checked })}
+                    />
+                  </td>
+                  <td className="px-3 py-2">
+                    <input
+                      type="checkbox"
+                      checked={company.supports_semi_private}
+                      onChange={(e) => patchCompany(company, { supports_semi_private: e.target.checked })}
+                    />
+                  </td>
+                  <td className="px-3 py-2">
+                    <input
+                      type="checkbox"
+                      checked={company.supports_private}
+                      onChange={(e) => patchCompany(company, { supports_private: e.target.checked })}
+                    />
+                  </td>
+                  <td className="px-3 py-2">
+                    <button
+                      onClick={() => patchCompany(company, { is_active: !company.is_active })}
+                      className={`px-2 py-0.5 rounded-full text-xs ${company.is_active ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}
+                    >
+                      {company.is_active ? "Aktiv" : "Inaktiv"}
+                    </button>
+                  </td>
+                  <td className="px-3 py-2 text-right">
+                    <button
+                      onClick={() => deleteMut.mutate(company.id)}
+                      className="p-1.5 rounded hover:bg-red-50 text-red-600"
+                      title="Deaktivieren"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 

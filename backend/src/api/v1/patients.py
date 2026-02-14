@@ -1,16 +1,20 @@
 """Patient API endpoints — CRUD + search + Valkey caching."""
 
+import mimetypes
 import uuid
 from io import BytesIO
 from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from fastapi.responses import FileResponse
 from PIL import Image, ImageOps, UnidentifiedImageError
+from sqlalchemy import select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.dependencies import get_current_user, get_db
-from src.config import settings
+from src.config import get_media_root_path, settings
+from src.domain.models.patient import PatientPhoto
 from src.domain.schemas.patient import PaginatedPatients, PatientCreate, PatientResponse, PatientUpdate
 from src.domain.services.patient_service import (
     create_patient,
@@ -38,6 +42,46 @@ _ALLOWED_IMAGE_MIME_TYPES: dict[str, str] = {
     "image/png": ".png",
     "image/webp": ".webp",
 }
+
+
+def _guess_media_type(file_path: Path) -> str:
+    """Ermittelt einen sinnvollen Content-Type für ein Bild."""
+    guessed, _ = mimetypes.guess_type(file_path.name)
+    return guessed or "application/octet-stream"
+
+
+def _resolve_photo_path_from_url(photo_url: str | None) -> Path | None:
+    """Leitet aus einer internen /media-URL den lokalen Dateipfad ab."""
+    if not photo_url:
+        return None
+    if not photo_url.startswith(settings.media_url_prefix):
+        return None
+
+    relative = photo_url[len(settings.media_url_prefix) :].lstrip("/")
+    if not relative:
+        return None
+
+    media_root = get_media_root_path().resolve()
+    candidate = (media_root / relative).resolve()
+    if media_root not in candidate.parents and candidate != media_root:
+        return None
+    return candidate if candidate.is_file() else None
+
+
+def _canonical_photo_url(patient_id: uuid.UUID, filename: str) -> str:
+    """Erzeugt die kanonische Media-URL für ein Patientenfoto."""
+    return f"{settings.media_url_prefix}/patient-photos/{patient_id}/{filename}"
+
+
+def _photo_fs_path(file_path: str) -> Path:
+    """Wandelt relativen Datei-Pfad in absoluten Dateisystem-Pfad um."""
+    return get_media_root_path() / file_path
+
+
+async def _patient_photos_table_exists(db: AsyncSession) -> bool:
+    """Prüft, ob die optionale patient_photos Tabelle im aktuellen Schema vorhanden ist."""
+    regclass = (await db.execute(text("select to_regclass('public.patient_photos')"))).scalar_one()
+    return regclass is not None
 
 
 def _normalize_patient_photo(image_bytes: bytes) -> bytes:
@@ -165,24 +209,119 @@ async def upload_patient_photo_endpoint(
     except ValueError as exc:
         raise HTTPException(status_code=415, detail=str(exc)) from exc
 
-    patient_photo_dir = Path(settings.media_root) / "patient-photos" / str(patient_id)
+    patient_photo_dir = get_media_root_path() / "patient-photos" / str(patient_id)
     patient_photo_dir.mkdir(parents=True, exist_ok=True)
-
-    # Nur das neueste Bild behalten
-    for old_file in patient_photo_dir.glob("*"):
-        if old_file.is_file():
-            old_file.unlink(missing_ok=True)
 
     filename = f"{uuid.uuid4().hex}.webp"
     destination = patient_photo_dir / filename
     destination.write_bytes(normalized)
 
-    patient.photo_url = f"{settings.media_url_prefix}/patient-photos/{patient_id}/{filename}"
+    canonical_url = _canonical_photo_url(patient_id, filename)
+    relative_file_path = str(Path("patient-photos") / str(patient_id) / filename)
+
+    if await _patient_photos_table_exists(db):
+        await db.execute(
+            update(PatientPhoto)
+            .where(PatientPhoto.patient_id == patient_id)
+            .values(is_current=False)
+        )
+
+        db.add(
+            PatientPhoto(
+                patient_id=patient_id,
+                file_name=filename,
+                file_path=relative_file_path,
+                media_url=canonical_url,
+                content_type="image/webp",
+                file_size_bytes=len(normalized),
+                uploaded_by=(user.get("preferred_username") if isinstance(user, dict) else None),
+                is_current=True,
+            )
+        )
+
+    patient.photo_url = canonical_url
     await db.flush()
 
     result = PatientResponse.model_validate(patient)
     await invalidate(CacheKeys.patient(str(patient_id)), CacheKeys.PATIENT_LIST_ALL)
     return result
+
+
+@router.get("/patients/{patient_id}/photo")
+async def get_patient_photo_endpoint(
+    patient_id: uuid.UUID,
+    db: DbSession,
+    user: CurrentUser,
+):
+    """Liefert das Patientenfoto für Legacy- und aktuelle photo_url-Werte."""
+    patient = await get_patient(db, patient_id)
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient nicht gefunden")
+
+    # 1) Primär: über gespeicherte /media-URL auflösen
+    resolved = _resolve_photo_path_from_url(patient.photo_url)
+    if resolved is not None:
+        canonical = _canonical_photo_url(patient_id, resolved.name)
+        if patient.photo_url != canonical:
+            patient.photo_url = canonical
+            await db.flush()
+            await invalidate(CacheKeys.patient(str(patient_id)), CacheKeys.PATIENT_LIST_ALL)
+        return FileResponse(path=resolved, media_type=_guess_media_type(resolved))
+
+    # 2) DB-Metadaten: aktuelles Foto aus patient_photos verwenden
+    photo_row = None
+    if await _patient_photos_table_exists(db):
+        photo_row = (
+            await db.execute(
+                select(PatientPhoto)
+                .where(PatientPhoto.patient_id == patient_id, PatientPhoto.is_current.is_(True))
+                .order_by(PatientPhoto.created_at.desc())
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+
+    if photo_row is not None:
+        candidate = _photo_fs_path(photo_row.file_path)
+        if candidate.is_file():
+            canonical = _canonical_photo_url(patient_id, candidate.name)
+            if patient.photo_url != canonical:
+                patient.photo_url = canonical
+                await db.flush()
+                await invalidate(CacheKeys.patient(str(patient_id)), CacheKeys.PATIENT_LIST_ALL)
+            return FileResponse(path=candidate, media_type=photo_row.content_type or _guess_media_type(candidate))
+
+    # 3) Fallback: letzte Datei im Patient-Fotoordner (für Legacy-Datensätze)
+    patient_photo_dir = get_media_root_path() / "patient-photos" / str(patient_id)
+    if patient_photo_dir.exists() and patient_photo_dir.is_dir():
+        files = [p for p in patient_photo_dir.glob("*") if p.is_file()]
+        if files:
+            latest = max(files, key=lambda path: path.stat().st_mtime)
+            canonical = _canonical_photo_url(patient_id, latest.name)
+            if await _patient_photos_table_exists(db):
+                await db.execute(
+                    update(PatientPhoto)
+                    .where(PatientPhoto.patient_id == patient_id)
+                    .values(is_current=False)
+                )
+                db.add(
+                    PatientPhoto(
+                        patient_id=patient_id,
+                        file_name=latest.name,
+                        file_path=str(Path("patient-photos") / str(patient_id) / latest.name),
+                        media_url=canonical,
+                        content_type=_guess_media_type(latest),
+                        file_size_bytes=latest.stat().st_size,
+                        uploaded_by=None,
+                        is_current=True,
+                    )
+                )
+            if patient.photo_url != canonical:
+                patient.photo_url = canonical
+            await db.flush()
+            await invalidate(CacheKeys.patient(str(patient_id)), CacheKeys.PATIENT_LIST_ALL)
+            return FileResponse(path=latest, media_type=_guess_media_type(latest))
+
+    raise HTTPException(status_code=404, detail="Patientenbild nicht gefunden")
 
 
 @router.patch("/patients/{patient_id}", response_model=PatientResponse)

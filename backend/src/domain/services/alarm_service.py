@@ -32,7 +32,7 @@ THRESHOLDS: dict[str, dict[str, tuple[float | None, float | None]]] = {
         "critical": (45, 110),
     },
     "spo2": {
-        "warning":  (92, None),
+        "warning":  (90, None),
         "critical": (88, None),
     },
     "temperature": {

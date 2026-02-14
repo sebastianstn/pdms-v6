@@ -16,7 +16,7 @@ from src.config import settings
 from src.infrastructure.database import Base
 
 # Import all models so Alembic can detect them
-from src.domain.models.patient import Patient, Insurance, EmergencyContact, MedicalProvider  # noqa: F401
+from src.domain.models.patient import Patient, Insurance, InsuranceCompany, EmergencyContact, MedicalProvider, PatientPhoto  # noqa: F401
 from src.domain.models.clinical import VitalSign, Encounter, Alarm, Medication, MedicationAdministration, NursingEntry, NursingAssessment, ClinicalNote  # noqa: F401
 from src.domain.models.system import AppUser, AuditLog  # noqa: F401
 from src.domain.models.planning import Appointment, DischargeCriteria  # noqa: F401

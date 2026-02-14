@@ -11,7 +11,7 @@ import {
   Legend,
 } from "recharts";
 import { VITAL_LABELS } from "@/lib/constants";
-import { formatDateTime } from "@/lib/utils";
+import { formatCompactNumber, formatDateTime } from "@/lib/utils";
 
 interface VitalDataPoint {
   recorded_at: string;
@@ -29,13 +29,38 @@ interface VitalChartProps {
   height?: number;
 }
 
-function formatXAxis(value: string) {
+function splitXAxisDateTime(value: string): { date: string; time: string } {
   try {
     const d = new Date(value);
-    return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
+    const day = d.getDate().toString().padStart(2, "0");
+    const month = (d.getMonth() + 1).toString().padStart(2, "0");
+    const hours = d.getHours().toString().padStart(2, "0");
+    const minutes = d.getMinutes().toString().padStart(2, "0");
+    return { date: `${day}.${month}`, time: `${hours}:${minutes}` };
   } catch {
-    return value;
+    return { date: value, time: "" };
   }
+}
+
+interface XAxisTickProps {
+  x?: number;
+  y?: number;
+  payload?: { value: string };
+}
+
+function CustomXAxisTick({ x = 0, y = 0, payload }: XAxisTickProps) {
+  const { date, time } = splitXAxisDateTime(payload?.value ?? "");
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={10} textAnchor="middle" fill="#94a3b8" fontSize={11}>
+        {date}
+      </text>
+      <text x={0} y={0} dy={24} textAnchor="middle" fill="#94a3b8" fontSize={11}>
+        {time}
+      </text>
+    </g>
+  );
 }
 
 interface TooltipPayloadEntry {
@@ -53,7 +78,7 @@ function CustomTooltip({ active, payload, label }: { active?: boolean; payload?:
         const meta = VITAL_LABELS[entry.dataKey];
         return (
           <p key={entry.dataKey} style={{ color: entry.color }}>
-            {meta?.label ?? entry.dataKey}: {entry.value} {meta?.unit ?? ""}
+            {meta?.label ?? entry.dataKey}: {formatCompactNumber(entry.value)} {meta?.unit ?? ""}
           </p>
         );
       })}
@@ -85,12 +110,13 @@ export function VitalChart({
   return (
     <div className="w-full min-w-0" style={{ height }}>
       <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={height}>
-        <LineChart data={sorted} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+        <LineChart data={sorted} margin={{ top: 5, right: 20, bottom: 24, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
           <XAxis
             dataKey="recorded_at"
-            tickFormatter={formatXAxis}
-            tick={{ fontSize: 12, fill: "#94a3b8" }}
+            tick={<CustomXAxisTick />}
+            tickMargin={8}
+            height={48}
             stroke="#cbd5e1"
           />
           <YAxis tick={{ fontSize: 12, fill: "#94a3b8" }} stroke="#cbd5e1" />

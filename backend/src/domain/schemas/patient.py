@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class PatientCreate(BaseModel):
-    ahv_number: str | None = Field(None, pattern=r"^\d{3}\.\d{4}\.\d{4}\.\d{2}$", description="756.XXXX.XXXX.XX")
+    ahv_number: str | None = Field(None, pattern=r"^756\.\d{4}\.\d{4}\.\d{2}$", description="756.XXXX.XXXX.XX")
     first_name: str = Field(..., min_length=1, max_length=100)
     last_name: str = Field(..., min_length=1, max_length=100)
     date_of_birth: date

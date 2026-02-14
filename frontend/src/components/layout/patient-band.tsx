@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { usePatient } from "@/hooks/use-patients";
 import { useDirectives } from "@/hooks/use-directives";
 import { calculateAge, formatDate } from "@/lib/utils";
@@ -12,6 +13,11 @@ export function PatientBand() {
   const { patientId } = useParams<{ patientId: string }>();
   const { data: patient, isLoading, isError } = usePatient(patientId);
   const { data: directives } = useDirectives(patientId);
+  const [photoLoadFailed, setPhotoLoadFailed] = useState(false);
+
+  useEffect(() => {
+    setPhotoLoadFailed(false);
+  }, [patient?.photo_url]);
 
   if (isLoading) {
     return (
@@ -53,9 +59,18 @@ export function PatientBand() {
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-1 flex items-center gap-3">
-      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-        <User className={`w-6 h-6 ${patient.gender === "female" ? "text-pink-500" : "text-blue-500"}`} />
-      </div>
+      {patient.photo_url && !photoLoadFailed ? (
+        <img
+          src={patient.photo_url}
+          alt={`Patientenbild ${patient.first_name} ${patient.last_name}`}
+          className="w-12 h-12 rounded-full border border-slate-200 object-cover shrink-0 bg-slate-50"
+          onError={() => setPhotoLoadFailed(true)}
+        />
+      ) : (
+        <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+          <User className={`w-6 h-6 ${patient.gender === "female" ? "text-pink-500" : "text-blue-500"}`} />
+        </div>
+      )}
       <div className="flex-1 min-w-0">
         <h2 className="text-lg font-bold text-slate-900 truncate">
           {patient.last_name}, {patient.first_name}

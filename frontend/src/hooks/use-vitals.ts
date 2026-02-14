@@ -20,6 +20,11 @@ interface VitalSign {
   pain_score?: number;
 }
 
+interface VitalSignUpdatePayload extends Partial<VitalSign> {
+  id: string;
+  patient_id: string;
+}
+
 export function useVitals(patientId: string, hours = 24) {
   return useQuery<VitalSign[]>({
     queryKey: ["vitals", patientId, hours],
@@ -33,6 +38,16 @@ export function useRecordVital() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: Partial<VitalSign>) => api.post<VitalSign>("/vitals", data),
+    onSuccess: (_, variables) => {
+      qc.invalidateQueries({ queryKey: ["vitals", variables.patient_id] });
+    },
+  });
+}
+
+export function useUpdateVital() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...data }: VitalSignUpdatePayload) => api.patch<VitalSign>(`/vitals/${id}`, data),
     onSuccess: (_, variables) => {
       qc.invalidateQueries({ queryKey: ["vitals", variables.patient_id] });
     },

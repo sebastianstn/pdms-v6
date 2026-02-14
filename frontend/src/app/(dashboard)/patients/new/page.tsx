@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCreatePatient } from "@/hooks/use-patients";
+import { formatAHVInput, isValidAHV } from "@/lib/utils";
 
 export default function NewPatientPage() {
     const router = useRouter();
@@ -18,8 +19,17 @@ export default function NewPatientPage() {
     const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
         setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
+    const setAhvNumber = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setForm((prev) => ({ ...prev, ahv_number: formatAHVInput(e.target.value) }));
+
+    const hasAhvInput = form.ahv_number.trim().length > 0;
+    const ahvIsValid = !hasAhvInput || isValidAHV(form.ahv_number);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!ahvIsValid) {
+            return;
+        }
         try {
             const patient = await createPatient.mutateAsync(form);
             router.push(`/patients/${patient.id}/personalien`);
@@ -89,10 +99,25 @@ export default function NewPatientPage() {
                     <input
                         type="text"
                         value={form.ahv_number}
-                        onChange={set("ahv_number")}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onChange={setAhvNumber}
+                        className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 ${hasAhvInput && !ahvIsValid
+                                ? "border-red-300 focus:ring-red-500"
+                                : hasAhvInput && ahvIsValid
+                                    ? "border-emerald-300 focus:ring-emerald-500"
+                                    : "border-slate-200 focus:ring-blue-500"
+                            }`}
                         placeholder="756.XXXX.XXXX.XX"
+                        inputMode="numeric"
+                        maxLength={16}
+                        pattern="^756\.\d{4}\.\d{4}\.\d{2}$"
+                        title="AHV muss dem Format 756.XXXX.XXXX.XX entsprechen"
+                        aria-invalid={hasAhvInput && !ahvIsValid}
                     />
+                    <p className="mt-1 text-xs text-slate-500">Die AHV beginnt immer mit 756.</p>
+                    {hasAhvInput && !ahvIsValid && (
+                        <p className="mt-1 text-xs text-red-600">Ungültige AHV: Bitte im Format 756.XXXX.XXXX.XX eingeben.</p>
+                    )}
+                    {hasAhvInput && ahvIsValid && <p className="mt-1 text-xs text-emerald-600">AHV-Format ist gültig.</p>}
                 </div>
 
                 {createPatient.isError && (
@@ -111,7 +136,7 @@ export default function NewPatientPage() {
                     </button>
                     <button
                         type="submit"
-                        disabled={createPatient.isPending}
+                        disabled={createPatient.isPending || !ahvIsValid}
                         className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                     >
                         {createPatient.isPending ? "Erstelle…" : "Patient erstellen"}

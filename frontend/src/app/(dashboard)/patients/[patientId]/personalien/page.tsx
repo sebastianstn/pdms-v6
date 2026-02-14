@@ -104,11 +104,16 @@ export default function PersonalienPage() {
   const uploadPhoto = useUploadPatientPhoto(patientId);
   const [showAdmission, setShowAdmission] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const [photoLoadFailed, setPhotoLoadFailed] = useState(false);
   const [cropFile, setCropFile] = useState<File | null>(null);
   const [cropPreviewUrl, setCropPreviewUrl] = useState<string | null>(null);
   const [cropZoom, setCropZoom] = useState(1);
   const [cropPanX, setCropPanX] = useState(0);
   const [cropPanY, setCropPanY] = useState(0);
+
+  useEffect(() => {
+    setPhotoLoadFailed(false);
+  }, [patient?.photo_url]);
 
   useEffect(() => {
     return () => {
@@ -235,18 +240,22 @@ export default function PersonalienPage() {
         <CardContent>
           <div className="flex items-start gap-4">
             <div className="shrink-0">
-              {patient.photo_url ? (
+              {patient.photo_url && !photoLoadFailed ? (
                 <img
                   src={patient.photo_url}
                   alt={`Patientenbild ${patient.first_name} ${patient.last_name}`}
-                  className="w-24 h-28 rounded-lg border border-slate-300 object-cover bg-slate-50"
+                  className="w-32 h-40 rounded-lg border border-slate-300 object-cover bg-slate-50"
+                  onError={() => {
+                    setPhotoLoadFailed(true);
+                    setPhotoError((prev) => prev ?? "Patientenbild konnte nicht geladen werden.");
+                  }}
                 />
               ) : (
-                <div className="w-24 h-28 rounded-lg border border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center">
-                    <User className="w-6 h-6" />
+                <div className="w-32 h-40 rounded-lg border border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center">
+                  <div className="w-14 h-14 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center">
+                    <User className="w-7 h-7" />
                   </div>
-                  <span className="mt-1 text-xs font-semibold text-slate-600">
+                  <span className="mt-1.5 text-sm font-semibold text-slate-600">
                     {`${patient.first_name?.[0] ?? ""}${patient.last_name?.[0] ?? ""}`.toUpperCase() || "ID"}
                   </span>
                 </div>

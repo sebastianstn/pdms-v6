@@ -1,4 +1,4 @@
-"""Patient, Insurance, EmergencyContact, MedicalProvider models."""
+"""Patient, Insurance, InsuranceCompany, EmergencyContact, MedicalProvider und PatientPhoto Modelle."""
 
 import uuid
 from datetime import UTC, date, datetime
@@ -44,6 +44,29 @@ class Patient(Base):
     insurances: Mapped[list["Insurance"]] = relationship(back_populates="patient", cascade="all, delete-orphan")
     contacts: Mapped[list["EmergencyContact"]] = relationship(back_populates="patient", cascade="all, delete-orphan")
     providers: Mapped[list["MedicalProvider"]] = relationship(back_populates="patient", cascade="all, delete-orphan")
+    photos: Mapped[list["PatientPhoto"]] = relationship(back_populates="patient", cascade="all, delete-orphan")
+
+
+class PatientPhoto(Base):
+    """Metadaten für lokal gespeicherte Patientenbilder."""
+
+    __tablename__ = "patient_photos"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    patient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("patients.id", ondelete="CASCADE"), index=True)
+    file_name: Mapped[str] = mapped_column(String(255))
+    file_path: Mapped[str] = mapped_column(String(500))  # Relativer Pfad unter media_root
+    media_url: Mapped[str] = mapped_column(String(500))
+    content_type: Mapped[str] = mapped_column(String(100), default="image/webp")
+    file_size_bytes: Mapped[int] = mapped_column(Integer)
+    uploaded_by: Mapped[str | None] = mapped_column(String(255))
+    is_current: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+    )
+
+    patient: Mapped["Patient"] = relationship(back_populates="photos")
 
 
 class Insurance(Base):
@@ -67,6 +90,23 @@ class Insurance(Base):
     notes: Mapped[str | None] = mapped_column(Text)
 
     patient: Mapped["Patient"] = relationship(back_populates="insurances")
+
+
+class InsuranceCompany(Base):
+    """Versicherungsgesellschaft-Katalog (erweiterbar, aktiv/inaktiv, Deckungsoptionen)."""
+
+    __tablename__ = "insurance_companies"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    supports_basic: Mapped[bool] = mapped_column(Boolean, default=True)
+    supports_semi_private: Mapped[bool] = mapped_column(Boolean, default=True)
+    supports_private: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+    )
 
 
 class EmergencyContact(Base):

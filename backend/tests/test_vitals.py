@@ -97,3 +97,21 @@ class TestVitalAuth:
         """Ohne Auth sollte 401 oder Dev-Bypass aktiv sein."""
         response = await client.post("/api/v1/vitals", json=sample_vital_data)
         assert response.status_code in (201, 401, 403, 500)
+
+
+class TestVitalUpdate:
+    """Tests für Korrekturen bestehender Vitaleinträge."""
+
+    @pytest.mark.asyncio
+    async def test_update_vital_endpoint_exists(self, arzt_client: AsyncClient):
+        """PATCH /vitals/{id} muss erreichbar sein (404 bei unbekannter ID ist korrekt)."""
+        vital_id = str(uuid.uuid4())
+        response = await arzt_client.patch(f"/api/v1/vitals/{vital_id}", json={"heart_rate": 80})
+        assert response.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_update_vital_invalid_temperature(self, arzt_client: AsyncClient):
+        """Ungültige Temperatur im Patch muss mit 422 abgelehnt werden."""
+        vital_id = str(uuid.uuid4())
+        response = await arzt_client.patch(f"/api/v1/vitals/{vital_id}", json={"temperature": 60})
+        assert response.status_code == 422

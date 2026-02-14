@@ -3,12 +3,12 @@
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.dependencies import get_current_user, get_db
-from src.domain.schemas.vital import VitalSignCreate, VitalSignResponse
-from src.domain.services.vital_service import get_vitals, record_vital
+from src.domain.schemas.vital import VitalSignCreate, VitalSignResponse, VitalSignUpdate
+from src.domain.services.vital_service import get_vitals, record_vital, update_vital
 
 router = APIRouter()
 
@@ -37,4 +37,19 @@ async def record_vital_endpoint(
     """Neue Vitaldaten erfassen."""
     user_id = uuid.UUID(user.get("sub", "00000000-0000-0000-0000-000000000000"))
     vital = await record_vital(db, data, recorded_by=user_id)
+    return VitalSignResponse.model_validate(vital)
+
+
+@router.patch("/vitals/{vital_id}", response_model=VitalSignResponse)
+async def update_vital_endpoint(
+    vital_id: uuid.UUID,
+    data: VitalSignUpdate,
+    db: DbSession,
+    user: CurrentUser,
+):
+    """Bestehende Vitaldaten korrigieren (Zeitpunkt und Werte)."""
+    user_id = uuid.UUID(user.get("sub", "00000000-0000-0000-0000-000000000000"))
+    vital = await update_vital(db, vital_id, data, updated_by=user_id)
+    if not vital:
+        raise HTTPException(status_code=404, detail="Vitaleintrag nicht gefunden")
     return VitalSignResponse.model_validate(vital)

@@ -6,6 +6,7 @@ class RoutingKeys:
 
     # ─── Vitals ────────────────────────────────────────────
     VITAL_RECORDED = "vital.recorded"
+    VITAL_UPDATED = "vital.updated"
 
     # ─── Alarms ────────────────────────────────────────────
     ALARM_WARNING = "alarm.warning"

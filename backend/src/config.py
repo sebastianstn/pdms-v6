@@ -1,5 +1,9 @@
 """Application configuration — loaded from environment variables."""
 
+import logging
+from functools import lru_cache
+from pathlib import Path
+
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
@@ -44,3 +48,23 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+logger = logging.getLogger("pdms")
+
+
+@lru_cache(maxsize=1)
+def get_media_root_path() -> Path:
+    """Liefert einen beschreibbaren Media-Root mit Fallback auf /tmp."""
+    media_root = Path(settings.media_root)
+    try:
+        media_root.mkdir(parents=True, exist_ok=True)
+        return media_root
+    except PermissionError:
+        fallback_media_root = Path("/tmp/pdms-uploads")
+        fallback_media_root.mkdir(parents=True, exist_ok=True)
+        logger.warning(
+            "Media-Root '%s' nicht beschreibbar, nutze Fallback '%s'",
+            media_root,
+            fallback_media_root,
+        )
+        return fallback_media_root
