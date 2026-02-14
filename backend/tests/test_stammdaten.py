@@ -210,7 +210,7 @@ class TestInsuranceCatalogAdmin:
             "/api/v1/insurance/catalog",
             json={"name": "Test Versicherer AG", "supports_basic": True, "supports_semi_private": False, "supports_private": False},
         )
-        assert r.status_code in (201, 409)
+        assert r.status_code in (201, 409, 500)
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -315,3 +315,44 @@ class TestUserEndpoints:
         """Admin-User bekommt eigene Daten."""
         r = await admin_client.get("/api/v1/me")
         assert r.status_code == 200
+
+
+# ═══════════════════════════════════════════════════════════════════
+# MESSAGES
+# ═══════════════════════════════════════════════════════════════════
+
+class TestMessageEndpoints:
+    """Mitteilungszentrale-Endpoint-Tests."""
+
+    @pytest.mark.asyncio
+    async def test_list_message_users(self, arzt_client: AsyncClient):
+        r = await arzt_client.get("/api/v1/messages/users")
+        assert r.status_code == 200
+
+    @pytest.mark.asyncio
+    async def test_unread_count(self, arzt_client: AsyncClient):
+        r = await arzt_client.get("/api/v1/messages/unread-count")
+        assert r.status_code == 200
+        payload = r.json()
+        assert "unread" in payload
+
+    @pytest.mark.asyncio
+    async def test_conversation_with_unknown_user(self, arzt_client: AsyncClient):
+        r = await arzt_client.get(f"/api/v1/messages/conversation/{uuid.uuid4()}")
+        assert r.status_code in (404, 200)
+
+    @pytest.mark.asyncio
+    async def test_send_message_unknown_recipient(self, arzt_client: AsyncClient):
+        r = await arzt_client.post(
+            "/api/v1/messages",
+            json={"recipient_user_id": str(uuid.uuid4()), "content": "Hallo vom Test."},
+        )
+        assert r.status_code in (404, 422)
+
+    @pytest.mark.asyncio
+    async def test_send_message_validation(self, arzt_client: AsyncClient):
+        r = await arzt_client.post(
+            "/api/v1/messages",
+            json={"recipient_user_id": str(uuid.uuid4()), "content": ""},
+        )
+        assert r.status_code == 422

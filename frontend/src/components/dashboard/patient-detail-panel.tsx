@@ -1,7 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { usePatient } from "@/hooks/use-patients";
 import { useContacts } from "@/hooks/use-contacts";
+import { api } from "@/lib/api-client";
+import { jsPDF } from "jspdf";
 import { Home, Phone, Droplets } from "lucide-react";
 
 interface PatientDetailPanelProps {
@@ -22,8 +26,162 @@ function getInitials(first: string, last: string): string {
 }
 
 export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
+    const router = useRouter();
+    const [isExportingEpd, setIsExportingEpd] = useState(false);
+    const [epdFeedback, setEpdFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
     const { data: patient, isLoading } = usePatient(patientId ?? "");
     const { data: contacts } = useContacts(patientId ?? "");
+
+    const exportEpdPdf = (payload: Record<string, unknown>, currentPatientId: string) => {
+        const doc = new jsPDF({ unit: "mm", format: "a4" });
+        const pageHeight = 297;
+        const pageWidth = 210;
+        const margin = 12;
+        const textWidth = pageWidth - margin * 2;
+
+        const bundle = payload as {
+            total?: number;
+            entry?: Array<{ resource?: Record<string, unknown> }>;
+        };
+
+        const patientResource = bundle.entry?.find(
+            (e) => e.resource?.resourceType === "Patient",
+        )?.resource;
+
+        const patientNameRaw = Array.isArray(patientResource?.name)
+            ? (patientResource?.name[0] as Record<string, unknown> | undefined)
+            : undefined;
+        const given = Array.isArray(patientNameRaw?.given)
+            ? String(patientNameRaw?.given.join(" "))
+            : "";
+        const family = typeof patientNameRaw?.family === "string" ? patientNameRaw.family : "";
+        const patientName = `${given} ${family}`.trim() || "Unbekannt";
+
+        const resourceCount = Array.isArray(bundle.entry) ? bundle.entry.length : 0;
+
+        const contentStartY = 46;
+        let y = contentStartY;
+
+        const drawHeader = () => {
+            doc.setDrawColor(14, 165, 233);
+            doc.setLineWidth(0.6);
+            doc.rect(margin, 10, pageWidth - margin * 2, 28);
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(13);
+            doc.text("PDMS Home-Spital", margin + 3, 18);
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(9);
+            doc.text("EPD-Auszug (PDF)", margin + 3, 24);
+            doc.text(`Exportzeitpunkt: ${new Date().toLocaleString("de-CH")}`, margin + 3, 29);
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(10);
+            doc.text(`Patient: ${patientName}`, margin + 3, 35);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Patient-ID: ${currentPatientId}`, pageWidth - margin - 72, 35);
+        };
+
+        const drawFooter = (page: number, totalPages: number) => {
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(8);
+            doc.setTextColor(100);
+            doc.text("Vertraulich — PDMS Home-Spital", margin, pageHeight - 8);
+            doc.text(`Seite ${page}/${totalPages}`, pageWidth - margin - 18, pageHeight - 8);
+            doc.setTextColor(0);
+        };
+
+        const ensureSpace = (needed = 8) => {
+            if (y + needed > pageHeight - 20) {
+                doc.addPage();
+                drawHeader();
+                y = contentStartY;
+            }
+        };
+
+        const writeLine = (text: string, size = 10, bold = false) => {
+            ensureSpace(6);
+            doc.setFont("helvetica", bold ? "bold" : "normal");
+            doc.setFontSize(size);
+            const lines = doc.splitTextToSize(text, textWidth);
+            doc.text(lines, margin, y);
+            y += lines.length * (size * 0.45) + 2;
+        };
+
+        drawHeader();
+
+        writeLine("Dokumentzusammenfassung", 11, true);
+        writeLine(`FHIR-Ressourcen im Bundle: ${bundle.total ?? resourceCount}`);
+        writeLine("Erstellt zur Weitergabe im EPD-Kontext (PDF-Übersicht).", 9);
+
+        writeLine("", 8);
+        writeLine("Ressourcen nach Typ", 11, true);
+
+        const typeCounts = new Map<string, number>();
+        for (const item of bundle.entry ?? []) {
+            const rt = typeof item.resource?.resourceType === "string" ? item.resource.resourceType : "Unknown";
+            typeCounts.set(rt, (typeCounts.get(rt) ?? 0) + 1);
+        }
+
+        if (typeCounts.size === 0) {
+            writeLine("Keine Ressourcen im Bundle enthalten.");
+        } else {
+            for (const [resourceType, count] of typeCounts.entries()) {
+                writeLine(`• ${resourceType}: ${count}`);
+            }
+        }
+
+        writeLine("", 8);
+        writeLine("Klinischer Hinweis", 11, true);
+        writeLine("Dieses PDF enthält eine lesbare Zusammenfassung des FHIR-$everything Exports.");
+        writeLine("Für strukturierte Interoperabilität bleibt FHIR-JSON die führende Datengrundlage.");
+
+        ensureSpace(26);
+        y += 6;
+        doc.setDrawColor(180);
+        doc.setLineWidth(0.3);
+        doc.line(margin, y, margin + 70, y);
+        doc.line(pageWidth - margin - 70, y, pageWidth - margin, y);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.text("Ort/Datum", margin, y + 4);
+        doc.text("Unterschrift / Visum", pageWidth - margin - 70, y + 4);
+
+        const totalPages = doc.getNumberOfPages();
+        for (let page = 1; page <= totalPages; page += 1) {
+            doc.setPage(page);
+            drawFooter(page, totalPages);
+        }
+
+        doc.save(`epd-patient-${currentPatientId}.pdf`);
+    };
+
+    const handleOpenFullProfile = () => {
+        if (!patientId) return;
+        router.push(`/patients/${patientId}/personalien`);
+    };
+
+    const handleOpenTeleconsult = () => {
+        if (!patientId) return;
+        router.push(`/patients/${patientId}/termine`);
+    };
+
+    const handleExportEpd = async () => {
+        if (!patientId || isExportingEpd) return;
+        setIsExportingEpd(true);
+        setEpdFeedback(null);
+
+        try {
+            const payload = await api.get<Record<string, unknown>>(`/fhir/Patient/${patientId}/$everything`);
+            exportEpdPdf(payload, patientId);
+            setEpdFeedback({ type: "success", message: "EPD-Export als PDF erfolgreich heruntergeladen." });
+        } catch {
+            setEpdFeedback({ type: "error", message: "EPD-Export fehlgeschlagen. Bitte erneut versuchen." });
+        } finally {
+            setIsExportingEpd(false);
+        }
+    };
 
     if (!patientId) {
         return (
@@ -118,16 +276,42 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
 
             {/* Actions */}
             <div className="flex gap-1.5 mt-auto pt-2">
-                <button className="text-[9px] font-semibold text-white bg-gradient-to-r from-cyan-500 to-cyan-600 px-3 py-2 rounded-lg flex-1">
+                <button
+                    type="button"
+                    onClick={handleOpenFullProfile}
+                    className="text-[9px] font-semibold text-white bg-gradient-to-r from-cyan-500 to-cyan-600 px-3 py-2 rounded-lg flex-1"
+                >
                     Vollprofil
                 </button>
-                <button className="text-[9px] font-semibold text-white bg-gradient-to-r from-violet-500 to-violet-600 px-3 py-2 rounded-lg flex-1">
+                <button
+                    type="button"
+                    onClick={handleOpenTeleconsult}
+                    className="text-[9px] font-semibold text-white bg-gradient-to-r from-violet-500 to-violet-600 px-3 py-2 rounded-lg flex-1"
+                >
                     Teleconsult
                 </button>
-                <button className="text-[9px] font-semibold text-slate-600 bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg flex-1">
-                    EPD senden
+                <button
+                    type="button"
+                    onClick={handleExportEpd}
+                    disabled={isExportingEpd}
+                    className="text-[9px] font-semibold text-slate-600 bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg flex-1 disabled:opacity-50"
+                >
+                    {isExportingEpd ? "Export …" : "EPD senden"}
                 </button>
             </div>
+
+            {epdFeedback && (
+                <div
+                    className={`mt-2 rounded-md px-2.5 py-1.5 text-[9px] font-medium border ${epdFeedback.type === "success"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : "bg-red-50 text-red-700 border-red-200"
+                        }`}
+                    role="status"
+                    aria-live="polite"
+                >
+                    {epdFeedback.message}
+                </div>
+            )}
         </div>
     );
 }

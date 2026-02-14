@@ -13,6 +13,7 @@ import { RemoteAlarms } from "@/components/dashboard/remote-alarms";
 import { PatientDetailPanel } from "@/components/dashboard/patient-detail-panel";
 import { HomeVisitPanel } from "@/components/dashboard/home-visit-panel";
 import { RemoteDevicesPanel } from "@/components/dashboard/remote-devices-panel";
+import { MessageCenter } from "@/components/dashboard/message-center";
 import { StatusBar } from "@/components/dashboard/status-bar";
 
 export default function DashboardPage() {
@@ -156,13 +157,13 @@ export default function DashboardPage() {
         </div>
 
         {/* ─ Center: Vital Chart + Medication ─ */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col gap-1.5">
+        <div className="col-span-12 lg:col-span-5 flex flex-col gap-1.5 min-w-0">
           <VitalMonitorChart patientId={selectedPatientId} />
           <MedicationTimeline patientId={selectedPatientId} />
         </div>
 
         {/* ─ Right: Alarms + Details + Visits + Devices ─ */}
-        <div className="col-span-12 lg:col-span-5 flex flex-col gap-1.5">
+        <div className="col-span-12 lg:col-span-5 flex flex-col gap-1.5 min-w-0">
           {/* Alarms */}
           <RemoteAlarms />
 
@@ -174,6 +175,9 @@ export default function DashboardPage() {
 
           {/* Remote Devices */}
           <RemoteDevicesPanel patientId={selectedPatientId} />
+
+          {/* Mitteilungszentrale */}
+          <MessageCenter />
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useVitals } from "@/hooks/use-vitals";
 import { cn } from "@/lib/utils";
 import {
@@ -9,7 +9,6 @@ import {
     XAxis,
     YAxis,
     Tooltip,
-    ResponsiveContainer,
     CartesianGrid,
 } from "recharts";
 
@@ -35,8 +34,38 @@ const CHART_VITALS = [
 
 export function VitalMonitorChart({ patientId }: VitalMonitorChartProps) {
     const [timeRange, setTimeRange] = useState<TimeRange>("24h");
+    const chartHostRef = useRef<HTMLDivElement | null>(null);
+    const [chartSize, setChartSize] = useState({ width: 0, height: 0 });
     const hours = TIME_RANGES.find((r) => r.key === timeRange)!.hours;
     const { data: vitals, isLoading } = useVitals(patientId ?? "", hours);
+
+    useEffect(() => {
+        const host = chartHostRef.current;
+        if (!host) return;
+
+        const updateSizeFlag = () => {
+            const rect = host.getBoundingClientRect();
+            const width = Math.max(0, Math.floor(rect.width));
+            const height = Math.max(0, Math.floor(rect.height));
+            setChartSize((prev) => (
+                prev.width === width && prev.height === height
+                    ? prev
+                    : { width, height }
+            ));
+        };
+
+        const rafId = requestAnimationFrame(updateSizeFlag);
+
+        const observer = new ResizeObserver(() => updateSizeFlag());
+        observer.observe(host);
+
+        return () => {
+            cancelAnimationFrame(rafId);
+            observer.disconnect();
+        };
+    }, []);
+
+    const hasChartSize = chartSize.width > 10 && chartSize.height > 10;
 
     const chartData = (vitals ?? []).map((v) => ({
         time: new Date(v.recorded_at).toLocaleTimeString("de-CH", {
@@ -81,7 +110,7 @@ export function VitalMonitorChart({ patientId }: VitalMonitorChartProps) {
     ];
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 w-full min-w-0">
             <div className="flex items-center justify-between mb-3">
                 <div>
                     <h3 className="text-[13px] font-bold text-slate-900">
@@ -134,7 +163,7 @@ export function VitalMonitorChart({ patientId }: VitalMonitorChartProps) {
             </div>
 
             {/* Chart area */}
-            <div className="h-[160px]">
+            <div ref={chartHostRef} className="h-[160px] w-full min-w-0">
                 {!patientId ? (
                     <div className="flex items-center justify-center h-full">
                         <p className="text-[11px] text-slate-500">Patient auswählen</p>
@@ -149,39 +178,43 @@ export function VitalMonitorChart({ patientId }: VitalMonitorChartProps) {
                             Keine Vitaldaten im gewählten Zeitraum
                         </p>
                     </div>
+                ) : !hasChartSize ? (
+                    <div className="flex items-center justify-center h-full">
+                        <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                    </div>
                 ) : (
-                    <ResponsiveContainer width="100%" height="100%">
-                        <LineChart
-                            data={chartData}
-                            margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                            <XAxis
-                                dataKey="time"
-                                tick={{ fontSize: 8, fill: "#94a3b8" }}
-                                interval="preserveStartEnd"
+                    <LineChart
+                        width={chartSize.width}
+                        height={chartSize.height}
+                        data={chartData}
+                        margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                        <XAxis
+                            dataKey="time"
+                            tick={{ fontSize: 8, fill: "#94a3b8" }}
+                            interval="preserveStartEnd"
+                        />
+                        <YAxis tick={{ fontSize: 8, fill: "#94a3b8" }} />
+                        <Tooltip
+                            contentStyle={{
+                                fontSize: 10,
+                                borderRadius: 8,
+                                border: "1px solid #e2e8f0",
+                            }}
+                        />
+                        {CHART_VITALS.map((v) => (
+                            <Line
+                                key={v.key}
+                                type="monotone"
+                                dataKey={v.key}
+                                stroke={v.color}
+                                strokeWidth={2}
+                                dot={false}
+                                connectNulls
                             />
-                            <YAxis tick={{ fontSize: 8, fill: "#94a3b8" }} />
-                            <Tooltip
-                                contentStyle={{
-                                    fontSize: 10,
-                                    borderRadius: 8,
-                                    border: "1px solid #e2e8f0",
-                                }}
-                            />
-                            {CHART_VITALS.map((v) => (
-                                <Line
-                                    key={v.key}
-                                    type="monotone"
-                                    dataKey={v.key}
-                                    stroke={v.color}
-                                    strokeWidth={2}
-                                    dot={false}
-                                    connectNulls
-                                />
-                            ))}
-                        </LineChart>
-                    </ResponsiveContainer>
+                        ))}
+                    </LineChart>
                 )}
             </div>
         </div>

@@ -21,6 +21,7 @@ from src.api.v1.directives import router as directives_router
 from src.api.v1.encounters import router as encounters_router
 from src.api.v1.insurance import router as insurance_router
 from src.api.v1.medications import router as medications_router
+from src.api.v1.messages import router as messages_router
 from src.api.v1.nursing import router as nursing_router
 from src.api.v1.patients import router as patients_router
 from src.api.v1.providers import router as providers_router
@@ -260,6 +261,7 @@ app.include_router(insurance_router, prefix="/api/v1", tags=["insurance"])
 app.include_router(contacts_router, prefix="/api/v1", tags=["contacts"])
 app.include_router(providers_router, prefix="/api/v1", tags=["providers"])
 app.include_router(users_router, prefix="/api/v1", tags=["users"])
+app.include_router(messages_router, prefix="/api/v1", tags=["messages"])
 app.include_router(audit_router, prefix="/api/v1", tags=["audit"], dependencies=[require_rbac("Audit-Trail")])
 app.include_router(home_visits_router, prefix="/api/v1", tags=["home-visits"], dependencies=[require_rbac("Hausbesuche")])
 app.include_router(teleconsults_router, prefix="/api/v1", tags=["teleconsults"], dependencies=[require_rbac("Teleconsults")])

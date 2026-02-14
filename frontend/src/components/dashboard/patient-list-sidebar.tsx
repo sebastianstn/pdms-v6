@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface Patient {
@@ -45,11 +45,46 @@ function getStatusLabel(status: string) {
 
 export function PatientListSidebar({ patients, isLoading, selectedId, onSelect }: PatientListSidebarProps) {
     const [filter, setFilter] = useState<FilterTab>("alle");
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setDebouncedSearch(search);
+        }, 250);
+
+        return () => clearTimeout(timeout);
+    }, [search]);
+
+    const normalizedSearch = debouncedSearch.trim().toLowerCase();
 
     const filteredPatients = patients.filter((p) => {
-        if (filter === "alle") return true;
-        if (filter === "kritisch") return p.status === "critical" || p.status === "unstable";
-        return p.status === "active" || p.status === "stable";
+        const matchesStatus =
+            filter === "alle"
+                ? true
+                : filter === "kritisch"
+                  ? p.status === "critical" || p.status === "unstable"
+                  : p.status === "active" || p.status === "stable";
+
+        if (!matchesStatus) {
+            return false;
+        }
+
+        if (!normalizedSearch) {
+            return true;
+        }
+
+        const fullName = `${p.first_name} ${p.last_name}`.toLowerCase();
+        const reversedName = `${p.last_name} ${p.first_name}`.toLowerCase();
+        const ahv = (p.ahv_number ?? "").toLowerCase();
+
+        return (
+            fullName.includes(normalizedSearch)
+            || reversedName.includes(normalizedSearch)
+            || p.first_name.toLowerCase().includes(normalizedSearch)
+            || p.last_name.toLowerCase().includes(normalizedSearch)
+            || ahv.includes(normalizedSearch)
+        );
     });
 
     const tabs: { key: FilterTab; label: string }[] = [
@@ -84,6 +119,31 @@ export function PatientListSidebar({ patients, isLoading, selectedId, onSelect }
                         </button>
                     ))}
                 </div>
+
+                {/* Suche */}
+                <div className="mt-2">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Patient suchen (Name/AHV)…"
+                            className="w-full rounded-md border border-slate-200 px-2.5 py-1.5 pr-8 text-[11px] text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-200 focus:border-cyan-300"
+                            aria-label="Patienten suchen"
+                        />
+                        {search && (
+                            <button
+                                type="button"
+                                onClick={() => setSearch("")}
+                                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                                aria-label="Suche zurücksetzen"
+                                title="Suche zurücksetzen"
+                            >
+                                ×
+                            </button>
+                        )}
+                    </div>
+                </div>
             </div>
 
             {/* Patient List */}
@@ -93,7 +153,9 @@ export function PatientListSidebar({ patients, isLoading, selectedId, onSelect }
                         <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
                     </div>
                 ) : filteredPatients.length === 0 ? (
-                    <p className="text-xs text-slate-500 text-center py-8">Keine Patienten</p>
+                    <p className="text-xs text-slate-500 text-center py-8">
+                        {normalizedSearch ? "Keine Treffer" : "Keine Patienten"}
+                    </p>
                 ) : (
                     filteredPatients.map((patient) => {
                         const isSelected = patient.id === selectedId;
