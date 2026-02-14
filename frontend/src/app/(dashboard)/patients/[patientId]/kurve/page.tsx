@@ -275,7 +275,7 @@ export default function KurvePage() {
     }
 
     setEditError(null);
-    updateMut.mutate(payload as Parameters<typeof updateMut.mutate>[0], {
+    updateMut.mutate(payload as unknown as Parameters<typeof updateMut.mutate>[0], {
       onSuccess: () => {
         closeEditModal();
       },

@@ -1,5 +1,13 @@
 import { test, expect } from "@playwright/test";
 
+function generateUniqueAhv(): string {
+    const tail = `${Date.now()}${Math.floor(Math.random() * 10000)}`
+        .replace(/\D/g, "")
+        .slice(-10)
+        .padStart(10, "0");
+    return `756.${tail.slice(0, 4)}.${tail.slice(4, 8)}.${tail.slice(8, 10)}`;
+}
+
 /**
  * E2E-Tests: Patienten-Workflow
  * Testet CRUD-Operationen über die API
@@ -10,11 +18,14 @@ test.describe("Patienten-Workflow", () => {
     test("Patientenliste abrufen", async ({ request }) => {
         const response = await request.get(`${API_BASE}/api/v1/patients`);
         expect(response.ok()).toBeTruthy();
-        const patients = await response.json();
-        expect(Array.isArray(patients)).toBeTruthy();
+        const payload = await response.json();
+        expect(Array.isArray(payload.items)).toBeTruthy();
+        expect(typeof payload.total).toBe("number");
     });
 
     test("Patient erstellen und abrufen", async ({ request }) => {
+        const uniqueAhv = generateUniqueAhv();
+
         // Patient erstellen
         const createResponse = await request.post(`${API_BASE}/api/v1/patients`, {
             data: {
@@ -22,8 +33,10 @@ test.describe("Patienten-Workflow", () => {
                 last_name: "Patient",
                 date_of_birth: "1990-01-15",
                 gender: "male",
-                ahv_number: "756.1234.5678.97",
-                address: "Teststrasse 1, 8000 Zürich",
+                ahv_number: uniqueAhv,
+                address_street: "Teststrasse 1",
+                address_zip: "8000",
+                address_city: "Zürich",
                 phone: "+41 44 000 00 00",
             },
         });
@@ -46,7 +59,7 @@ test.describe("Patienten-Workflow", () => {
             `${API_BASE}/api/v1/patients?search=E2E`
         );
         expect(response.ok()).toBeTruthy();
-        const results = await response.json();
-        expect(Array.isArray(results)).toBeTruthy();
+        const payload = await response.json();
+        expect(Array.isArray(payload.items)).toBeTruthy();
     });
 });

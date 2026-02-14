@@ -6,6 +6,7 @@ import { usePatient } from "@/hooks/use-patients";
 import { useContacts } from "@/hooks/use-contacts";
 import { api } from "@/lib/api-client";
 import { jsPDF } from "jspdf";
+import QRCode from "qrcode";
 import { Home, Phone, Droplets } from "lucide-react";
 
 interface PatientDetailPanelProps {
@@ -32,12 +33,22 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
     const { data: patient, isLoading } = usePatient(patientId ?? "");
     const { data: contacts } = useContacts(patientId ?? "");
 
-    const exportEpdPdf = (payload: Record<string, unknown>, currentPatientId: string) => {
+    const exportEpdPdf = async (payload: Record<string, unknown>, currentPatientId: string) => {
         const doc = new jsPDF({ unit: "mm", format: "a4" });
         const pageHeight = 297;
         const pageWidth = 210;
         const margin = 12;
         const textWidth = pageWidth - margin * 2;
+        const createdAt = new Date();
+        const docRef = `PDMS-EPD-${currentPatientId.slice(0, 8)}-${createdAt
+            .toISOString()
+            .slice(0, 10)
+            .replace(/-/g, "")}`;
+        const qrFallbackUrn = `urn:pdms:epd:${currentPatientId}:${createdAt.getTime()}`;
+        const dossierPath = `/patients/${currentPatientId}/uebersicht?epd_ref=${encodeURIComponent(docRef)}`;
+        const qrReference = typeof window !== "undefined"
+            ? `${window.location.origin}${dossierPath}`
+            : qrFallbackUrn;
 
         const bundle = payload as {
             total?: number;
@@ -56,16 +67,48 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
             : "";
         const family = typeof patientNameRaw?.family === "string" ? patientNameRaw.family : "";
         const patientName = `${given} ${family}`.trim() || "Unbekannt";
+        const patientBirthDate = typeof patientResource?.birthDate === "string" ? patientResource.birthDate : "-";
+        const patientGender = typeof patientResource?.gender === "string" ? patientResource.gender : "-";
 
         const resourceCount = Array.isArray(bundle.entry) ? bundle.entry.length : 0;
 
-        const contentStartY = 46;
+        const diagnosisItems = (bundle.entry ?? [])
+            .filter((e) => e.resource?.resourceType === "Condition")
+            .map((e) => {
+                const condition = e.resource ?? {};
+                const code = condition.code as Record<string, unknown> | undefined;
+                const coding = Array.isArray(code?.coding) ? (code?.coding[0] as Record<string, unknown> | undefined) : undefined;
+                return (
+                    (typeof code?.text === "string" && code.text)
+                    || (typeof coding?.display === "string" && coding.display)
+                    || "Unbekannte Diagnose"
+                );
+            })
+            .slice(0, 6);
+
+        const medicationItems = (bundle.entry ?? [])
+            .filter((e) => e.resource?.resourceType === "MedicationRequest")
+            .map((e) => {
+                const med = e.resource ?? {};
+                const medCodeable = med.medicationCodeableConcept as Record<string, unknown> | undefined;
+                const coding = Array.isArray(medCodeable?.coding)
+                    ? (medCodeable?.coding[0] as Record<string, unknown> | undefined)
+                    : undefined;
+                return (
+                    (typeof medCodeable?.text === "string" && medCodeable.text)
+                    || (typeof coding?.display === "string" && coding.display)
+                    || "Unbekanntes Medikament"
+                );
+            })
+            .slice(0, 6);
+
+        const contentStartY = 52;
         let y = contentStartY;
 
         const drawHeader = () => {
             doc.setDrawColor(14, 165, 233);
             doc.setLineWidth(0.6);
-            doc.rect(margin, 10, pageWidth - margin * 2, 28);
+            doc.rect(margin, 10, pageWidth - margin * 2, 34);
 
             doc.setFont("helvetica", "bold");
             doc.setFontSize(13);
@@ -73,14 +116,19 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
 
             doc.setFont("helvetica", "normal");
             doc.setFontSize(9);
-            doc.text("EPD-Auszug (PDF)", margin + 3, 24);
-            doc.text(`Exportzeitpunkt: ${new Date().toLocaleString("de-CH")}`, margin + 3, 29);
+            doc.text("EPD-Auszug (PDF)", margin + 3, 23);
+            doc.text(`Exportzeitpunkt: ${createdAt.toLocaleString("de-CH")}`, margin + 3, 28);
+            doc.text("PDMS Home-Spital, Schweiz · Tel +41 44 000 00 00 · epd@pdms.local", margin + 3, 33);
 
             doc.setFont("helvetica", "bold");
             doc.setFontSize(10);
-            doc.text(`Patient: ${patientName}`, margin + 3, 35);
+            doc.text(`Patient: ${patientName}`, margin + 3, 40);
             doc.setFont("helvetica", "normal");
-            doc.text(`Patient-ID: ${currentPatientId}`, pageWidth - margin - 72, 35);
+            doc.text(`Patient-ID: ${currentPatientId}`, pageWidth - margin - 72, 40);
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(7);
+            doc.text("QR", pageWidth - margin - 10, 18);
         };
 
         const drawFooter = (page: number, totalPages: number) => {
@@ -111,13 +159,50 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
 
         drawHeader();
 
+        try {
+            const qrDataUrl = await QRCode.toDataURL(qrReference, {
+                errorCorrectionLevel: "M",
+                margin: 1,
+                width: 220,
+            });
+            doc.addImage(qrDataUrl, "PNG", pageWidth - margin - 30, 16, 18, 18);
+        } catch {
+            writeLine("Hinweis: QR-Code konnte nicht generiert werden.", 8);
+        }
+
+        writeLine("Dokument-Referenz", 11, true);
+        writeLine(`Dokument-ID: ${docRef}`);
+        writeLine(`QR-Ziel (URL): ${qrReference}`, 9);
+        writeLine(`Fallback-URN: ${qrFallbackUrn}`, 8);
+        writeLine(`Geburtsdatum: ${patientBirthDate} · Geschlecht: ${patientGender}`);
+
+        writeLine("", 8);
         writeLine("Dokumentzusammenfassung", 11, true);
         writeLine(`FHIR-Ressourcen im Bundle: ${bundle.total ?? resourceCount}`);
         writeLine("Erstellt zur Weitergabe im EPD-Kontext (PDF-Übersicht).", 9);
 
         writeLine("", 8);
-        writeLine("Ressourcen nach Typ", 11, true);
+        writeLine("Klinische Kurzliste (Seite 1)", 11, true);
+        writeLine("Diagnosen", 10, true);
+        if (diagnosisItems.length === 0) {
+            writeLine("• Keine Diagnosen im Bundle gefunden.", 9);
+        } else {
+            for (const diagnosis of diagnosisItems) {
+                writeLine(`• ${diagnosis}`, 9);
+            }
+        }
 
+        writeLine("Medikation", 10, true);
+        if (medicationItems.length === 0) {
+            writeLine("• Keine Medikationsverordnungen im Bundle gefunden.", 9);
+        } else {
+            for (const medication of medicationItems) {
+                writeLine(`• ${medication}`, 9);
+            }
+        }
+
+        writeLine("", 8);
+        writeLine("Ressourcen nach Typ", 11, true);
         const typeCounts = new Map<string, number>();
         for (const item of bundle.entry ?? []) {
             const rt = typeof item.resource?.resourceType === "string" ? item.resource.resourceType : "Unknown";
@@ -174,7 +259,7 @@ export function PatientDetailPanel({ patientId }: PatientDetailPanelProps) {
 
         try {
             const payload = await api.get<Record<string, unknown>>(`/fhir/Patient/${patientId}/$everything`);
-            exportEpdPdf(payload, patientId);
+            await exportEpdPdf(payload, patientId);
             setEpdFeedback({ type: "success", message: "EPD-Export als PDF erfolgreich heruntergeladen." });
         } catch {
             setEpdFeedback({ type: "error", message: "EPD-Export fehlgeschlagen. Bitte erneut versuchen." });

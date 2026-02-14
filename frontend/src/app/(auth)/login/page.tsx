@@ -2,14 +2,14 @@
 
 import { getLoginUrl } from "@/lib/auth";
 import { useAuth } from "@/providers/auth-provider";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Hospital } from "lucide-react";
 
 const IS_DEV_BYPASS = process.env.NEXT_PUBLIC_DEV_AUTH_BYPASS === "true";
 const DEV_LOGGED_OUT_KEY = "pdms_dev_logged_out";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, devLogin, login } = useAuth();
@@ -97,5 +97,26 @@ export default function LoginPage() {
         <p className="text-slate-500 mt-2">Weiterleitung zum Login...</p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url(http://localhost:8080/resources/w242x/login/keycloak/img/keycloak-bg.png)" }}
+        >
+          <div className="text-center">
+            <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto" />
+            <h1 className="text-2xl font-bold text-slate-900 mt-4">PDMS Home-Spital</h1>
+            <p className="text-slate-500 mt-2">Weiterleitung zum Login...</p>
+          </div>
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }
