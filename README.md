@@ -43,6 +43,11 @@ cd backend && uvicorn src.main:app --reload &
 cd frontend && pnpm dev
 ```
 
+## Production Deployment (Raspberry Pi)
+
+- Anleitung: `docs/deploy-raspberry-pi.md`
+- Produktions-Variablen: `.env.prod.example`
+
 ## Projekt-Struktur
 
 ```

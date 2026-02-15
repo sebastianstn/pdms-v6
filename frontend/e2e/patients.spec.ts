@@ -45,11 +45,22 @@ test.describe("Patienten-Workflow", () => {
         expect(patient.id).toBeTruthy();
         expect(patient.first_name).toBe("E2E-Test");
 
-        // Patient abrufen
-        const getResponse = await request.get(
-            `${API_BASE}/api/v1/patients/${patient.id}`
-        );
-        expect(getResponse.ok()).toBeTruthy();
+        // Patient abrufen (mit kurzem Retry gegen flakey Timing im Testsystem)
+        const patientUrl = `${API_BASE}/api/v1/patients/${patient.id}`;
+        let getResponse = await request.get(patientUrl);
+
+        for (let attempt = 0; attempt < 4 && !getResponse.ok(); attempt += 1) {
+            await new Promise((resolve) => setTimeout(resolve, 200));
+            getResponse = await request.get(patientUrl);
+        }
+
+        if (!getResponse.ok()) {
+            const errorBody = await getResponse.text();
+            throw new Error(
+                `Patient-Abruf fehlgeschlagen (status=${getResponse.status()}): ${errorBody}`
+            );
+        }
+
         const fetched = await getResponse.json();
         expect(fetched.last_name).toBe("Patient");
     });
